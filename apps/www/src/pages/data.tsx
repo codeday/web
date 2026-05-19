@@ -6,12 +6,12 @@ import { DateTime } from "luxon";
 import { GetStaticProps } from "next";
 
 import Page from "../components/Page";
-import { useQuery } from "../query";
+import { usePageData } from "@codeday/topo/Theme";
 import Error404 from "./404";
 import { DataListPublicationsQuery } from "./data.gql";
 
 export default function Home() {
-  const { cms } = useQuery();
+  const { cms } = usePageData();
 
   if (!cms) {
     return (

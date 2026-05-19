@@ -7,7 +7,7 @@ import Head from "next/head";
 import React, { ReactNode } from "react";
 
 import { useFundraise } from "../providers";
-import { useQuery } from "../query";
+import { usePageData } from "@codeday/topo/Theme";
 
 const DOMAIN = "https://www.codeday.org";
 const FUNDRAISE_UP_BUTTON_ID = "XBSBRRMF";
@@ -23,7 +23,7 @@ interface PageProps {
 }
 
 export default function Page({ children, title, darkHeader, slug, seo }: PageProps) {
-  const { cms } = useQuery();
+  const { cms } = usePageData();
   const { mission } = cms || {};
   const { isFundraiseLoaded } = useFundraise();
   const disclaimerTexts = (cms?.globalSponsors?.items || [])

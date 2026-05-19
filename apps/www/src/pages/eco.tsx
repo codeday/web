@@ -7,11 +7,11 @@ import React from "react";
 
 import ContentfulRichText from "../components/ContentfulRichText";
 import Page from "../components/Page";
-import { useQuery } from "../query";
+import { usePageData } from "@codeday/topo/Theme";
 import { EcoQuery } from "./eco.gql";
 
 export default function Eco() {
-  const { details } = useQuery().cms;
+  const { details } = usePageData().cms;
 
   return (
     <Page title="Ecological Footprint" slug="/eco">

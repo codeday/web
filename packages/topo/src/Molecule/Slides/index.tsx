@@ -6,8 +6,7 @@ interface SlidesProps extends BoxProps {
   duration?: number;
 }
 
-const Slides: ComponentWithAs<"div", SlidesProps> = React.forwardRef<HTMLDivElement, SlidesProps>(
-  ({ duration = 15, transitionDuration = 1, children, ...props }: any, ref) => {
+const Slides: ComponentWithAs<"div", SlidesProps> = (({ duration = 15, transitionDuration = 1, children, ref, ...props }: any) => {
     const [visibleIndex, nextSlide] = useReducer(
       (lastIndex: number) => (lastIndex + 1) % React.Children.count(children),
       0,
@@ -37,7 +36,6 @@ const Slides: ComponentWithAs<"div", SlidesProps> = React.forwardRef<HTMLDivElem
         ))}
       </Box>
     );
-  },
-) as ComponentWithAs<"div", SlidesProps>;
+}) as ComponentWithAs<"div", SlidesProps>;
 Slides.displayName = "Slides";
 export { Slides, type SlidesProps };

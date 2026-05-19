@@ -8,7 +8,7 @@ import React from "react";
 import Page from "../../components/Page";
 import VideoTestimonialThumbnail from "../../components/VideoTestimonialThumbnail";
 import ProgramInfo from "../../components/Volunteer/ProgramInfo";
-import { useQuery } from "../../query";
+import { usePageData } from "@codeday/topo/Theme";
 import { upcomingEvents } from "../../utils/time";
 import { VolunteerQuery } from "./volunteer.gql";
 
@@ -17,7 +17,7 @@ const PROGRAM_WEIGHT = ["primary", "secondary", "minor"];
 export default function Volunteer() {
   const {
     cms: { volunteerPrograms, testimonials },
-  } = useQuery();
+  } = usePageData();
   const programsWithUpcoming =
     volunteerPrograms?.items
       ?.map((program: any) => {

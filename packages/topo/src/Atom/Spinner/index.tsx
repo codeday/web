@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React from "react";
 
 const smilSupport = () =>
   typeof window === "undefined"
@@ -9,11 +9,11 @@ const smilSupport = () =>
         .toString()
         .indexOf("SVG") > -1;
 
-export const Spinner = forwardRef((_, ref) => (
+export const Spinner = ({ ref }: { ref?: React.Ref<HTMLImageElement> } = {}) => (
   <img
     ref={ref as React.MutableRefObject<any>}
     src={`https://f1.codeday.org/topo/loading.${smilSupport() ? "svg" : "gif"}`}
     alt="(loading...)"
     style={{ display: "inline-block" }}
   />
-));
+);

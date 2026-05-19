@@ -2,16 +2,16 @@ import { Box, Grid, VisibilityCheckBox, Text, Heading, Button } from "@codeday/t
 import { MediaPlay as Play, Broadcast } from "@codeday/topocons";
 import React from "react";
 
-import { useQuery } from "../../query";
+import { usePageData } from "@codeday/topo/Theme";
 import useTwitch from "../../useTwitch";
-import VideoLink from "../VideoLink";
+import { VideoLink } from "@codeday/topo/Molecule";
 import Live from "./Live";
 import Teaser from "./Teaser";
 
 export default function Hero({ ...props }: any) {
   const {
     cms: { tagline, mission, explainer },
-  } = useQuery();
+  } = usePageData();
   const twitch = useTwitch();
 
   const taglineBlock = (

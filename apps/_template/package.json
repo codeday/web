@@ -1,0 +1,30 @@
+{
+  "name": "@codeday/APPNAME",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "codegen": "echo 'Add .gql files to src/ then run: graphql-codegen'"
+  },
+  "dependencies": {
+    "@codeday/topo": "workspace:*",
+    "@codeday/topocons": "workspace:*",
+    "@codeday/utils": "workspace:*",
+    "graphql": "catalog:",
+    "graphql-tag": "^2.12.6",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@codeday/tsconfig": "workspace:*",
+    "@graphql-codegen/cli": "^5.0.6",
+    "@graphql-codegen/typescript-graphql-files-modules": "^3.0.0",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:"
+  }
+}

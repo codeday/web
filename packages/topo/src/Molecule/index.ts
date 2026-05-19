@@ -6,3 +6,7 @@ export * from "./Html";
 export * from "./IconBox";
 export * from "./Slides";
 export * from "./GithubAuthors";
+export * from "./VideoPlayer";
+export * from "./VideoLink";
+export * from "./Markdown";
+export * from "./CalendlyEmbed";

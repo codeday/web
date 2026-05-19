@@ -1,13 +1,13 @@
 import { Box, Grid, Button, Image, Text, CodeDay, Link } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import { useColorMode } from "@codeday/topo/Theme";
+import { useColorMode, usePageData } from "@codeday/topo/Theme";
 import { apiFetch } from "@codeday/topo/utils";
 import { UiStar } from "@codeday/topocons";
 import { print } from "graphql";
 import haversine from "haversine-distance";
 import React, { useEffect, useState } from "react";
 
-import { useQuery } from "../../query";
+
 import { nextUpcomingEvent, upcomingEvents, formatInterval } from "../../utils/time";
 import { GetMyLocation } from "./Programs.gql";
 
@@ -29,7 +29,7 @@ export default function Programs() {
   const {
     cms: { regions, mainPrograms, codeDayProgram, labsProgram },
     clear: { events },
-  } = useQuery();
+  } = usePageData();
   const [geo, setGeo] = useState<any>();
   const codeDay = codeDayProgram?.items[0];
   const labs = labsProgram?.items[0];

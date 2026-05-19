@@ -1,9 +1,9 @@
 import { Box, Grid, Text, Image } from "@codeday/topo/Atom";
 
-import { useQuery } from "../../query";
+import { usePageData } from "@codeday/topo/Theme";
 
 export default function PhotoGallery(props: any) {
-  const { cms } = useQuery();
+  const { cms } = usePageData();
   const volunteerPhotoGallery = cms?.volunteerPhotoGallery?.items || [];
 
   return (

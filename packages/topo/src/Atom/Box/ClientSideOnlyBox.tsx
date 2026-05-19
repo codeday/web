@@ -4,14 +4,11 @@ import { useSsr } from "@codeday/topo/utils";
 /* eslint-disable no-undef */
 import React from "react";
 
-export const ClientSideOnlyBox: ComponentWithAs<"div", BoxProps> = React.forwardRef<
-  HTMLDivElement,
-  BoxProps
->((({ children, ...props }: any, ref: any) => {
+export const ClientSideOnlyBox: ComponentWithAs<"div", BoxProps> = (({ children, ref, ...props }: any) => {
   const isSsr = useSsr();
   return isSsr ? null : (
     <Box {...(props as any)} ref={ref as any}>
       {children}
     </Box>
   );
-}) as any) as ComponentWithAs<"div", BoxProps>;
+}) as ComponentWithAs<"div", BoxProps>;

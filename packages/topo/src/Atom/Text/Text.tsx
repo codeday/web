@@ -9,12 +9,12 @@ export interface TextProps extends BoxProps {
   bold?: boolean;
 }
 export const Text: ComponentWithAs<"p", TextProps> = pureRef<TextProps, "p">(
-  ({ bold, ...props }, ref) => (
+  ({ bold, ref, ...props }) => (
     <Box fontWeight={bold ? "bold" : {}} {...(props as any)} ref={ref} />
   ),
 ) as ComponentWithAs<"p", TextProps>;
 
-export const P = pureRef<TextProps, "p">(({ as, bold, ...rest }, ref) => (
+export const P = pureRef<TextProps, "p">(({ as, bold, ref, ...rest }) => (
   <Box
     marginBottom={(as as string) === "p" ? 4 : {}}
     fontWeight={bold ? "bold" : {}}

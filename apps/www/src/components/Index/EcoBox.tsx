@@ -3,11 +3,11 @@ import { Content } from "@codeday/topo/Molecule";
 import { Eco } from "@codeday/topocons";
 import React from "react";
 
-import { useQuery } from "../../query";
+import { usePageData } from "@codeday/topo/Theme";
 import StaticContent from "../StaticContent";
 
 export default function EcoBox() {
-  const { eco, learnMore } = useQuery().cms;
+  const { eco, learnMore } = usePageData().cms;
 
   return (
     <StaticContent>

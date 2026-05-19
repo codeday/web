@@ -1,6 +1,6 @@
 import { createSystem, defaultConfig, defineConfig, defineRecipe } from "@chakra-ui/react";
 
-import { defaultFontSizes } from "../themeContext";
+import { defaultFontSizes } from "../../utils";
 import colors from "./colors";
 import fonts from "./fonts";
 

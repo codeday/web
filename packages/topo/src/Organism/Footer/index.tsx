@@ -14,7 +14,7 @@ import {
 import { Content, GithubAuthors } from "@codeday/topo/Molecule";
 import { useCmp, useQuery } from "@codeday/topo/Theme";
 import { useString } from "@codeday/topo/utils";
-import React, { forwardRef, type ReactNode } from "react";
+import React, { type ReactNode } from "react";
 
 export const CustomLinks: ComponentWithAs<"div", BoxProps> = makePureBox("Custom Links");
 export const CustomText: ComponentWithAs<"div", BoxProps> = makePureBox("CustomText");
@@ -71,8 +71,8 @@ export interface FooterProps extends BoxProps {
   domainName?: string;
 }
 
-const Footer = forwardRef(
-  ({ children, repository, owner, branch, domainName, ...props }: FooterProps, ref) => {
+const Footer = (
+  ({ children, repository, owner, branch, domainName, ref, ...props }: FooterProps & { ref?: React.Ref<any> }) => {
     const { ucUi } = useCmp();
     const ccpaLink = useString("legal.ccpa", <Skelly />);
     const resourcesHeading = useString("resources", <Skelly />);
@@ -213,6 +213,6 @@ const Footer = forwardRef(
         </Grid>
       </Content>
     );
-  },
+  }
 );
 export { Footer };

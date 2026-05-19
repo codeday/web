@@ -1,16 +1,16 @@
 import { Grid, Heading, Link, Box, Text, Image } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import { useColorMode } from "@codeday/topo/Theme";
+import { useColorMode, usePageData } from "@codeday/topo/Theme";
 import React from "react";
 
-import { useQuery } from "../../query";
+
 import PreviousCoverageLogos from "../PreviousCoverageLogos";
 
 export default function Sponsors(props: any) {
   const { colorMode } = useColorMode();
   const {
     cms: { majorSponsors, minorSponsors },
-  } = useQuery();
+  } = usePageData();
   return (
     <Content {...props}>
       <Grid templateColumns={{ base: "1fr", md: "1fr 4fr" }} gap={4}>

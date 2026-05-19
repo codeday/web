@@ -1,6 +1,6 @@
 import { Box, Grid, Text, Heading, Link, Button, Divider } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import { useColorMode } from "@codeday/topo/Theme";
+import { useColorMode, usePageData } from "@codeday/topo/Theme";
 import { apiFetch } from "@codeday/topo/utils";
 import { print } from "graphql";
 import { DateTime } from "luxon";
@@ -9,14 +9,14 @@ import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
 import React, { useState, useRef } from "react";
 
-import Highlight from "../../components/Highlight";
+import { Highlight } from "@codeday/topo/Atom";
 import Page from "../../components/Page";
 import PhotoGallery from "../../components/Volunteer/PhotoGallery";
 import PreviewVideo from "../../components/Volunteer/PreviewVideo";
 import RemindMe from "../../components/Volunteer/RemindMe";
 import Testimonials from "../../components/Volunteer/Testimonials";
 import Wizard from "../../components/Volunteer/Wizard";
-import { useQuery } from "../../query";
+
 import { VolunteerQuery } from "./volunteer.gql";
 
 interface VolunteerProps {
@@ -37,7 +37,7 @@ export default function Volunteer({
   const formRef = useRef<HTMLDivElement>(null);
   const { colorMode } = useColorMode();
   const { asPath, query } = useRouter();
-  const { clear } = useQuery();
+  const { clear } = usePageData();
   const [wizardVisible, setWizardVisible] = useState(false);
 
   const secondText = (

@@ -3,7 +3,7 @@ import { Content } from "@codeday/topo/Molecule";
 import shuffle from "knuth-shuffle-seeded";
 import React, { useState, useReducer, useEffect } from "react";
 
-import { useQuery } from "../../../query";
+import { usePageData } from "@codeday/topo/Theme";
 import VideoTestimonialThumbnail from "../../VideoTestimonialThumbnail";
 import Globe from "./Globe";
 import TextQuote from "./TextQuote";
@@ -18,7 +18,7 @@ interface QuotesProps {
 export default function Quotes({ seed }: QuotesProps) {
   const {
     cms: { quoteRegions, quoteTestimonials },
-  } = useQuery();
+  } = usePageData();
   const textQuotes = shuffle(
     quoteTestimonials?.items.filter((q: any) => !q.video),
     seed,

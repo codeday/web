@@ -4,6 +4,7 @@ import Head from "next/head";
 import Script from "next/script";
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 const DEBUG = debug(["www", "providers", "Fundraise"]);
+const FUNDRAISE_UP_ID = process.env.NEXT_PUBLIC_FUNDRAISE_UP_ID || "AHCSATYN";
 
 interface FundraiseContextType {
   isFundraiseLoaded: boolean;
@@ -47,12 +48,12 @@ export function FundraiseProvider({ children }: { children: ReactNode }) {
     <FundraiseContext.Provider value={{ isFundraiseLoaded }}>
       <Head>
         <link rel="preconnect" href="https://cdn.fundraiseup.com" />
-        <link rel="preload" href="https://cdn.fundraiseup.com/widget/AHCSATYN" as="script" />
+        <link rel="preload" href={`https://cdn.fundraiseup.com/widget/${FUNDRAISE_UP_ID}`} as="script" />
         <style dangerouslySetInnerHTML={{ __html: FUNDRAISE_UP_STYLE }}></style>
       </Head>
       <Script
         strategy="afterInteractive"
-        src="https://cdn.fundraiseup.com/widget/AHCSATYN"
+        src={`https://cdn.fundraiseup.com/widget/${FUNDRAISE_UP_ID}`}
         onLoad={() => setIsScriptLoaded(true)}
       />
       {children}

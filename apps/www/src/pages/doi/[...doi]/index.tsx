@@ -30,7 +30,7 @@ import { useRouter } from "next/router";
 import Markdown from "react-markdown";
 
 import Page from "../../../components/Page";
-import { useQuery } from "../../../query";
+import { usePageData } from "@codeday/topo/Theme";
 import Error404 from "../../404";
 import { PublicationQuery, ListPublicationsQuery } from "./index.gql";
 
@@ -96,7 +96,7 @@ function FileIcon({ file }: FileIconProps) {
 }
 
 export default function Home() {
-  const { cms } = useQuery();
+  const { cms } = usePageData();
   const { query } = useRouter();
 
   if (!cms) {

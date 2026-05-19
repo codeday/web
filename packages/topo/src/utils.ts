@@ -18,6 +18,7 @@ export interface ThemeData {
   visibility: string;
   programWebname?: string;
   config?: Record<string, any>;
+  apiEndpoint?: string;
   [key: string]: any;
 }
 
@@ -95,6 +96,7 @@ const ThemeDataContext = createContext<ThemeData>({
   cognito: { id: "7hYXr3TPxk6yIpJxjqVoFQ" },
   strings: {},
   visibility: "Public",
+  apiEndpoint: "https://graph.codeday.org/",
 });
 
 export const ThemeDataProvider = ThemeDataContext.Provider;
@@ -110,8 +112,8 @@ export function useSsr() {
 }
 
 export const api = "https://graph.codeday.org/";
-export const apiFetch = (query: any, variables: any, headers: any) => {
-  const client = new GraphQLClient(api, { headers });
+export const apiFetch = (query: any, variables: any, headers?: any, endpoint?: string) => {
+  const client = new GraphQLClient(endpoint || api, { headers: headers || {} });
   return client.request(query, variables);
 };
 
@@ -269,4 +271,31 @@ export function subscribeQuerySelectorAll(
     subtree: true,
   });
   return () => observer.disconnect();
+}
+
+/**
+ * Creates a Next.js getStaticProps that fetches a GraphQL query and returns
+ * the result as `props.query` for use with PageDataProvider / usePageData.
+ *
+ * @example
+ * import { print } from "graphql";
+ * export const getStaticProps = createStaticProps(print(MyQuery), { someVar: "value" });
+ */
+export function createStaticProps(
+  query: string,
+  variables?: Record<string, any> | (() => Record<string, any>),
+  options?: {
+    revalidate?: number | false;
+    headers?: Record<string, string>;
+    endpoint?: string;
+  },
+) {
+  return async () => {
+    const vars = typeof variables === "function" ? variables() : variables || {};
+    const result = await apiFetch(query, vars, options?.headers || {}, options?.endpoint);
+    return {
+      props: { query: result },
+      revalidate: options?.revalidate ?? 300,
+    };
+  };
 }

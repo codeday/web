@@ -54,7 +54,7 @@ const Lockup = ({ logo, text, textColor, color, ...props }: LockupProps) => (
 Lockup.displayName = "Lockup";
 
 export const Logo: ComponentWithAs<"div", any> = pureRef<any, "div">(
-  ({ program, withText, text, ...props }: any, ref) => {
+  ({ program, withText, text, ref, ...props }: any) => {
     const logoPart = React.createElement((Icons as any)[`${upperFirst(program)}`], {
       display: "inline",
       width: "auto",
@@ -93,7 +93,7 @@ export const Logo: ComponentWithAs<"div", any> = pureRef<any, "div">(
 Logo.displayName = "Logo";
 
 export const StaticLogo: ComponentWithAs<"div", any> = pureRef<any, "div">(
-  ({ logoPart, textPart, withText, text, ...props }: any, ref) => {
+  ({ logoPart, textPart, withText, text, ref, ...props }: any) => {
     const logoComponent = React.createElement(logoPart, {
       display: "inline",
       width: "auto",

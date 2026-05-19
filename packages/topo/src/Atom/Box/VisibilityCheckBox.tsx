@@ -3,8 +3,9 @@ import { Box, type BoxProps, ClientSideOnlyBox } from "@codeday/topo/Atom";
 /* eslint-disable no-undef */
 import React, { useRef, useState, useLayoutEffect, useImperativeHandle } from "react";
 
-const VisibilityCheckBoxInner = React.forwardRef<HTMLDivElement, BoxProps>(
-  ({ children, ...props }, forwardedRef) => {
+const VisibilityCheckBoxInner = (
+  { children, ref: forwardedRef, ...props }: BoxProps & { ref?: React.Ref<HTMLDivElement> },
+) => {
     const ref: React.MutableRefObject<any> = useRef(null);
     const [isVisible, setIsVisible] = useState(false);
 
@@ -24,13 +25,9 @@ const VisibilityCheckBoxInner = React.forwardRef<HTMLDivElement, BoxProps>(
         {isVisible && children}
       </Box>
     );
-  },
-);
+  };
 
-export const VisibilityCheckBox: ComponentWithAs<"div", BoxProps> = React.forwardRef<
-  HTMLDivElement,
-  BoxProps
->(({ children, ...props }, ref) => {
+export const VisibilityCheckBox: ComponentWithAs<"div", BoxProps> = (({ children, ref, ...props }: any) => {
   return (
     <ClientSideOnlyBox>
       <VisibilityCheckBoxInner ref={ref} {...props}>

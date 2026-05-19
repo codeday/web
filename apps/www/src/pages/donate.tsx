@@ -5,13 +5,13 @@ import { print } from "graphql";
 import { GetStaticProps } from "next";
 
 import Page from "../components/Page";
-import { useQuery } from "../query";
+import { usePageData } from "@codeday/topo/Theme";
 import { DonateQuery } from "./donate.gql";
 
 export default function Donate() {
   const {
     cms: { mission },
-  } = useQuery();
+  } = usePageData();
   return (
     <Page title="Donate" slug="/donate">
       <Content maxWidth="container.sm">

@@ -5,9 +5,9 @@ import { print } from "graphql";
 import { GetStaticProps, GetStaticPaths } from "next";
 import React from "react";
 
-import Markdown from "../../components/Markdown";
+import { Markdown } from "@codeday/topo/Molecule";
 import Page from "../../components/Page";
-import { useQuery } from "../../query";
+import { usePageData } from "@codeday/topo/Theme";
 import { LegalPathsQuery, LegalContentQuery, TermageddonLegalContentQuery } from "./policy.gql";
 
 const TERMAGEDDON_POLICIES = ["tos", "privacy", "cookies", "disclaimer"];
@@ -17,7 +17,7 @@ interface PolicyProps {
 }
 
 export default function Policy({ slug }: PolicyProps) {
-  const { termageddon, notion } = useQuery();
+  const { termageddon, notion } = usePageData();
   const page = TERMAGEDDON_POLICIES.includes(slug)
     ? {
         content: termageddon.terms[slug],

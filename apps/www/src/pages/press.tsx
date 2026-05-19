@@ -10,7 +10,7 @@ import ContentfulRichText from "../components/ContentfulRichText";
 import Page from "../components/Page";
 import PhotoGallery from "../components/Press/PhotoGallery";
 import PreviousCoverageLogos from "../components/PreviousCoverageLogos";
-import { useQuery } from "../query";
+import { usePageData } from "@codeday/topo/Theme";
 import { PressQuery } from "./press.gql";
 
 interface PressProps {
@@ -20,7 +20,7 @@ interface PressProps {
 export default function Press({ seed }: PressProps) {
   const {
     cms: { mission, pressContact, pressDetails, programs, previousCoverage },
-  } = useQuery();
+  } = usePageData();
 
   return (
     <Page slug="/press" title="Press">

@@ -1,6 +1,6 @@
 import { Box, Grid, Image, Text, Heading } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import { useColorMode } from "@codeday/topo/Theme";
+import { useColorMode, usePageData } from "@codeday/topo/Theme";
 import { apiFetch } from "@codeday/topo/utils";
 import { UiX } from "@codeday/topocons";
 import { print } from "graphql";
@@ -9,7 +9,7 @@ import React, { useState } from "react";
 
 import ContentfulRichText from "../../../components/ContentfulRichText";
 import Page from "../../../components/Page";
-import { useQuery } from "../../../query";
+
 import { HelpProgramAudienceQuery, HelpProgramAudiencePathsQuery } from "./audience.gql";
 
 interface AudienceProps {
@@ -23,7 +23,7 @@ export default function Audience({ programWebname, audience }: AudienceProps) {
 
   if (!programWebname || !audience) return <></>;
 
-  const { programs, faqs, events } = useQuery().cms || {};
+  const { programs, faqs, events } = usePageData().cms || {};
   const program = programs?.items[0] || null;
 
   const photos =

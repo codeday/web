@@ -7,7 +7,7 @@ import PageVisibility from "react-page-visibility";
 import Ticker from "react-ticker";
 import truncate from "truncate";
 
-import { useQuery } from "../../query";
+import { usePageData } from "@codeday/topo/Theme";
 
 function PhotoTextCard({ photo, text, authors, wip, href }: any) {
   return (
@@ -200,7 +200,7 @@ export default function Community({ seed, ...props }: { seed?: any; [key: string
   const {
     showcase,
     cms: { indexCommunityPhotos, stats },
-  } = useQuery();
+  } = usePageData();
 
   const studentCount = stats?.items?.reduce(
     (accum: number, e: any) => accum + e.statStudentCount,

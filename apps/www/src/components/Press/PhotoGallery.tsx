@@ -3,7 +3,7 @@ import { Content } from "@codeday/topo/Molecule";
 import shuffle from "knuth-shuffle-seeded";
 import React, { useState } from "react";
 
-import { useQuery } from "../../query";
+import { usePageData } from "@codeday/topo/Theme";
 import Photo from "./Photo";
 import PhotoTagPicker from "./PhotoTagPicker";
 
@@ -16,7 +16,7 @@ export default function PhotoGallery({ seed, ...props }: PhotoGalleryProps) {
   const [filter, setFilter] = useState<string | null>(null);
   const {
     cms: { pressPhotos },
-  } = useQuery();
+  } = usePageData();
   const photos = shuffle(
     (pressPhotos?.items || []).map((m: any) => m),
     seed,

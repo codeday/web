@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@codeday/topo/Theme";
+import { ThemeProvider, PageDataProvider } from "@codeday/topo/Theme";
 
 import "react-responsive-modal/styles.css";
 import { debug } from "@codeday/utils";
@@ -6,7 +6,6 @@ import { AppProps } from "next/app";
 import { Fragment, StrictMode, useEffect } from "react";
 
 import { MarketingProvider, FundraiseProvider } from "../providers";
-import { Provider } from "../query";
 const DEBUG = debug(["www", "pages", "_app"]);
 
 const STRICT_MODE_OR_FRAGMENT =
@@ -22,9 +21,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <ThemeProvider brandColor="red" useSystemColorMode cookies={pageProps.cookies}>
         <MarketingProvider>
           <FundraiseProvider>
-            <Provider value={pageProps?.query || {}}>
+            <PageDataProvider value={pageProps?.query || {}}>
               <Component {...pageProps} />
-            </Provider>
+            </PageDataProvider>
           </FundraiseProvider>
         </MarketingProvider>
       </ThemeProvider>

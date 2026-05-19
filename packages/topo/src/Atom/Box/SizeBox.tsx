@@ -4,19 +4,14 @@ import { Box, type BoxProps } from "@codeday/topo/Atom";
 import React, { useRef, useEffect, useState, useMemo } from "react";
 
 export interface SizeBoxProps extends BoxProps {
-  onWidthChanged?: (width: any) => null;
-  onHeightChanged?: (height: any) => null;
-  onSizeChanged?: (width: any, height: any) => null;
+  onWidthChanged?: (width: any) => void;
+  onHeightChanged?: (height: any) => void;
+  onSizeChanged?: (width: any, height: any) => void;
 }
 
-export const SizeBox: ComponentWithAs<"div", SizeBoxProps> = React.forwardRef<
-  HTMLDivElement,
-  SizeBoxProps
->(
-  (
-    { onWidthChanged = () => {}, onHeightChanged = () => {}, onSizeChanged = () => {}, ...props },
-    ref,
-  ) => {
+export const SizeBox: ComponentWithAs<"div", SizeBoxProps> = ((
+  { onWidthChanged = () => {}, onHeightChanged = () => {}, onSizeChanged = () => {}, ref, ...props }: SizeBoxProps & { ref?: React.Ref<HTMLDivElement> },
+) => {
     const boxRef: React.MutableRefObject<any> = useRef(null);
     const [lastWidth, setLastWidth] = useState<number>();
     const [lastHeight, setLastHeight] = useState<number>();
@@ -48,5 +43,4 @@ export const SizeBox: ComponentWithAs<"div", SizeBoxProps> = React.forwardRef<
     }, []);
 
     return useMemo(() => <Box ref={boxRef} {...props} />, [props]);
-  },
-) as ComponentWithAs<"div", SizeBoxProps>;
+}) as ComponentWithAs<"div", SizeBoxProps>;

@@ -12,7 +12,7 @@ import Employees from "../components/Contact/Employees";
 import FullProfile from "../components/Contact/FullProfile";
 import TextOnly from "../components/Contact/TextOnly";
 import Page from "../components/Page";
-import { useQuery } from "../query";
+import { usePageData } from "@codeday/topo/Theme";
 import { ContactQuery } from "./contact.gql";
 
 function nl2br(str: string): string {
@@ -32,7 +32,7 @@ export default function Home({ seed }: { seed: number }) {
     account: { employees, otherTeam, volunteers, board, contractors, emeritus, boardEmeritus },
     labs,
     clear,
-  } = useQuery();
+  } = usePageData();
 
   const employeeIds = employees.map((e: any) => e.id);
   const otherIds = [...employees, ...otherTeam, ...board, ...contractors, ...emeritus].map(

@@ -1,10 +1,10 @@
 import { Text, Grid, Box } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import { useColorMode } from "@codeday/topo/Theme";
+import { useColorMode, usePageData } from "@codeday/topo/Theme";
 import React from "react";
 import CountUp from "react-countup";
 
-import { useQuery } from "../../query";
+
 
 function rollup(events: any[]): Record<string, number> {
   const stats: Record<string, number> = {};
@@ -47,7 +47,7 @@ export default function Stats(props: any) {
   const {
     cms: { stats, quoteRegions },
     labs: { statTotalOutcomes },
-  } = useQuery();
+  } = usePageData();
   const rollupStats = rollup(stats.items);
 
   const hours = statTotalOutcomes.find((o: any) => o.key === "hoursCount");

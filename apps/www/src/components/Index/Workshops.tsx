@@ -3,7 +3,7 @@ import { Content } from "@codeday/topo/Molecule";
 import { create } from "random-seed";
 import React from "react";
 
-import { useQuery } from "../../query";
+import { usePageData } from "@codeday/topo/Theme";
 import { parseIsoString, formatShortDate } from "../../utils/time";
 
 const fixedColors: Record<string, string> = {
@@ -17,7 +17,7 @@ const fixedColors: Record<string, string> = {
 const colors = ["green", "blue", "orange", "cyan", "purple", "yellow", "indigo"];
 
 export default function Workshops() {
-  const { calendar } = useQuery();
+  const { calendar } = usePageData();
 
   if (calendar?.events?.length === 0) return <></>;
 

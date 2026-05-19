@@ -18,7 +18,7 @@ import { GetStaticProps, GetStaticPaths } from "next";
 import React from "react";
 
 import Page from "../../../components/Page";
-import { useQuery } from "../../../query";
+import { usePageData } from "@codeday/topo/Theme";
 import { HelpProgramIndexQuery, HelpProgramIndexPathsQuery } from "./index.gql";
 
 const icons: Record<string, React.ReactElement> = {
@@ -34,7 +34,7 @@ interface ProgramProps {
 }
 
 export default function Program({ programWebname }: ProgramProps) {
-  const { programs, faqs, events } = useQuery().cms || {};
+  const { programs, faqs, events } = usePageData().cms || {};
 
   if (!programWebname) return <></>;
 

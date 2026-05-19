@@ -2,7 +2,7 @@ import { Text, Box, Grid, Image, Link } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
 import React from "react";
 
-import { useQuery } from "../../query";
+import { usePageData } from "@codeday/topo/Theme";
 
 const titleContents = ["CEO", "President", "VP", "Chief", "Director", "Head", "Manager", "Lead"];
 const titlePrecedence = (title: string) =>
@@ -29,7 +29,7 @@ function dedupeByKey(key: string, arr: any[]) {
 export default function Employees(props: any) {
   const {
     account: { employees, otherTeam, contractors },
-  } = useQuery();
+  } = usePageData();
 
   const sortedEmployees = dedupeByKey("username", [
     ...employees,
