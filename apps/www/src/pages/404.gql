@@ -1,4 +1,4 @@
-#import "../components/Page.gql"
+#import "../components/Page/Page.gql"
 query Error404Query {
   ...PageComponent
 }

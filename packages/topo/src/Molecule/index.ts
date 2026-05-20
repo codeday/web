@@ -10,3 +10,5 @@ export * from "./VideoPlayer";
 export * from "./VideoLink";
 export * from "./Markdown";
 export * from "./CalendlyEmbed";
+export * from "./ContentfulRichText";
+export * from "./FlexScatter";

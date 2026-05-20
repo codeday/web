@@ -2,27 +2,14 @@ import { Box, Grid, Button, Image, Text, CodeDay, Link } from "@codeday/topo/Ato
 import { Content } from "@codeday/topo/Molecule";
 import { useColorMode, usePageData } from "@codeday/topo/Theme";
 import { apiFetch } from "@codeday/topo/utils";
-import { UiStar } from "@codeday/topocons";
 import { print } from "graphql";
 import haversine from "haversine-distance";
 import React, { useEffect, useState } from "react";
 
-
-import { nextUpcomingEvent, upcomingEvents, formatInterval } from "../../utils/time";
 import { GetMyLocation } from "./Programs.gql";
-
-function NextEventDate({ upcoming }: { upcoming: any[] }) {
-  const next = nextUpcomingEvent(upcoming);
-  return next ? (
-    <Text color="current.textLight" mb={0} fontWeight="bold">
-      {upcomingEvents(upcoming)
-        .map((e) => formatInterval(e.startsAt, e.endsAt))
-        .join("; ")}
-    </Text>
-  ) : (
-    <></>
-  );
-}
+import NextEventDate from "./NextEventDate";
+import ProgramCard from "./ProgramCard";
+import RegionList from "./RegionList";
 
 export default function Programs() {
   const { colorMode } = useColorMode();
@@ -89,36 +76,11 @@ export default function Programs() {
             </Link>
             )
           </Text>
-          <Box borderWidth={1} maxHeight={{ base: "sm", md: "md" }} overflowY="auto">
-            {sortedRegions.map((region: any) => (
-              <Box
-                p={2}
-                as="a"
-                display="block"
-                {...({ href: `https://event.codeday.org/${region.webname}` } as any)}
-                target="_blank"
-                fontSize="xl"
-                borderBottomWidth="1px"
-                key={region.webname}
-              >
-                {upcomingNameOverrides[region.webname] || region.name}
-                {region.upcoming && (
-                  <Box fontSize="sm" ml={2} display="inline-block" color="current.textLight">
-                    <Box position="relative" top="-0.2em" display="inline-block" mr={2}>
-                      <UiStar />
-                    </Box>
-                    {registrationOpenWebnames.includes(region.webname) ? `Registrations open!` : ``}
-                  </Box>
-                )}
-              </Box>
-            ))}
-          </Box>
-          <Box fontSize="sm" mt={4} display="inline-block" color="current.textLight">
-            <Box position="relative" top="-0.2em" display="inline-block" mr={2}>
-              <UiStar />
-            </Box>
-            Event planned this season.
-          </Box>
+          <RegionList
+            sortedRegions={sortedRegions}
+            registrationOpenWebnames={registrationOpenWebnames}
+            upcomingNameOverrides={upcomingNameOverrides}
+          />
         </Box>
 
         {/* More Programs */}
@@ -159,32 +121,7 @@ export default function Programs() {
             </Box>
           </Box>
           {mainPrograms?.items?.map((program: any) => (
-            <Box
-              p={4}
-              mb={4}
-              display="block"
-              as="a"
-              {...({ href: program.url } as any)}
-              target="_blank"
-              rel="noopener"
-              key={program.name}
-            >
-              <Box mb={1}>
-                <Box float="left" width={10} pr={4}>
-                  <Image src={program.logo.url} height={6} alt="" />
-                </Box>
-                <Text fontSize="lg" mb={0} bold>
-                  {program.name}
-                </Text>
-              </Box>
-              <NextEventDate upcoming={program.linkedFrom?.events?.items} />
-              <Text mt={2} style={{ clear: "both" }}>
-                {program.shortDescription}
-              </Text>
-              <Box>
-                <Button size="sm">Learn More &raquo;</Button>
-              </Box>
-            </Box>
+            <ProgramCard key={program.name} program={program} />
           ))}
         </Box>
       </Grid>

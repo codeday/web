@@ -1,11 +1,10 @@
 import { Heading } from "@codeday/topo/Atom";
-import { Content } from "@codeday/topo/Molecule";
+import { Content, ContentfulRichText } from "@codeday/topo/Molecule";
 import { apiFetch } from "@codeday/topo/utils";
 import { print } from "graphql";
 import { GetStaticProps } from "next";
 import React from "react";
 
-import ContentfulRichText from "../components/ContentfulRichText";
 import Page from "../components/Page";
 import { usePageData } from "@codeday/topo/Theme";
 import { EcoQuery } from "./eco.gql";

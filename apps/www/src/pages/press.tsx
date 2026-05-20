@@ -1,12 +1,11 @@
 import { Box, Flex, Grid, Text, Heading, Link, Button, Image } from "@codeday/topo/Atom";
-import { Content } from "@codeday/topo/Molecule";
+import { Content, ContentfulRichText } from "@codeday/topo/Molecule";
 import { apiFetch } from "@codeday/topo/utils";
 import { print } from "graphql";
 import { DateTime } from "luxon";
 import { GetStaticProps } from "next";
 import React from "react";
 
-import ContentfulRichText from "../components/ContentfulRichText";
 import Page from "../components/Page";
 import PhotoGallery from "../components/Press/PhotoGallery";
 import PreviousCoverageLogos from "../components/PreviousCoverageLogos";

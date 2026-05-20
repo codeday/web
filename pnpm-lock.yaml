@@ -370,6 +370,9 @@ importers:
       next:
         specifier: 'catalog:'
         version: 16.0.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      random-seed:
+        specifier: ^0.3.0
+        version: 0.3.0
       react:
         specifier: 'catalog:'
         version: 19.2.4
@@ -407,6 +410,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 25.5.0
+      '@types/random-seed':
+        specifier: ^0.3.5
+        version: 0.3.5
       '@types/react':
         specifier: 'catalog:'
         version: 19.2.14

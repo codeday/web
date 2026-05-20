@@ -45,11 +45,13 @@
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
     "stylis": "~4.0.10",
+    "random-seed": "^0.3.0",
     "swr": "^1.0.1"
   },
   "devDependencies": {
     "@codeday/tsconfig": "workspace:*",
     "@types/lodash.get": "^4.4.6",
+    "@types/random-seed": "^0.3.5",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",

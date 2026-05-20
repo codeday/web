@@ -1,5 +1,5 @@
 import { Box, Grid, Image, Text, Heading } from "@codeday/topo/Atom";
-import { Content } from "@codeday/topo/Molecule";
+import { Content, ContentfulRichText } from "@codeday/topo/Molecule";
 import { useColorMode, usePageData } from "@codeday/topo/Theme";
 import { apiFetch } from "@codeday/topo/utils";
 import { UiX } from "@codeday/topocons";
@@ -7,7 +7,6 @@ import { print } from "graphql";
 import { GetStaticProps, GetStaticPaths } from "next";
 import React, { useState } from "react";
 
-import ContentfulRichText from "../../../components/ContentfulRichText";
 import Page from "../../../components/Page";
 
 import { HelpProgramAudienceQuery, HelpProgramAudiencePathsQuery } from "./audience.gql";

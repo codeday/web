@@ -1,4 +1,4 @@
-#import "../../../../components/EventInfo.gql"
+#import "../../../../components/EventInfo/EventInfo.gql"
 
 query EventByIdQuery($calendarId: String!, $id: ID!) {
   calendar {

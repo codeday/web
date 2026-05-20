@@ -3,7 +3,6 @@ import React from "react";
 
 import { usePageData } from "@codeday/topo/Theme";
 import { dedupeFirstByKey } from "@codeday/utils";
-import StaticContent from "./StaticContent";
 
 interface PreviousCoverageLogosProps {
   num?: number;
@@ -20,7 +19,7 @@ export default function PreviousCoverageLogos({ num = 5, ...props }: PreviousCov
   ).slice(0, num);
 
   return (
-    <StaticContent>
+    <>
       {pubs.map((pub: any) => (
         <Link href={pub.url} target="_blank" rel="noopener" key={pub.url}>
           <Image
@@ -31,6 +30,6 @@ export default function PreviousCoverageLogos({ num = 5, ...props }: PreviousCov
           />
         </Link>
       ))}
-    </StaticContent>
+    </>
   );
 }
