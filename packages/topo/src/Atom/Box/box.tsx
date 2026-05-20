@@ -8,7 +8,7 @@ interface BoxProps extends ChakraBoxProps {
   visuallyHidden?: boolean;
 }
 
-const Box = ({ grad, visuallyHidden, ref, ...props }: BoxProps & { ref?: React.Ref<HTMLElement> }) => {
+const Box = React.forwardRef<HTMLElement, BoxProps>(({ grad, visuallyHidden, ...props }, ref) => {
   const theme = useTheme();
   const hiddenProps = {
     fontSize: "0",
@@ -28,6 +28,6 @@ const Box = ({ grad, visuallyHidden, ref, ...props }: BoxProps & { ref?: React.R
       {...(visuallyHidden ? hiddenProps : {})}
     />
   );
-};
+});
 
 export { Box, type BoxProps };
