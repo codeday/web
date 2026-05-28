@@ -3,8 +3,8 @@ import { Content } from "@codeday/topo/Molecule";
 import shuffle from "knuth-shuffle-seeded";
 import { useState, ReactElement } from "react";
 import { useInView } from "react-intersection-observer";
+import Marquee from "react-fast-marquee";
 import PageVisibility from "react-page-visibility";
-import Ticker from "react-ticker";
 
 import { usePageData } from "@codeday/topo/Theme";
 import Card from "./Card";
@@ -68,13 +68,9 @@ export default function Community({ seed, ...props }: { seed?: any; [key: string
   return (
     <PageVisibility onChange={setPageIsVisible}>
       <Box ref={ref} mt={32} mb={32} {...props}>
-        <Box key={(rows[0][0] as any).imageUrl}>
-          {pageIsVisible && inView ? (
-            <Ticker>{({ index }: { index: number }) => rows[0][index % rows[0].length]}</Ticker>
-          ) : (
-            <Box h={40} />
-          )}
-        </Box>
+        <Marquee play={pageIsVisible && inView} speed={40} pauseOnHover>
+          {rows[0]}
+        </Marquee>
 
         <Content>
           <Heading
@@ -91,15 +87,9 @@ export default function Community({ seed, ...props }: { seed?: any; [key: string
           </Heading>
         </Content>
 
-        <Box key={(rows[1][0] as any).imageUrl} mb={8}>
-          {pageIsVisible && inView ? (
-            <Ticker offset={-100}>
-              {({ index }: { index: number }) => rows[1][index % rows[0].length]}
-            </Ticker>
-          ) : (
-            <Box h={40} />
-          )}
-        </Box>
+        <Marquee play={pageIsVisible && inView} speed={40} direction="right" pauseOnHover>
+          {rows[1]}
+        </Marquee>
       </Box>
     </PageVisibility>
   );

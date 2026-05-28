@@ -5,8 +5,8 @@ peerDependencyRules:
   allowedVersions:
     # Packages that haven't published React 19-compatible versions yet
     # but work fine at runtime with React 19:
-    react-ticker>react: ">=19"
-    react-ticker>react-dom: ">=19"
+    react-fast-marquee>react: ">=19"
+    react-fast-marquee>react-dom: ">=19"
     react-page-visibility>react: ">=19"
     react-recompose>react: ">=19"
     "@tylermenezes/cognitoforms-react>react": ">=19"
