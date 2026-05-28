@@ -45,7 +45,7 @@
     "react-countup": "^4.3.3",
     "react-dom": "catalog:",
     "react-fast-marquee": "^1.6.5",
-    "react-globe": "^5.0.2",
+    "react-globe.gl": "^2.38.0",
     "react-intersection-observer": "^9.4.3",
     "react-linkedin-insight": "^0.1.3",
     "react-markdown": "^10.1.0",
@@ -56,7 +56,6 @@
     "remark-gfm": "^4.0.1",
     "sane-email-validation": "^3.0.1",
     "stripe": "^8.129.0",
-    "three": "^0.119.1",
     "truncate": "^2.1.0",
     "urlencode": "^1.1.0",
     "xmlbuilder": "^15.1.1"

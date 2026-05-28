@@ -1,85 +1,87 @@
 import { Box } from "@codeday/topo/Atom";
 import { useTheme } from "@codeday/topo/utils";
 import dynamic from "next/dynamic";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 
-const options = {
-  cameraRotateSpeed: 0.2,
-  focusAnimationDuration: 1000,
-  focusEasingFunction: ["Linear", "None"] as any,
-  markerTooltipRenderer: () => ``,
-  markerRadiusScaleRange: [0.02, 0.03] as [number, number],
-  enableCameraRotate: false,
-  enableCameraZoom: false,
-  focusDistanceRadiusScale: 3.5,
-  enableMarkerGlow: false,
-  enableDefocus: false,
-  globeGlowCoefficient: 0.05,
-  ambientLightIntensity: 1,
-  pointLightIntensity: 0.5,
-};
+const GlobeGl = dynamic(() => import("react-globe.gl"), { ssr: false });
 
-//@ts-ignore
-const ReactGlobe = dynamic(() => import("react-globe"), { ssr: false });
+const DEFAULT_POV = { lat: 38.0, lng: -88.0, altitude: 2.5 };
+const FOCUS_ALTITUDE = 2.5;
+const TRANSITION_MS = 1000;
 
 function InnerGlobe({ regions, testimonial }: { regions: any[]; testimonial: any }) {
   const { colors } = useTheme();
-  const [globe, setGlobe] = useState<any>();
+  const globeRef = useRef<any>(null);
   const [lastTestimonialHadRegion, setLastTestimonialHadRegion] = useState(false);
 
+  // Disable zoom and auto-rotate via orbit controls once the globe is ready
   useEffect(() => {
+    const globe = globeRef.current;
+    if (!globe) return;
+    const controls = globe.controls();
+    if (controls) {
+      controls.enableZoom = false;
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 0.4;
+    }
+    globe.pointOfView(DEFAULT_POV, 0);
+  }, [globeRef.current]);
+
+  // Animate to the testimonial's region when it changes
+  useEffect(() => {
+    const globe = globeRef.current;
     if (!globe) return;
     if (!lastTestimonialHadRegion && !testimonial?.region) return;
 
     setLastTestimonialHadRegion(Boolean(testimonial?.region));
 
-    const focusOn = testimonial?.region
-      ? [testimonial.region.location.lat, testimonial.region.location.lon + 4]
-      : [38.0, -88.0];
-    globe.updateFocus(focusOn, {
-      ...options,
-      ...(!testimonial?.region
-        ? {
-            cameraRotateSpeed: 0,
-            disableCameraRotate: true,
-          }
-        : {}),
-    });
-  }, [globe, testimonial]);
+    if (testimonial?.region) {
+      globe.pointOfView(
+        {
+          lat: testimonial.region.location.lat,
+          lng: testimonial.region.location.lon + 4,
+          altitude: FOCUS_ALTITUDE,
+        },
+        TRANSITION_MS,
+      );
+    } else {
+      globe.pointOfView(DEFAULT_POV, TRANSITION_MS);
+    }
+  }, [testimonial]);
 
-  const markers = regions
-    ?.map((r) => ({
-      id: `${r.webname}-${testimonial?.region?.webname === r.webname ? "active" : "inactive"}`,
-      color:
-        testimonial?.region?.webname === r.webname
-          ? (colors as any).red[600]
-          : (colors as any).white,
-      value: testimonial?.region?.webname === r.webname ? 20 : 10,
-      coordinates: [r.location.lat, r.location.lon] as [number, number],
-    }))
-    .sort((a, b) => b.value - a.value);
-
-  useEffect(() => {
-    if (globe) globe.updateFocus([38.0, -88.0]);
-  }, [globe]);
+  const pointsData = useMemo(
+    () =>
+      regions?.map((r) => ({
+        lat: r.location.lat,
+        lng: r.location.lon,
+        color:
+          testimonial?.region?.webname === r.webname
+            ? (colors as any).red[600]
+            : (colors as any).white,
+        radius: testimonial?.region?.webname === r.webname ? 0.4 : 0.25,
+        altitude: 0.01,
+      })) ?? [],
+    [regions, testimonial, colors],
+  );
 
   return (
-    <ReactGlobe
-      //@ts-ignore
-      height="100%"
-      width="100%"
-      globeCloudsTexture={null}
-      markers={markers}
-      globeTexture="/globe.jpg"
-      globeBackgroundTexture={null}
-      options={{
-        ...options,
-      }}
-      onClickMarker={() => {}}
-      onMouseOutMarker={() => {}}
-      onMouseOverMarker={() => {}}
-      onGetGlobe={setGlobe}
+    <GlobeGl
+      ref={globeRef}
+      globeImageUrl="/globe.jpg"
+      backgroundColor="rgba(0,0,0,0)"
+      showAtmosphere={true}
+      atmosphereAltitude={0.15}
+      pointsData={pointsData}
+      pointLat="lat"
+      pointLng="lng"
+      pointColor="color"
+      pointRadius="radius"
+      pointAltitude="altitude"
+      pointLabel={() => ""}
+      pointsMerge={true}
+      enablePointerInteraction={false}
+      animateIn={false}
     />
   );
 }
