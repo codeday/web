@@ -1,7 +1,0 @@
-overwrite: true
-schema: "https://graph.codeday.org/"
-documents: "./src/**/*.gql"
-generates:
-  ./src/@types/graphql-modules.d.ts:
-    plugins:
-      - typescript-graphql-files-modules
