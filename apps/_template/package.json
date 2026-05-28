@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start",
     "codegen": "echo 'Add .gql files to src/ then run: graphql-codegen'"
   },
   "dependencies": {
