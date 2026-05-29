@@ -1,13 +1,15 @@
 import { paraglideWebpackPlugin } from "@inlang/paraglide-js";
 import { apiFetch } from "@codeday/topo/utils";
 import { withBotId } from "botid/next/config";
+import { NextConfig } from "next";
 import { NextJsWebpackConfig } from "next/dist/server/config-shared";
 import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   i18n: {
     locales: ["en", "es"],
     defaultLocale: "en",
+    localeDetection: false,
   },
   turbopack: {
     rules: {
