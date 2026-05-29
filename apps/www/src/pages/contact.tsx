@@ -1,5 +1,6 @@
 import { Box, Grid, Text, Heading, Link, Image, Divider } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import { apiFetch } from "@codeday/topo/utils";
 import { Email as EmailIcon } from "@codeday/topocons";
 import { print } from "graphql";
@@ -76,7 +77,7 @@ export default function Home({ seed }: { seed: number }) {
           rounded="md"
         />
         <Heading as="h2" fontSize="5xl" mb={12}>
-          Let&apos;s Talk.
+          {m.www_contact_lets_talk()}
         </Heading>
         <Grid
           templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
@@ -87,7 +88,7 @@ export default function Home({ seed }: { seed: number }) {
         >
           <Box>
             <Heading as="h3" fontSize="2xl" mb={4}>
-              Accounts Receivable
+              {m.www_contact_accounts_receivable()}
             </Heading>
             <Text mb={1} fontSize="md">
               <span dangerouslySetInnerHTML={{ __html: nl2br(address?.items[0]?.value) }} />
@@ -96,7 +97,7 @@ export default function Home({ seed }: { seed: number }) {
 
           <Box>
             <Heading as="h3" fontSize="2xl" mb={4}>
-              HQ
+              {m.www_contact_hq()}
             </Heading>
             <Text mb={1} fontSize="md">
               <span dangerouslySetInnerHTML={{ __html: nl2br(officeAddress?.items[0]?.value) }} />
@@ -113,7 +114,7 @@ export default function Home({ seed }: { seed: number }) {
             <Link href={`tel:${fax?.items[0]?.value.replace(/[^0-9]/g, "")}`}>
               {fax?.items[0]?.value}
             </Link>{" "}
-            (fax)
+            {m.www_contact_fax()}
           </Text>
         </Grid>
       </Content>
@@ -130,7 +131,7 @@ export default function Home({ seed }: { seed: number }) {
           textAlign={{ base: "left", md: "center" }}
           mt={12}
         >
-          Team{" "}
+          {m.www_contact_team()}{" "}
           <Link position="relative" top={1} cursor="pointer" href="mailto:team@codeday.org">
             <EmailIcon />
           </Link>
@@ -147,7 +148,7 @@ export default function Home({ seed }: { seed: number }) {
           mb={0}
           mt={0}
         >
-          Emeriti
+          {m.www_contact_emeriti()}
         </Heading>
       </Content>
       <TextOnly fontSize="sm" color="current.textLight" names={emeritusNames} mt={-2} mb={16} />
@@ -164,7 +165,7 @@ export default function Home({ seed }: { seed: number }) {
           textAlign={{ base: "left", md: "center" }}
           mt={12}
         >
-          Independent Board Members{" "}
+          {m.www_contact_board_members()}{" "}
           <Link
             position="relative"
             top={1}
@@ -186,7 +187,7 @@ export default function Home({ seed }: { seed: number }) {
           mb={0}
           mt={0}
         >
-          Emeriti
+          {m.www_contact_emeriti()}
         </Heading>
       </Content>
       <TextOnly
@@ -209,7 +210,7 @@ export default function Home({ seed }: { seed: number }) {
           textAlign={{ base: "left", md: "center" }}
           mt={12}
         >
-          Volunteers
+          {m.www_contact_volunteers()}
         </Heading>
       </Content>
       <TextOnly names={volunteerNames} />

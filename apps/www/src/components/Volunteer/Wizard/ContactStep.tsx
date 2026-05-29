@@ -1,5 +1,6 @@
 import { Box, Heading, VStack, TextInput } from "@codeday/topo/Atom";
 import { DataCollection } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import React from "react";
 
 interface ContactStepProps {
@@ -35,33 +36,33 @@ export default function ContactStep({
         {/*special logic if the only page user sees is contact info*/}
         {resolvedStartPage === 2
           ? background === "industry"
-            ? "Apply to volunteer for CodeDay Labs"
-            : `Apply to volunteer for CodeDay ${region}`
-          : "Let us know how to reach out:"}
+            ? m.www_contact_apply_labs()
+            : m.www_contact_apply_region({ region })
+          : m.www_contact_reach_out()}
       </Heading>
       <VStack w="md" mb={3}>
         <TextInput
           m={1}
-          placeholder="First Name"
+          placeholder={m.www_contact_first_name()}
           value={firstName}
           onChange={(e: any) => setFirstName(e.target.value)}
         />
         <TextInput
           m={1}
-          placeholder="Last Name"
+          placeholder={m.www_contact_last_name()}
           value={lastName}
           onChange={(e: any) => setLastName(e.target.value)}
         />
         <TextInput
           m={1}
-          placeholder="Email"
+          placeholder={m.www_contact_email()}
           value={email}
           onChange={(e: any) => setEmail(e.target.value)}
         />
         {background === "industry" ? (
           <TextInput
             m={1}
-            placeholder="LinkedIn"
+            placeholder={m.www_contact_linkedin()}
             value={linkedin}
             onChange={(e: any) => {
               setLinkedin(e.target.value);

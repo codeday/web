@@ -1,5 +1,6 @@
 import { Heading } from "@codeday/topo/Atom";
 import { Content, ContentfulRichText } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import { apiFetch } from "@codeday/topo/utils";
 import { print } from "graphql";
 import { GetStaticProps } from "next";
@@ -16,7 +17,7 @@ export default function Eco() {
     <Page title="Ecological Footprint" slug="/eco">
       <Content maxWidth="container.md">
         <Heading as="h2" fontSize="5xl" mt={-2} mb={8}>
-          Ecological Footprint
+          {m.www_eco_heading()}
         </Heading>
         <ContentfulRichText json={details?.items[0]?.richValue?.json} />
       </Content>

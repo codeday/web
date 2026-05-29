@@ -1,5 +1,6 @@
 import { Box, type BoxProps, Button, Grid, TextInput } from "@codeday/topo/Atom";
 import { apiFetch, useToasts } from "@codeday/topo/utils";
+import * as m from "@codeday/i18n/messages";
 import React, { useState } from "react";
 
 interface MailingListSubscribeProps extends BoxProps {
@@ -28,9 +29,7 @@ function MailingListSubscribe({
     <Box {...(props as any)}>
       <Grid templateColumns="1fr min-content">
         <TextInput
-          placeholder={[...(emailList ? ["email"] : []), ...(textList ? ["phone"] : [])].join(
-            " or ",
-          )}
+          placeholder={m.topo_mailinglist_placeholder()}
           value={input || undefined}
           onChange={(e: any) => setInput(e.target.value)}
           borderTopRightRadius={0}
@@ -49,16 +48,16 @@ function MailingListSubscribe({
                 { list: emailList, email: input },
                 {},
               );
-              success(`We've added you to the list!`);
+              success(m.topo_mailinglist_success());
             } catch {
-              error(`Sorry, we couldn't complete your subscription. Please try again.`);
+              error(m.topo_mailinglist_error());
             }
             setIsSubmitting(false);
           }}
           borderTopLeftRadius={0}
           borderBottomLeftRadius={0}
         >
-          Subscribe
+          {m.topo_mailinglist_subscribe()}
         </Button>
       </Grid>
     </Box>

@@ -3,6 +3,7 @@ import { Box, type BoxProps } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
 import { useColorModeValue } from "@codeday/topo/Theme";
 import { UiX, UiMenu } from "@codeday/topocons";
+import * as m from "@codeday/i18n/messages";
 import React, { Children, cloneElement, useState } from "react";
 
 import Menu from "./menu";
@@ -67,7 +68,7 @@ const Header = ({
                   display: "inline-block",
                 }}
                 onClick={() => setHamburgerOpen(!hamburgerOpen)}
-                aria-label="Open Menu"
+                aria-label={m.topo_header_open_menu()}
               />
             </Box>
             <Box style={{ clear: "both" }} />
@@ -95,7 +96,7 @@ const Header = ({
           onClick={() => setHamburgerOpen(false)}
           cursor="pointer"
         >
-          <UiX aria-label="Close Menu" />
+          <UiX aria-label={m.topo_header_close_menu()} />
         </Box>
         <Box textAlign="center" p={4}>
           <Box pb={4} mb={4} borderBottomWidth={1}>

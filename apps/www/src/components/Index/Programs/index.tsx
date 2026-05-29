@@ -1,5 +1,6 @@
 import { Box, Grid, Button, Image, Text, CodeDay, Link } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import { useColorMode, usePageData } from "@codeday/topo/Theme";
 import { apiFetch } from "@codeday/topo/utils";
 import { print } from "graphql";
@@ -70,9 +71,9 @@ export default function Programs() {
             {codeDay?.shortDescription}
           </Text>
           <Text mb={4} fontSize="sm">
-            (Nothing planned nearby?{" "}
+            ({m.www_programs_nothing_planned()}{" "}
             <Link color="red.600" href="https://event.codeday.org/organize">
-              Organize a CodeDay!
+              {m.www_programs_organize()}
             </Link>
             )
           </Text>
@@ -117,7 +118,7 @@ export default function Programs() {
               alt="1 mentor + 3 students + 1 project"
             />
             <Box>
-              <Button size="sm">Learn More &raquo;</Button>
+              <Button size="sm">{m.www_programs_learn_more()}</Button>
             </Box>
           </Box>
           {mainPrograms?.items?.map((program: any) => (

@@ -1,5 +1,6 @@
 import { Box, Grid, VisibilityCheckBox, Text, Heading, Button } from "@codeday/topo/Atom";
 import { MediaPlay as Play, Broadcast } from "@codeday/topocons";
+import * as m from "@codeday/i18n/messages";
 import React from "react";
 
 import { usePageData } from "@codeday/topo/Theme";
@@ -29,7 +30,7 @@ export default function Hero({ ...props }: any) {
       {explainer && (
         <VideoLink url={explainer.url} autoPlay>
           <Button colorPalette="red">
-            Learn More&nbsp;
+            {m.www_hero_learn_more()}&nbsp;
             <Play style={{ position: "relative", top: "-0.15em" }} />
           </Button>
         </VideoLink>

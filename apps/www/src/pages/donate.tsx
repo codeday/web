@@ -1,5 +1,6 @@
 import { Heading, Text } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import { apiFetch } from "@codeday/topo/utils";
 import { print } from "graphql";
 import { GetStaticProps } from "next";
@@ -16,11 +17,10 @@ export default function Donate() {
     <Page title="Donate" slug="/donate">
       <Content maxWidth="container.sm">
         <Heading as="h2" fontSize="5xl" mt={-2} mb={8}>
-          Make a Donation to CodeDay
+          {m.www_donate_heading()}
         </Heading>
         <Text>
-          Your donation will advance our mission of {mission?.items?.[0]?.value.toLowerCase()} As a
-          501(c)(3) non-profit, donations from US individuals and companies are tax-deductible.
+          {m.www_donate_description({ mission: mission?.items?.[0]?.value.toLowerCase() })}
         </Text>
       </Content>
       <Content maxWidth="376px">

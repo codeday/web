@@ -2,6 +2,7 @@ import { Box, Link, Spinner, Text } from "@codeday/topo/Atom";
 import { DataCollection } from "@codeday/topo/Molecule";
 import { useColorMode } from "@codeday/topo/Theme";
 import { useTheme } from "@codeday/topo/utils";
+import * as m from "@codeday/i18n/messages";
 /* eslint-disable no-secrets/no-secrets */
 /* eslint-disable no-undef */
 import React, { useEffect, useState } from "react";
@@ -62,12 +63,12 @@ const CognitoForm = ({
             <br />
             {showFallback && (
               <Text>
-                Problems loading?{" "}
+                {m.topo_cognitoform_loading_problem()}{" "}
                 <Link
                   href={`https://services.cognitoforms.com/f/${theme.cognito.id}?id=${formId}`}
                   target="_blank"
                 >
-                  Open in new tab.
+                  {m.topo_cognitoform_open_newtab()}
                 </Link>
               </Text>
             )}

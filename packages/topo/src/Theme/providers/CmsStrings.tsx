@@ -1,31 +1,10 @@
 import { apiFetch } from "@codeday/topo/utils";
+import * as m from "@codeday/i18n/messages";
 import { GraphQLClient } from "graphql-request";
 import useSwr from "swr";
 
-const STRINGS = [
-  "legal.cookies",
-  "legal.ccpa",
-  "legal.data.pii",
-  "legal.data.payment",
-  "eco.link",
-  "common.more-info",
-  "resources",
-  "custom-links",
-  "copyright",
-  "nonprofit",
-  "maintained-by",
-  "made-with-love",
-];
-
-const query = `query PageQuery ($locale: String!, $stringKeys: [String!]!, $localizationConfig: String!) {
+const query = `query PageQuery ($locale: String!, $localizationConfig: String!) {
   cms {
-    strings (locale: $locale, where: { key_in: $stringKeys } ) {
-      items {
-        key
-        value
-      }
-    }
-
     sites(where: { type: "Public", display_contains_all: "Footer" }, locale: $locale) {
       items {
         sys {
@@ -62,7 +41,6 @@ export function useCmsStrings({ locale, localizationConfig, apiEndpoint }: UseCm
       query,
       {
         locale: locale ?? "en-US",
-        stringKeys: STRINGS,
         localizationConfig: localizationConfig ?? "2guv6EfbM9qu5y5ER52pVN",
       },
     ],
@@ -73,13 +51,17 @@ export function useCmsStrings({ locale, localizationConfig, apiEndpoint }: UseCm
     },
   );
 
-  let strings: Record<string, string> = {};
-  if (data?.cms?.strings?.items) {
-    strings = data.cms.strings.items.reduce(
-      (accum: any, node: any) => ({ ...accum, [node.key]: node.value }),
-      {},
-    );
-  }
+  const strings: Record<string, string> = {
+    "legal.ccpa": m.topo_footer_ccpa(),
+    "legal.data.pii": m.topo_datacollection_pii_notice(),
+    "legal.data.payment": m.topo_datacollection_payment_notice(),
+    "common.more-info": m.topo_datacollection_more_info(),
+    "resources": m.topo_footer_resources(),
+    "custom-links": m.topo_footer_custom_links(),
+    "copyright": m.topo_footer_copyright({ currentYear: String(new Date().getFullYear()) }),
+    "nonprofit": m.topo_footer_nonprofit(),
+    "maintained-by": m.topo_footer_maintained_by(),
+  };
 
   return { data, strings };
 }

@@ -2,6 +2,7 @@ import { Box, type BoxProps, Button, Grid, Text } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
 import { useColorMode } from "@codeday/topo/Theme";
 import { useTheme, apiFetch, useLocalStorage } from "@codeday/topo/utils";
+import * as m from "@codeday/i18n/messages";
 import { UiX as X } from "@codeday/topocons";
 import React, { useEffect, useReducer } from "react";
 import useSwr from "swr";
@@ -124,7 +125,7 @@ function Announcement({ box, ...props }: AnnouncementProps) {
         </Text>
         <Text>{item.oneline}</Text>
         <Button size="sm" colorPalette={baseColor} mb={0}>
-          Learn More
+          {m.topo_announcement_learn_more()}
         </Button>
       </Box>
     );
@@ -173,7 +174,7 @@ function Announcement({ box, ...props }: AnnouncementProps) {
             </Box>
             <Box textAlign="right">
               <Button size="sm" colorPalette={baseColor} mb={0}>
-                Learn More
+                {m.topo_announcement_learn_more()}
               </Button>
             </Box>
           </Grid>

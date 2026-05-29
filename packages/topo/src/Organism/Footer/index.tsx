@@ -13,7 +13,7 @@ import {
 } from "@codeday/topo/Atom";
 import { Content, GithubAuthors } from "@codeday/topo/Molecule";
 import { useCmp, useQuery } from "@codeday/topo/Theme";
-import { useString } from "@codeday/topo/utils";
+import * as m from "@codeday/i18n/messages";
 import React, { type ReactNode } from "react";
 
 export const CustomLinks: ComponentWithAs<"div", BoxProps> = makePureBox("Custom Links");
@@ -74,12 +74,12 @@ export interface FooterProps extends BoxProps {
 const Footer = (
   ({ children, repository, owner, branch, domainName, ref, ...props }: FooterProps & { ref?: React.Ref<any> }) => {
     const { ucUi } = useCmp();
-    const ccpaLink = useString("legal.ccpa", <Skelly />);
-    const resourcesHeading = useString("resources", <Skelly />);
-    const customHeading = useString("custom-links", <Skelly />);
-    const copyright = useString("copyright", <>&copy; CodeDay</>);
-    const nonprofit = useString("nonprofit", "");
-    const maintainedBy = useString("maintained-by", "This site is open source software created by");
+    const ccpaLink = m.topo_footer_ccpa();
+    const resourcesHeading = m.topo_footer_resources();
+    const customHeading = m.topo_footer_custom_links();
+    const copyright = m.topo_footer_copyright({ currentYear: String(new Date().getFullYear()) });
+    const nonprofit = m.topo_footer_nonprofit();
+    const maintainedBy = m.topo_footer_maintained_by();
 
     const localizationContact = useQuery<
       { contactDefaultType: string; contactDefaultValue: string } | undefined
@@ -153,7 +153,7 @@ const Footer = (
                 target={isMainSite ? undefined : "_blank"}
                 rel="noopener"
               >
-                Terms of Service
+                {m.topo_footer_terms_of_service()}
               </Link>
               <br />
               <Link
@@ -161,7 +161,7 @@ const Footer = (
                 target={isMainSite ? undefined : "_blank"}
                 rel="noopener"
               >
-                Privacy Policy
+                {m.topo_footer_privacy_policy()}
               </Link>
               <br />
               <Link
@@ -169,7 +169,7 @@ const Footer = (
                 target={isMainSite ? undefined : "_blank"}
                 rel="noopener"
               >
-                Cookie Policy
+                {m.topo_footer_cookie_policy()}
               </Link>
               <br />
               <Link
@@ -177,7 +177,7 @@ const Footer = (
                 target={isMainSite ? undefined : "_blank"}
                 rel="noopener"
               >
-                Disclaimer
+                {m.topo_footer_disclaimer()}
               </Link>
               <br />
               <Link
@@ -189,7 +189,7 @@ const Footer = (
               </Link>
               <br />
               <Link as="a" onClick={() => ucUi?.showSecondLayer()} id="usercentrics-psl">
-                Privacy Settings
+                {m.topo_footer_privacy_settings()}
               </Link>
             </Box>
           </Box>

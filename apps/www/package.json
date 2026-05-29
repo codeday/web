@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@chakra-ui/react": "catalog:",
+    "@codeday/i18n": "workspace:*",
     "@codeday/topo": "workspace:*",
     "@codeday/topocons": "workspace:*",
     "@codeday/utils": "workspace:*",
@@ -65,6 +66,7 @@
     "@codeday/tsconfig": "workspace:*",
     "@graphql-codegen/cli": "^5.0.7",
     "@graphql-codegen/typescript-graphql-files-modules": "^3.0.1",
+    "@inlang/paraglide-js": "^2.18.1",
     "@next/bundle-analyzer": "^16.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/knuth-shuffle-seeded": "^1.0.2",

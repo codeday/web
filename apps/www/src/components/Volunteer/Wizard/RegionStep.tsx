@@ -9,6 +9,7 @@ import {
   Radio,
 } from "@codeday/topo/Atom";
 import { Collapse } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import React from "react";
 
 interface RegionStepProps {
@@ -37,7 +38,7 @@ export default function RegionStep({
   return (
     <Box>
       <Heading as="h3" fontSize="xl" mb={2}>
-        Please select a CodeDay City:
+        {m.www_region_select_city()}
       </Heading>
       {
         // force "Other" to end of list (kind of hacky)
@@ -78,35 +79,33 @@ export default function RegionStep({
           setRegion("");
         }}
       >
-        There isn't a CodeDay City in my area
+        {m.www_region_no_city()}
       </Button>
       <Collapse in={isOrganize} animateOpacity>
         <Divider m={4} />
         <Box>
           <Heading as="h3" fontSize="xl" mb={2}>
-            Interested in becoming a CodeDay Organizer?
+            {m.www_region_organizer_interest()}
           </Heading>
-          <Text>CodeDay events around the world are organized by students just like you!</Text>
+          <Text>{m.www_region_organizer_desc()}</Text>
           <Text>
-            You'll manage a team, come up with cool ideas, and help hundreds of students in your
-            community discover CS.
+            {m.www_region_organizer_manage()}
           </Text>
           <Text fontSize="sm">
-            (No prior event organizing experience is required, CodeDay Staff will support + guide
-            you every step of the way)
+            {m.www_region_organizer_no_experience()}
           </Text>
           <Box m={6}>
             <Collapse in={commitmentLevel >= 0} animateOpacity>
               <Text>
                 <Checkbox onChange={(e: any) => setCommitmentLevel(e.target.checked ? 1 : 0)}>
-                  <b>I am interested in organizing a CodeDay in my city</b>
+                  <b>{m.www_region_organize_interest()}</b>
                 </Checkbox>
               </Text>
               <br />
             </Collapse>
             <Collapse in={commitmentLevel >= 1} animateOpacity>
               <Text>
-                What city/region would you like to organize an event in?
+                {m.www_region_organize_city_question()}
                 <TextInput
                   value={region}
                   onChange={(e: any) => {

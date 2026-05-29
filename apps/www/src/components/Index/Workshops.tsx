@@ -1,5 +1,6 @@
 import { Text, Box, Grid, Link, Heading } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import { create } from "random-seed";
 import React from "react";
 
@@ -24,10 +25,10 @@ export default function Workshops() {
   return (
     <Content>
       <Heading as="h3" textAlign="center" fontSize="xl" mb={2}>
-        Upcoming Webinars, Workshops, &amp; Events
+        {m.www_workshops_heading()}
       </Heading>
       <Text textAlign="center" fontSize="md" color="current.textLight" mb={5}>
-        (Converted to Your Timezone)
+        {m.www_workshops_timezone()}
       </Text>
       <Grid templateColumns="minmax(0, 1fr) minmax(0, 2fr) minmax(0, 4fr)" gap={4}>
         {calendar.events.map((e: any) => {

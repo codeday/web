@@ -1,5 +1,6 @@
 import { Box, Grid, Text, Heading, Link, Button } from "@codeday/topo/Atom";
 import { Html } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import { DateTime } from "luxon";
@@ -34,9 +35,9 @@ export default function Event({ event, ...rest }: { event: any; [key: string]: a
 
   const [, , type, , title] = event.title.match(/^(((\w+ ?){0,3}): )?(.*)$/);
 
-  let relative = `Starts ${twasStart || ""}`;
-  if (hasEnded) relative = `Ended ${twasEnd || ""}`;
-  else if (hasStarted) relative = `Ends ${twasEnd || ""}`;
+  let relative = m.www_event_starts({ time: twasStart || "" });
+  if (hasEnded) relative = m.www_event_ended({ time: twasEnd || "" });
+  else if (hasStarted) relative = m.www_event_ends({ time: twasEnd || "" });
 
   useEffect(() => {
     if (typeof window === "undefined") return () => {};
@@ -76,11 +77,11 @@ export default function Event({ event, ...rest }: { event: any; [key: string]: a
         </Box>
       </Grid>
       <Heading as="h2" fontSize="5xl">
-        {title || "TBA"}
+        {title || m.www_event_tba()}
       </Heading>
       {event.metadata?.presenter && (
         <Text fontSize="xl" mt={2}>
-          Presented by {event.metadata.presenter}
+          {m.www_event_presented_by({ presenter: event.metadata.presenter })}
         </Text>
       )}
       <Box mt={8}>
@@ -97,7 +98,7 @@ export default function Event({ event, ...rest }: { event: any; [key: string]: a
                     {...({ href: event.location, target: "_blank" } as any)}
                     colorPalette="blue"
                   >
-                    {almostHasStarted ? "Join" : "Pre-Register"}
+                    {almostHasStarted ? m.www_event_join() : m.www_event_pre_register()}
                   </Button>
                 </>
               )}
@@ -112,10 +113,10 @@ export default function Event({ event, ...rest }: { event: any; [key: string]: a
               as="a"
               {...({ href: "https://www.youtube.com/c/codeday", target: "_blank" } as any)}
             >
-              Workshop Recordings
+              {m.www_event_workshop_recordings()}
             </Button>
             <Text display="inline-block" ml={4} fontStyle="italic">
-              This workshop has ended.
+              {m.www_event_workshop_ended()}
             </Text>
           </>
         )}

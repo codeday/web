@@ -1,5 +1,6 @@
 import { Box, Grid, Text, Heading, Link, Button, Divider } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import { useColorMode, usePageData } from "@codeday/topo/Theme";
 import { apiFetch } from "@codeday/topo/utils";
 import { print } from "graphql";
@@ -64,7 +65,7 @@ export default function Volunteer({
         borderBottomRightRadius={0}
       >
         <Heading as="h3" fontSize="xl">
-          Volunteer Sign-Up (3min)
+          {m.www_volunteer_signup_heading()}
         </Heading>
       </Box>
       <Box p={6}>
@@ -74,9 +75,9 @@ export default function Volunteer({
               <RemindMe />
               {!wizardVisible && (
                 <>
-                  <Text mt={4}>- or -</Text>
+                  <Text mt={4}>{m.www_volunteer_or()}</Text>
                   <Button size="sm" onClick={() => setWizardVisible(true)}>
-                    fill it out now
+                    {m.www_volunteer_fill_out_now()}
                   </Button>
                 </>
               )}
@@ -133,7 +134,7 @@ export default function Volunteer({
               mt={{ base: 4, md: 8 }}
               textAlign={{ base: "center", lg: "left" }}
             >
-              You can help students find their place in the tech industry.
+              {m.www_volunteer_help_students()}
             </Heading>
             <Grid
               templateColumns={{ base: "1fr", md: "2fr 1fr", lg: "3fr 1fr" }}
@@ -156,27 +157,27 @@ export default function Volunteer({
               <Box display={{ base: "none", md: "block" }}>
                 <Box bg={colorMode === "light" ? "gray.100" : "gray.900"} p={4} textAlign="center">
                   <Heading as="h3" fontSize="xl">
-                    Time Commitment
+                    {m.www_volunteer_time_commitment()}
                   </Heading>
                   <Text mb={2}>
-                    Varies by role:
+                    {m.www_volunteer_time_varies()}
                     <br />
-                    30min, 2hr, or 20hr
+                    {m.www_volunteer_time_options()}
                   </Text>
                   <Heading as="h3" fontSize="xl">
-                    Deadline
+                    {m.www_volunteer_deadline()}
                   </Heading>
-                  <Text mb={2}>Opportunities available year-round</Text>
+                  <Text mb={2}>{m.www_volunteer_deadline_desc()}</Text>
                   <Heading as="h3" fontSize="xl">
-                    Requirements
+                    {m.www_volunteer_requirements()}
                   </Heading>
-                  <Text mb={2}>Varies by role, see form below</Text>
+                  <Text mb={2}>{m.www_volunteer_requirements_desc()}</Text>
                   <Heading as="h3" fontSize="xl">
-                    Groups/Corporate
+                    {m.www_volunteer_groups_corporate()}
                   </Heading>
                   <Text>
-                    <Link href="mailto:volunteer@codeday.org">Email us</Link> or{" "}
-                    <Link href="/volunteer/share">share with coworkers</Link>
+                    <Link href="mailto:volunteer@codeday.org">{m.www_volunteer_email_us()}</Link> {m.www_volunteer_or_word()}{" "}
+                    <Link href="/volunteer/share">{m.www_volunteer_share_coworkers()}</Link>
                   </Text>
                 </Box>
               </Box>
@@ -192,7 +193,7 @@ export default function Volunteer({
           </Content>
           <Content mt={12}>
             <Heading as="h3" textAlign="center" fontSize="3xl">
-              CodeDay volunteers make lasting impacts towards futures in tech.
+              {m.www_volunteer_lasting_impacts()}
             </Heading>
           </Content>
           <Content maxW="container.md" mt={8} mb={12}>

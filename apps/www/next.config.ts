@@ -1,9 +1,14 @@
+import { paraglideWebpackPlugin } from "@inlang/paraglide-js";
 import { apiFetch } from "@codeday/topo/utils";
 import { withBotId } from "botid/next/config";
 import { NextJsWebpackConfig } from "next/dist/server/config-shared";
 import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 
 const nextConfig = {
+  i18n: {
+    locales: ["en", "es"],
+    defaultLocale: "en",
+  },
   turbopack: {
     rules: {
       "*.gql": {
@@ -29,6 +34,14 @@ const nextConfig = {
       exclude: /node_modules/,
       use: [require.resolve("./gql-loader.js")],
     });
+
+    config.plugins.push(
+      paraglideWebpackPlugin({
+        outdir: "./src/paraglide",
+        project: "../../packages/i18n/project.inlang",
+        strategy: ["url", "baseLocale"],
+      }),
+    );
 
     if (process.env.ANALYZE) {
       config.plugins.push(

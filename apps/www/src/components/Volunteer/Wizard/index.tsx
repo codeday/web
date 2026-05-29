@@ -1,4 +1,5 @@
 import { Box, Button } from "@codeday/topo/Atom";
+import * as m from "@codeday/i18n/messages";
 import { useToasts } from "@codeday/topo/utils";
 import { debug } from "@codeday/utils";
 import { usePostHog } from "@posthog/react";
@@ -247,7 +248,7 @@ export default function Wizard({
             onClick={onClickNext}
             disabled={!hasSelection || isSubmitting}
           >
-            Next
+            {m.www_wizard_next()}
           </Button>
         </Box>
       )}

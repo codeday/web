@@ -1,5 +1,6 @@
 import { Box, Text, Heading } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import React from "react";
 
 interface DisclaimerFooterProps {
@@ -21,7 +22,7 @@ export default function DisclaimerFooter({ disclaimerTexts }: DisclaimerFooterPr
         bg="current.bgLight"
       >
         <Heading as="h3" fontSize="xs" mb={1} mt={2}>
-          Funding Statements and Disclaimers
+          {m.www_page_disclaimer_heading()}
         </Heading>
         {disclaimerTexts.map((text: string) => (
           <Text mb={4} key={text}>

@@ -1,4 +1,5 @@
 import { Box, Text, Heading, Link } from "@codeday/topo/Atom";
+import * as m from "@codeday/i18n/messages";
 import React from "react";
 
 interface ConfirmationStepProps {
@@ -10,11 +11,12 @@ export default function ConfirmationStep({ submitError }: ConfirmationStepProps)
     return (
       <Box>
         <Heading as="h3" fontSize="xl" mb={2}>
-          ☹️ An Error Ocurred
+          {m.www_confirmation_error()}
         </Heading>
         <Text>
-          Please email <Link href="mailto:volunteer@codeday.org">volunteer@codeday.org</Link> with
-          your application, as well as the following error code:
+          {m.www_confirmation_error_email()}{" "}
+          <Link href="mailto:volunteer@codeday.org">volunteer@codeday.org</Link>{" "}
+          {m.www_confirmation_error_code()}
         </Text>
         <Text>{submitError}</Text>
       </Box>
@@ -24,9 +26,9 @@ export default function ConfirmationStep({ submitError }: ConfirmationStepProps)
   return (
     <Box>
       <Heading as="h3" fontSize="xl" mb={2}>
-        ✅ Got it!
+        {m.www_confirmation_success()}
       </Heading>
-      <Text>We'll be in touch over email in the next few days!</Text>
+      <Text>{m.www_confirmation_success_message()}</Text>
     </Box>
   );
 }

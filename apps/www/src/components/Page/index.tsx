@@ -1,5 +1,6 @@
 import { Box, CodeDay } from "@codeday/topo/Atom";
 import { Header, SiteLogo, Main, Menu, Footer } from "@codeday/topo/Organism";
+import * as m from "@codeday/i18n/messages";
 import { DefaultSeo } from "next-seo";
 import Head from "next/head";
 import React, { ReactNode } from "react";
@@ -36,13 +37,13 @@ export default function Page({ children, title, darkHeader, slug, seo }: PagePro
       </Head>
       {seo ?? (
         <DefaultSeo
-          title={title ? `${title} ~ CodeDay` : "CodeDay"}
+          title={title ? `${title} ~ ${m.www_page_site_name()}` : m.www_page_site_name()}
           description={mission?.items[0]?.value}
           canonical={`${DOMAIN}${slug}`}
           openGraph={{
             type: "website",
             locale: "en_US",
-            site_name: "CodeDay",
+            site_name: m.www_page_site_name(),
             url: `${DOMAIN}${slug}`,
           }}
           twitter={{

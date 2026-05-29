@@ -1,5 +1,6 @@
 import { Presence } from "@chakra-ui/react";
 import { Box, Button } from "@codeday/topo/Atom";
+import * as m from "@codeday/i18n/messages";
 import React from "react";
 
 const FUNDRAISE_UP_BUTTON_ID = "XBSBRRMF";
@@ -19,7 +20,7 @@ export default function NavMenu({ isFundraiseLoaded }: NavMenuProps) {
         mr={2}
         {...({ href: "/contact" } as any)}
       >
-        Contact
+        {m.www_navmenu_contact()}
       </Button>
       <Button
         as="a"
@@ -29,7 +30,7 @@ export default function NavMenu({ isFundraiseLoaded }: NavMenuProps) {
         mr={2}
         {...({ href: "/volunteer" } as any)}
       >
-        Volunteer
+        {m.www_navmenu_volunteer()}
       </Button>
       <Button
         as="a"
@@ -39,7 +40,7 @@ export default function NavMenu({ isFundraiseLoaded }: NavMenuProps) {
         mr={2}
         {...({ href: "/press" } as any)}
       >
-        Press
+        {m.www_navmenu_press()}
       </Button>
 
       <Box mt={-4} display="inline-block" minW="129px" maxH="48px">

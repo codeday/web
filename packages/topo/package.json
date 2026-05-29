@@ -25,6 +25,7 @@
   "dependencies": {
     "@accessible/use-id": "^1.1.2",
     "@chakra-ui/react": "catalog:",
+    "@codeday/i18n": "workspace:*",
     "@codeday/topocons": "workspace:*",
     "@codeday/utils": "workspace:*",
     "@emotion/react": "catalog:",

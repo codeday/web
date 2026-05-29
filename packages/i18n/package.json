@@ -1,0 +1,20 @@
+{
+  "name": "@codeday/i18n",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy url,baseLocale"
+  },
+  "dependencies": {
+    "@inlang/paraglide-js": "^2.0.0"
+  },
+  "devDependencies": {
+    "@codeday/tsconfig": "workspace:*",
+    "typescript": "catalog:"
+  },
+  "exports": {
+    "./messages": "./src/paraglide/messages.js",
+    "./runtime": "./src/paraglide/runtime.js",
+    "./server": "./src/paraglide/server.js"
+  }
+}

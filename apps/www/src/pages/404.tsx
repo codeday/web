@@ -1,5 +1,6 @@
 import { Text, Heading, Link, Image, Box } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import { apiFetch } from "@codeday/topo/utils";
 import { print } from "graphql";
 import { GetStaticProps } from "next";
@@ -17,15 +18,15 @@ export default function Home() {
           src="https://img.codeday.org/w=1024;h=300;fit=crop;crop=faces,edges/6/t/6ttx5an4wbxypvf324er646d48ri8py88fjwbdwp5cxay8tfwo9nnmdwq9vpbseffz.jpg"
         />
         <Text as="h2" fontSize="5xl" fontWeight="bold" mt={4}>
-          Oh no!
+          {m.www_404_oh_no()}
         </Text>
         <Heading as="h2" fontSize="4xl" fontWeight="normal">
-          That page wasn&apos;t found.
+          {m.www_404_not_found()}
         </Heading>
         <Box mt={4} mb={16}>
           <Text>
-            If you think this page should be here, please{" "}
-            <Link href="mailto:team@codeday.org">contact us.</Link>
+            {m.www_404_contact_prompt()}{" "}
+            <Link href="mailto:team@codeday.org">{m.www_404_contact_link()}</Link>
           </Text>
         </Box>
       </Content>

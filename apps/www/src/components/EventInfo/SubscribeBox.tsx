@@ -1,4 +1,5 @@
 import { Box, Button, TextInput as Input } from "@codeday/topo/Atom";
+import * as m from "@codeday/i18n/messages";
 import { useToasts, apiFetch } from "@codeday/topo/utils";
 import React, { useState } from "react";
 import { stringify as urlencode } from "urlencode";
@@ -26,7 +27,7 @@ export default function SubscribeBox({ event, ...rest }: { event: any; [key: str
       <Input
         value={destination}
         onChange={(e: any) => setDestination(e.target.value)}
-        placeholder="Phone Number"
+        placeholder={m.www_subscribe_phone_placeholder()}
         display="inline-block"
         w="sm"
         borderTopRightRadius={0}
@@ -44,16 +45,16 @@ export default function SubscribeBox({ event, ...rest }: { event: any; [key: str
               { id: event.id, calendarId: event.calendarId, destination },
               {},
             );
-            success(`We'll let you know when this event starts.`);
+            success(m.www_subscribe_success());
           } catch (ex: any) {
             error(ex.toString());
           }
         }}
       >
-        Remind Me
+        {m.www_subscribe_remind_me()}
       </Button>
       <Button as="a" {...({ href: addLinkGoogle, target: "_blank" } as any)} ml={2}>
-        Add to Google Calendar
+        {m.www_subscribe_add_to_calendar()}
       </Button>
     </Box>
   );

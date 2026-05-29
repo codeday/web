@@ -1,4 +1,5 @@
 import { Box } from "@codeday/topo/Atom";
+import * as m from "@codeday/i18n/messages";
 import { UiStar } from "@codeday/topocons";
 import React from "react";
 
@@ -33,7 +34,7 @@ export default function RegionList({
                 <Box position="relative" top="-0.2em" display="inline-block" mr={2}>
                   <UiStar />
                 </Box>
-                {registrationOpenWebnames.includes(region.webname) ? `Registrations open!` : ``}
+                {registrationOpenWebnames.includes(region.webname) ? m.www_programs_registrations_open() : ``}
               </Box>
             )}
           </Box>
@@ -43,7 +44,7 @@ export default function RegionList({
         <Box position="relative" top="-0.2em" display="inline-block" mr={2}>
           <UiStar />
         </Box>
-        Event planned this season.
+        {m.www_programs_event_planned()}
       </Box>
     </>
   );

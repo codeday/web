@@ -1,4 +1,5 @@
 import { Box, Button, Heading, HStack } from "@codeday/topo/Atom";
+import * as m from "@codeday/i18n/messages";
 import React from "react";
 
 interface BackgroundStepProps {
@@ -15,7 +16,7 @@ export default function BackgroundStep({
   return (
     <Box>
       <Heading as="h3" fontSize="xl" mb={2}>
-        Are you a student?
+        {m.www_wizard_are_you_student()}
       </Heading>
       <HStack>
         <Button
@@ -24,14 +25,14 @@ export default function BackgroundStep({
           onClick={onSelectStudent}
           data-active={background === "student" ? "" : undefined}
         >
-          I am a student
+          {m.www_wizard_i_am_student()}
         </Button>
         <Button
           size="lg"
           onClick={onSelectIndustry}
           data-active={background === "industry" ? "" : undefined}
         >
-          I am not a student
+          {m.www_wizard_i_am_not_student()}
         </Button>
       </HStack>
     </Box>

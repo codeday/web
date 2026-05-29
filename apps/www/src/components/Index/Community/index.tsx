@@ -1,5 +1,6 @@
 import { Box, Heading } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import shuffle from "knuth-shuffle-seeded";
 import { useState, ReactElement } from "react";
 import { useInView } from "react-intersection-observer";
@@ -23,7 +24,7 @@ export default function Community({ seed, ...props }: { seed?: any; [key: string
     0,
   );
   const studentCountRound = Math.round(studentCount / 10000) * 10000;
-  const studentCountPrefix = ["More than", "Nearly"][studentCountRound > studentCount ? 1 : 0];
+  const studentCountPrefix = [m.www_community_more_than(), m.www_community_nearly()][studentCountRound > studentCount ? 1 : 0];
   const showcaseDemos = showcase.projects
     .map((p: any) => ({
       ...p,
@@ -82,8 +83,7 @@ export default function Community({ seed, ...props }: { seed?: any; [key: string
             lineHeight={1.1}
             fontWeight="bold"
           >
-            {studentCountPrefix} {studentCountRound.toLocaleString()} students have created amazing
-            projects at CodeDay events.
+            {studentCountPrefix} {m.www_community_students_projects({ count: studentCountRound.toLocaleString() })}
           </Heading>
         </Content>
 
