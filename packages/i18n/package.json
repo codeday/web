@@ -15,6 +15,7 @@
   "exports": {
     "./messages": "./src/paraglide/messages.js",
     "./runtime": "./src/paraglide/runtime.js",
-    "./server": "./src/paraglide/server.js"
+    "./server": "./src/paraglide/server.js",
+    "./next-pages": "./src/next-pages.ts"
   }
 }
