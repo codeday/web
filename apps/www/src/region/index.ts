@@ -14,7 +14,7 @@ export {
 } from "./config";
 
 import { createContext, useContext } from "react";
-import type { IncomingMessage } from "http";
+import type { GetServerSidePropsContext } from "next";
 import { DEFAULT_REGION, REGION_HEADER, getRegionFromHostname } from "./config";
 
 // ---------------------------------------------------------------------------
@@ -40,18 +40,19 @@ export function useRegion(): string {
 // ---------------------------------------------------------------------------
 
 /**
- * Extract the region from a Next.js `getServerSideProps` request.
+ * Extract the region from a Next.js `getServerSideProps` context.
  *
  * Checks the `x-codeday-region` header (set by middleware) first,
  * then falls back to parsing the `Host` header.
  *
  * @example
  *   export const getServerSideProps: GetServerSideProps = async (ctx) => {
- *     const region = getRegionFromRequest(ctx.req);
+ *     const region = getRegionFromContext(ctx);
  *     return { props: { region } };
  *   };
  */
-export function getRegionFromRequest(req: IncomingMessage): string {
+export function getRegionFromContext(ctx: GetServerSidePropsContext): string {
+  const req = ctx.req;
   const headerRegion = req.headers[REGION_HEADER];
   if (typeof headerRegion === "string" && headerRegion) {
     return headerRegion;
