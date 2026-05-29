@@ -14,6 +14,7 @@ export interface ThemeData {
   space: Record<string | number, string>;
   radii: Record<string, string>;
   cognito: { id: string };
+  /** @deprecated Use Paraglide messages directly instead of useString(). */
   strings: Record<string, string>;
   visibility: string;
   programWebname?: string;
@@ -168,6 +169,9 @@ export function useToasts(): UseToastsOptions {
 // Theme helpers
 // ---------------------------------------------------------------------------
 
+/**
+ * @deprecated Use Paraglide message functions from `@codeday/i18n/messages` directly instead.
+ */
 export function useString(key: string | number, initialValue: any) {
   const { strings } = useThemeData();
   return (strings as Record<string | number, string>)[key] || initialValue;

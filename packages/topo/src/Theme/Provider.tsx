@@ -4,7 +4,7 @@ import { ThemeProvider as NextThemesProvider } from "@wrksz/themes";
 import React from "react";
 
 import { CmpProvider } from "./providers/Cmp";
-import { useCmsStrings } from "./providers/CmsStrings";
+import { useCmsConfig } from "./providers/CmsConfig";
 import { FontStyles } from "./providers/Fonts";
 import { QueryProvider } from "./query";
 import codedaySystem, { Theme as codedayTheme } from "./vars";
@@ -39,7 +39,7 @@ const Provider = ({
   usercentricsSettingsId,
   apiEndpoint,
 }: ProviderProps) => {
-  const { data, strings } = useCmsStrings({ locale, localizationConfig, apiEndpoint });
+  const { data } = useCmsConfig({ locale, localizationConfig, apiEndpoint });
 
   // Handle brandColor (mutates theme object — same behaviour as v2)
   if (brandColor && brandColor in codedayTheme.colors) {
@@ -65,7 +65,7 @@ const Provider = ({
     cognito: cognitoFormsId ? { id: cognitoFormsId } : codedayTheme.cognito,
     config: codedayTheme.config,
     visibility,
-    strings,
+    strings: {},
     programWebname: undefined,
     apiEndpoint: apiEndpoint || "https://graph.codeday.org/",
   };
