@@ -13,7 +13,9 @@
     "./utils": "./src/utils.ts",
     "./_utils": "./src/_utils.tsx",
     "./Next/Atom": "./src/Next/Atom/index.ts",
-    "./Next": "./src/Next/index.ts"
+    "./Next": "./src/Next/index.ts",
+    "./Region": "./src/Region/index.ts",
+    "./Region/config": "./src/Region/config.ts"
   },
   "scripts": {
     "build": "tsc --build",

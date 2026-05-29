@@ -1,63 +1,32 @@
 /**
- * Region detection — determines a region code from the current domain name.
+ * App-specific region wiring for apps/www.
  *
- * This module re-exports the pure config/lookup from `./config` (safe for
- * all environments including Edge middleware), and adds React + Node.js
- * helpers that are only used in the app itself.
+ * Re-exports generic helpers from @codeday/topo/Region and provides
+ * thin wrappers that bake in the app's DOMAIN_REGION_MAP.
  */
 
-export {
-  DOMAIN_REGION_MAP,
-  DEFAULT_REGION,
-  REGION_HEADER,
-  getRegionFromHostname,
-} from "./config";
+// Re-export generic helpers from topo
+export { RegionProvider, RegionContext, useRegion } from "@codeday/topo/Region";
+export { DEFAULT_REGION, REGION_HEADER, type DomainRegionMap } from "@codeday/topo/Region/config";
 
-import { createContext, useContext } from "react";
+// Re-export the app-specific domain map
+export { DOMAIN_REGION_MAP } from "./config";
+
 import type { GetServerSidePropsContext } from "next";
-import { DEFAULT_REGION, REGION_HEADER, getRegionFromHostname } from "./config";
-
-// ---------------------------------------------------------------------------
-// React context + hook — for client-side component access.
-// ---------------------------------------------------------------------------
-
-export const RegionContext = createContext<string>(DEFAULT_REGION);
-export const RegionProvider = RegionContext.Provider;
+import { getRegionFromHostname } from "@codeday/topo/Region/config";
+import { getRegionFromContext as _getRegionFromContext } from "@codeday/topo/Region";
+import { DOMAIN_REGION_MAP } from "./config";
 
 /**
- * Get the current region code inside a React component.
- *
- * @example
- *   const region = useRegion();
- *   // "us" | "eu" | "uk" | "ca" | "in" | ...
+ * Get the region from hostname, using this app's domain map.
  */
-export function useRegion(): string {
-  return useContext(RegionContext);
+export function getAppRegionFromHostname(hostname: string | undefined | null): string {
+  return getRegionFromHostname(hostname, DOMAIN_REGION_MAP);
 }
 
-// ---------------------------------------------------------------------------
-// Server-side helpers — for getServerSideProps / API routes.
-// ---------------------------------------------------------------------------
-
 /**
- * Extract the region from a Next.js `getServerSideProps` context.
- *
- * Checks the `x-codeday-region` header (set by middleware) first,
- * then falls back to parsing the `Host` header.
- *
- * @example
- *   export const getServerSideProps: GetServerSideProps = async (ctx) => {
- *     const region = getRegionFromContext(ctx);
- *     return { props: { region } };
- *   };
+ * Get the region from a `getServerSideProps` context, using this app's domain map.
  */
 export function getRegionFromContext(ctx: GetServerSidePropsContext): string {
-  const req = ctx.req;
-  const headerRegion = req.headers[REGION_HEADER];
-  if (typeof headerRegion === "string" && headerRegion) {
-    return headerRegion;
-  }
-
-  const host = req.headers.host;
-  return getRegionFromHostname(host);
+  return _getRegionFromContext(ctx, DOMAIN_REGION_MAP);
 }
