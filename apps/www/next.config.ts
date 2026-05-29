@@ -7,8 +7,8 @@ import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 
 const nextConfig: NextConfig = {
   i18n: {
-    locales: ["en", "es"],
-    defaultLocale: "en",
+    locales: ["_default", "en", "es"],
+    defaultLocale: "_default",
     localeDetection: false,
   },
   turbopack: {
