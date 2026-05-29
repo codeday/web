@@ -39,7 +39,7 @@ const nextConfig = {
       paraglideWebpackPlugin({
         outdir: "./src/paraglide",
         project: "../../packages/i18n/project.inlang",
-        strategy: ["url", "baseLocale"],
+        strategy: ["baseLocale"],
       }),
     );
 

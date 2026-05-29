@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy url,baseLocale"
+    "build": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy baseLocale"
   },
   "dependencies": {
     "@inlang/paraglide-js": "^2.0.0"
