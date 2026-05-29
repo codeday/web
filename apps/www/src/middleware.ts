@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getRegionFromHostname, REGION_HEADER } from "./region/config";
+import { getRegionFromHostname, REGION_HEADER } from "@codeday/topo/Region/config";
 
 /** Real locales supported by the app (excludes the _default sentinel). */
 const AVAILABLE_LOCALES = ["en", "es"];

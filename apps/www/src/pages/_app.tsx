@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { Fragment, StrictMode, useEffect, useMemo } from "react";
 
 import { MarketingProvider, FundraiseProvider } from "../providers";
-import { RegionProvider, getRegionFromHostname } from "../region";
+import { RegionProvider, getRegionFromHostname } from "@codeday/topo/Region";
 
 const DEBUG = debug(["www", "pages", "_app"]);
 
