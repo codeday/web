@@ -5,9 +5,11 @@ import "react-responsive-modal/styles.css";
 import { debug } from "@codeday/utils";
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";
-import { Fragment, StrictMode, useEffect } from "react";
+import { Fragment, StrictMode, useEffect, useMemo } from "react";
 
 import { MarketingProvider, FundraiseProvider } from "../providers";
+import { RegionProvider, getRegionFromHostname } from "../region";
+
 const DEBUG = debug(["www", "pages", "_app"]);
 
 const STRICT_MODE_OR_FRAGMENT =
@@ -21,21 +23,29 @@ export default function App({ Component, pageProps }: AppProps) {
   const resolvedLocale = (router.locale && router.locale !== "_default" ? router.locale : baseLocale) as Locale;
   overwriteGetLocale(() => resolvedLocale);
 
+  // Resolve region from the current hostname.
+  const region = useMemo(
+    () => getRegionFromHostname(typeof window !== "undefined" ? window.location.hostname : undefined),
+    [],
+  );
+
   useEffect(() => {
     DEBUG("pageProps", pageProps);
   }, []);
 
   return (
     <STRICT_MODE_OR_FRAGMENT>
-      <ThemeProvider brandColor="red" useSystemColorMode cookies={pageProps.cookies}>
-        <MarketingProvider>
-          <FundraiseProvider>
-            <PageDataProvider value={pageProps?.query || {}}>
-              <Component {...pageProps} />
-            </PageDataProvider>
-          </FundraiseProvider>
-        </MarketingProvider>
-      </ThemeProvider>
+      <RegionProvider value={region}>
+        <ThemeProvider brandColor="red" useSystemColorMode cookies={pageProps.cookies}>
+          <MarketingProvider>
+            <FundraiseProvider>
+              <PageDataProvider value={pageProps?.query || {}}>
+                <Component {...pageProps} />
+              </PageDataProvider>
+            </FundraiseProvider>
+          </MarketingProvider>
+        </ThemeProvider>
+      </RegionProvider>
     </STRICT_MODE_OR_FRAGMENT>
   );
 }
