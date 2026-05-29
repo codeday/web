@@ -69,55 +69,6 @@ importers:
         specifier: ^2.9.3
         version: 2.9.3
 
-  apps/_template:
-    dependencies:
-      '@codeday/topo':
-        specifier: workspace:*
-        version: link:../../packages/topo
-      '@codeday/topocons':
-        specifier: workspace:*
-        version: link:../../packages/topocons
-      '@codeday/utils':
-        specifier: workspace:*
-        version: link:../../packages/utils
-      graphql:
-        specifier: 'catalog:'
-        version: 16.13.2
-      graphql-tag:
-        specifier: ^2.12.6
-        version: 2.12.6(graphql@16.13.2)
-      next:
-        specifier: 'catalog:'
-        version: 16.0.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react:
-        specifier: 'catalog:'
-        version: 19.2.4
-      react-dom:
-        specifier: 'catalog:'
-        version: 19.2.4(react@19.2.4)
-    devDependencies:
-      '@codeday/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@graphql-codegen/cli':
-        specifier: ^5.0.6
-        version: 5.0.7(@types/node@25.5.0)(graphql@16.13.2)(typescript@6.0.2)
-      '@graphql-codegen/typescript-graphql-files-modules':
-        specifier: ^3.0.0
-        version: 3.0.1(graphql@16.13.2)
-      '@types/node':
-        specifier: 'catalog:'
-        version: 25.5.0
-      '@types/react':
-        specifier: 'catalog:'
-        version: 19.2.14
-      '@types/react-dom':
-        specifier: 'catalog:'
-        version: 19.2.3(@types/react@19.2.14)
-      typescript:
-        specifier: 'catalog:'
-        version: 6.0.2
-
   apps/www:
     dependencies:
       '@chakra-ui/react':
