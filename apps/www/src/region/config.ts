@@ -1,26 +1,14 @@
 /**
- * App-specific domain → region configuration for apps/www.
+ * Region configuration for apps/www.
  *
- * This file is Edge-safe (no React or Node.js imports) so middleware
- * can import it directly.  Generic helpers come from @codeday/topo.
+ * Re-exports everything from @codeday/topo/Region/config (Edge-safe).
+ * To add app-specific domain overrides, define and export a RegionMap here.
  */
 
-import type { DomainRegionMap } from "@codeday/topo/Region/config";
-
-export { DEFAULT_REGION, REGION_HEADER, getRegionFromHostname } from "@codeday/topo/Region/config";
-
-/** Domain → region map for the CodeDay website. */
-export const DOMAIN_REGION_MAP: DomainRegionMap = {
-  "codeday.org": "us",
-  "codeday.us": "us",
-  "codeday.ca": "ca",
-  "codeday.co.uk": "uk",
-  "codeday.in": "in",
-  "codeday.ee": "eu",
-  "codeday.se": "eu",
-  "codeday.it": "eu",
-  "codeday.fr": "eu",
-  "codeday.es": "eu",
-  "codeday.ch": "eu",
-  "codeday.be": "eu",
-};
+export {
+  DEFAULT_REGION,
+  REGION_HEADER,
+  TLD_REGION_MAP,
+  getRegionFromHostname,
+  type RegionMap,
+} from "@codeday/topo/Region/config";

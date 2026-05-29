@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { Fragment, StrictMode, useEffect, useMemo } from "react";
 
 import { MarketingProvider, FundraiseProvider } from "../providers";
-import { RegionProvider, getAppRegionFromHostname } from "../region";
+import { RegionProvider, getRegionFromHostname } from "../region";
 
 const DEBUG = debug(["www", "pages", "_app"]);
 
@@ -25,7 +25,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   // Resolve region from the current hostname.
   const region = useMemo(
-    () => getAppRegionFromHostname(typeof window !== "undefined" ? window.location.hostname : undefined),
+    () => getRegionFromHostname(typeof window !== "undefined" ? window.location.hostname : undefined),
     [],
   );
 

@@ -9,13 +9,14 @@
 export {
   DEFAULT_REGION,
   REGION_HEADER,
+  TLD_REGION_MAP,
   getRegionFromHostname,
-  type DomainRegionMap,
+  type RegionMap,
 } from "./config";
 
 import { createContext, useContext } from "react";
 import type { GetServerSidePropsContext } from "next";
-import { DEFAULT_REGION, REGION_HEADER, getRegionFromHostname, type DomainRegionMap } from "./config";
+import { DEFAULT_REGION, REGION_HEADER, getRegionFromHostname, type RegionMap } from "./config";
 
 // ---------------------------------------------------------------------------
 // React context + hook
@@ -44,21 +45,21 @@ export function useRegion(): string {
  * Extract the region from a Next.js `getServerSideProps` context.
  *
  * Reads the `x-codeday-region` header (set by middleware) first, then
- * falls back to parsing the `Host` header against the provided domain map.
+ * falls back to parsing the `Host` header against the TLD map.
  *
  * @param ctx - The Next.js `getServerSideProps` context object.
- * @param domainMap - A `{ domain: regionCode }` object.
- * @param defaultRegion - Fallback when no domain matches (default: `"us"`).
+ * @param overrides - Optional per-app overrides (full domains or extra TLDs).
+ * @param defaultRegion - Fallback when nothing matches (default: `"us"`).
  *
  * @example
  *   export const getServerSideProps: GetServerSideProps = async (ctx) => {
- *     const region = getRegionFromContext(ctx, DOMAIN_REGION_MAP);
+ *     const region = getRegionFromContext(ctx);
  *     return { props: { region } };
  *   };
  */
 export function getRegionFromContext(
   ctx: GetServerSidePropsContext,
-  domainMap: DomainRegionMap,
+  overrides?: RegionMap,
   defaultRegion: string = DEFAULT_REGION,
 ): string {
   const req = ctx.req;
@@ -71,5 +72,5 @@ export function getRegionFromContext(
 
   // Fallback: parse the Host header
   const host = req.headers.host;
-  return getRegionFromHostname(host, domainMap, defaultRegion);
+  return getRegionFromHostname(host, overrides, defaultRegion);
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getRegionFromHostname, REGION_HEADER, DOMAIN_REGION_MAP } from "./region/config";
+import { getRegionFromHostname, REGION_HEADER } from "./region/config";
 
 /** Real locales supported by the app (excludes the _default sentinel). */
 const AVAILABLE_LOCALES = ["en", "es"];
@@ -63,7 +63,7 @@ export function middleware(request: NextRequest) {
 
   // Resolve region from the hostname and forward it as a request header
   // so getServerSideProps can read it without re-parsing.
-  const region = getRegionFromHostname(request.headers.get("host"), DOMAIN_REGION_MAP);
+  const region = getRegionFromHostname(request.headers.get("host"));
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set(REGION_HEADER, region);
 

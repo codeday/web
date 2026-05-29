@@ -103,67 +103,97 @@ export const getStaticProps = withLocaleStaticProps(async (ctx) => {
 
 ### Region
 
-Region codes are resolved from the domain name the visitor is using. This is
-independent of UI language — a user on `codeday.fr` gets region `eu` but can
-view the site in English.
+Region codes are resolved from the **top-level domain** the visitor is using.
+This is independent of UI language — a user on `codeday.fr` gets region `eu`
+but can still view the site in English.
 
-The generic detection logic lives in `@codeday/topo/Region`. Each app provides
-its own domain → region map.
+`@codeday/topo/Region` ships a built-in `TLD_REGION_MAP`:
+
+| TLD | Region | | TLD | Region |
+|---|---|---|---|---|
+| `.org` | `us` | | `.ee` | `eu` |
+| `.us` | `us` | | `.se` | `eu` |
+| `.ca` | `ca` | | `.it` | `eu` |
+| `.co.uk` | `uk` | | `.fr` | `eu` |
+| `.in` | `in` | | `.es` | `eu` |
+| | | | `.ch` | `eu` |
+| | | | `.be` | `eu` |
+
+Apps can pass an optional `overrides` map to add new TLDs or override
+specific full domain names.
 
 #### Setting up region detection in an app
 
-1. Create an app-level config file with your domain map (Edge-safe, no React):
+1. In middleware, resolve and forward the region as a header:
 
 ```ts
-// src/region/config.ts
-import type { DomainRegionMap } from "@codeday/topo/Region/config";
-export { DEFAULT_REGION, REGION_HEADER, getRegionFromHostname } from "@codeday/topo/Region/config";
-
-export const DOMAIN_REGION_MAP: DomainRegionMap = {
-  "codeday.org": "us",
-  "codeday.co.uk": "uk",
-  // ...
-};
-```
-
-2. Create an app-level index that wires the map into topo helpers:
-
-```ts
-// src/region/index.ts
-export { RegionProvider, useRegion } from "@codeday/topo/Region";
-export { DOMAIN_REGION_MAP } from "./config";
-// ... thin wrappers that bake in your DOMAIN_REGION_MAP
-```
-
-3. In middleware, resolve and forward the region as a header:
-
-```ts
-import { getRegionFromHostname, REGION_HEADER, DOMAIN_REGION_MAP } from "./region/config";
+import { getRegionFromHostname, REGION_HEADER } from "@codeday/topo/Region/config";
 
 // inside middleware():
-const region = getRegionFromHostname(request.headers.get("host"), DOMAIN_REGION_MAP);
+const region = getRegionFromHostname(request.headers.get("host"));
 const headers = new Headers(request.headers);
 headers.set(REGION_HEADER, region);
 return NextResponse.next({ request: { headers } });
 ```
 
-4. In `_app.tsx`, wrap with `<RegionProvider>`.
+2. In `_app.tsx`, wrap with `<RegionProvider>`:
+
+```tsx
+import { RegionProvider, getRegionFromHostname } from "@codeday/topo/Region";
+
+const region = useMemo(
+  () => getRegionFromHostname(typeof window !== "undefined" ? window.location.hostname : undefined),
+  [],
+);
+
+return <RegionProvider value={region}>...</RegionProvider>;
+```
+
+#### Overriding regions for specific domains
+
+Pass an `overrides` map to `getRegionFromHostname`. Full-domain keys take
+priority, then override TLD keys, then the built-in `TLD_REGION_MAP`.
+
+```ts
+const overrides = { "staging.codeday.org": "eu", "dev": "us" };
+const region = getRegionFromHostname("staging.codeday.org", overrides); // "eu"
+```
+
+#### Getting the region
+
+**Client-side (React components):**
+
+```tsx
+import { useRegion } from "@codeday/topo/Region";
+const region = useRegion(); // "us" | "eu" | "uk" | ...
+```
+
+**Server-side (`getServerSideProps`):**
+
+```tsx
+import { getRegionFromContext } from "@codeday/topo/Region";
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const region = getRegionFromContext(ctx);
+  return { props: { region } };
+};
+```
 
 > `getRegionFromContext` only works with `getServerSideProps` (it reads
-> request headers). In `getStaticProps` there is no request — pass region
-> as a prop from a page that uses `getServerSideProps`, or use
-> `getRegionFromHostname()` with a known hostname.
+> request headers). In `getStaticProps` there is no request — use
+> `getRegionFromHostname()` with a known hostname, or resolve the region
+> client-side.
 
-#### Adding a new domain
+#### Adding a new TLD
 
-Add an entry to `DOMAIN_REGION_MAP` in your app's `src/region/config.ts`.
+Add an entry to `TLD_REGION_MAP` in `packages/topo/src/Region/config.ts`.
 No other files need to change.
 
 #### Region package exports
 
 | Import path | Contents |
 |---|---|
-| `@codeday/topo/Region/config` | `getRegionFromHostname()`, `DEFAULT_REGION`, `REGION_HEADER`, `DomainRegionMap` type — Edge-safe, no React |
+| `@codeday/topo/Region/config` | `getRegionFromHostname()`, `TLD_REGION_MAP`, `DEFAULT_REGION`, `REGION_HEADER`, `RegionMap` type — Edge-safe, no React |
 | `@codeday/topo/Region` | Everything from config + `RegionProvider`, `useRegion()`, `getRegionFromContext()` |
 
 ---
@@ -174,8 +204,7 @@ No other files need to change.
   `defaultLocale`. We use `_default` so that bare paths are detectable by
   middleware (otherwise they'd be silently served as English). Middleware
   redirects `_default` to the browser's preferred language.
-- **`region/config.ts` vs `region/index.ts`** — Middleware runs in the Edge
-  runtime, which cannot import React or Node.js built-ins. The config module
-  is kept dependency-free so both middleware and the app can use it.
-- **Topo is generic** — `@codeday/topo/Region` provides the detection engine
-  and React plumbing; each app supplies its own `DOMAIN_REGION_MAP`.
+- **`@codeday/topo/Region/config` vs `@codeday/topo/Region`** — Middleware
+  runs in the Edge runtime, which cannot import React or Node.js built-ins.
+  The `/config` module is kept dependency-free so both middleware and the
+  full app can use it.

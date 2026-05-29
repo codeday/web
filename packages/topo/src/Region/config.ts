@@ -9,39 +9,63 @@
 // Types
 // ---------------------------------------------------------------------------
 
-/** A mapping of domain names to region codes. */
-export type DomainRegionMap = Record<string, string>;
+/** A mapping of TLD suffixes or full domain names to region codes. */
+export type RegionMap = Record<string, string>;
 
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 
-/** Default region when the hostname doesn't match any configured domain. */
+/** Default region when the hostname doesn't match any configured TLD. */
 export const DEFAULT_REGION = "us";
 
 /** HTTP header name used to forward the resolved region from middleware. */
 export const REGION_HEADER = "x-codeday-region";
+
+/**
+ * Default TLD → region map. Covers common CodeDay country-code TLDs.
+ *
+ * Apps can override individual entries or add new ones by passing an
+ * `overrides` map to {@link getRegionFromHostname}.
+ */
+export const TLD_REGION_MAP: RegionMap = {
+  "org": "us",
+  "us": "us",
+  "ca": "ca",
+  "co.uk": "uk",
+  "in": "in",
+  "ee": "eu",
+  "se": "eu",
+  "it": "eu",
+  "fr": "eu",
+  "es": "eu",
+  "ch": "eu",
+  "be": "eu",
+};
 
 // ---------------------------------------------------------------------------
 // Pure lookup
 // ---------------------------------------------------------------------------
 
 /**
- * Resolve a region code from a hostname using the provided domain map.
+ * Resolve a region code from a hostname.
  *
- * Strips port and `www.` prefix, then walks up the domain hierarchy
- * (e.g. `"www.codeday.co.uk"` → `"codeday.co.uk"` → `"co.uk"`) to find
- * the first match.
+ * 1. If `overrides` is provided, checks for a full-domain match first
+ *    (e.g. `"staging.codeday.org"` → `"eu"`).
+ * 2. Extracts the TLD from the hostname (supports multi-part TLDs like
+ *    `co.uk`) and looks it up in the TLD map.
  *
  * @param hostname - The hostname to look up (e.g. from `window.location.hostname`
  *   or the `Host` request header). `null`/`undefined` returns `defaultRegion`.
- * @param domainMap - A `{ domain: regionCode }` object.
- * @param defaultRegion - Fallback region when no domain matches.
+ * @param overrides - Optional per-app overrides. Full domain names here take
+ *   priority over TLD matching. TLD keys here are merged on top of the
+ *   built-in {@link TLD_REGION_MAP}.
+ * @param defaultRegion - Fallback region when nothing matches.
  *   Defaults to {@link DEFAULT_REGION} (`"us"`).
  */
 export function getRegionFromHostname(
   hostname: string | undefined | null,
-  domainMap: DomainRegionMap,
+  overrides?: RegionMap,
   defaultRegion: string = DEFAULT_REGION,
 ): string {
   if (!hostname) return defaultRegion;
@@ -52,12 +76,27 @@ export function getRegionFromHostname(
     domain = domain.slice(4);
   }
 
-  // Walk up domain parts: "sub.codeday.co.uk" → "codeday.co.uk" → "co.uk"
+  // 1. Check overrides for a full-domain match (walk up from full domain)
+  if (overrides) {
+    const parts = domain.split(".");
+    for (let i = 0; i < parts.length - 1; i++) {
+      const candidate = parts.slice(i).join(".");
+      if (candidate in overrides) {
+        return overrides[candidate];
+      }
+    }
+  }
+
+  // 2. Extract TLD and match against the TLD map (walk up from the end)
   const parts = domain.split(".");
-  for (let i = 0; i < parts.length - 1; i++) {
-    const candidate = parts.slice(i).join(".");
-    if (candidate in domainMap) {
-      return domainMap[candidate];
+  for (let len = parts.length - 1; len >= 1; len--) {
+    const tld = parts.slice(-len).join(".");
+    // Check overrides for TLD-level keys too
+    if (overrides && tld in overrides) {
+      return overrides[tld];
+    }
+    if (tld in TLD_REGION_MAP) {
+      return TLD_REGION_MAP[tld];
     }
   }
 
