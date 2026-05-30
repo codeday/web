@@ -4,9 +4,7 @@ import { ThemeProvider as NextThemesProvider } from "@wrksz/themes";
 import React from "react";
 
 import { CmpProvider } from "./providers/Cmp";
-import { useCmsConfig } from "./providers/CmsConfig";
 import { FontStyles } from "./providers/Fonts";
-import { QueryProvider } from "./query";
 import codedaySystem, { Theme as codedayTheme } from "./vars";
 
 export interface ProviderProps {
@@ -39,8 +37,6 @@ const Provider = ({
   usercentricsSettingsId,
   apiEndpoint,
 }: ProviderProps) => {
-  const { data } = useCmsConfig({ locale, localizationConfig, apiEndpoint });
-
   // Handle brandColor (mutates theme object — same behaviour as v2)
   if (brandColor && brandColor in codedayTheme.colors) {
     codedayTheme.colors.brand = codedayTheme.colors[brandColor][600];
@@ -82,9 +78,7 @@ const Provider = ({
         <ThemeDataProvider value={themeData}>
           <FontStyles />
           <script src="https://www.cognitoforms.com/f/seamless.js" defer />
-          <QueryProvider value={data}>
-            <CmpProvider usercentricsSettingsId={usercentricsSettingsId}>{children}</CmpProvider>
-          </QueryProvider>
+          <CmpProvider usercentricsSettingsId={usercentricsSettingsId}>{children}</CmpProvider>
         </ThemeDataProvider>
       </NextThemesProvider>
     </ChakraProvider>

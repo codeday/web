@@ -1,6 +1,7 @@
 import { createToaster } from "@chakra-ui/react";
 import { GraphQLClient } from "graphql-request";
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import useSwr, { SWRConfiguration } from "swr";
 
 // ---------------------------------------------------------------------------
 // ThemeData context (inlined here so next.config.js require() works without
@@ -113,10 +114,28 @@ export function useSsr() {
 }
 
 export const api = "https://graph.codeday.org/";
+interface FetchParams {
+  query: any;
+  variables: any;
+  headers?: any;
+  endpoint?: string;
+}
 export const apiFetch = (query: any, variables: any, headers?: any, endpoint?: string) => {
   const client = new GraphQLClient(endpoint || api, { headers: headers || {} });
   return client.request(query, variables);
 };
+export function useApi(params: FetchParams & SWRConfiguration) {
+  const { query, variables, headers, endpoint, ...swrConfig } = params;
+  return useSwr(
+    { query, variables, headers, endpoint },
+    (p: FetchParams) => apiFetch(p.query, p.variables, p.headers, p.endpoint),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      ...swrConfig,
+    },
+  );
+}
 
 /**
  * usePrefersReducedMotion - removed from Chakra UI v3, reimplemented here.

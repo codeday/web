@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRegionFromHostname, REGION_HEADER } from "@codeday/topo/Region/config";
+import { locales, baseLocale as FALLBACK_LOCALE } from "@codeday/i18n/locales";
 
-/** Real locales supported by the app (excludes the _default sentinel). */
-const AVAILABLE_LOCALES = ["en", "es"];
-const FALLBACK_LOCALE = "en";
+// Widen the readonly literal tuple so we can test against arbitrary strings
+// from Accept-Language / cookies.
+const AVAILABLE_LOCALES: readonly string[] = locales;
 const UNSPECIFIED = "_default";
 
 const PUBLIC_FILE = /\.(.*)$/;
@@ -32,7 +33,7 @@ function getPreferredLocale(acceptLanguage: string | null): string {
   return FALLBACK_LOCALE;
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Skip Next.js internals, API routes, and static files
   if (
     request.nextUrl.pathname.startsWith("/_next") ||

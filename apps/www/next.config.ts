@@ -1,5 +1,6 @@
 import { paraglideWebpackPlugin } from "@inlang/paraglide-js";
 import { apiFetch } from "@codeday/topo/utils";
+import { locales } from "@codeday/i18n/locales";
 import { withBotId } from "botid/next/config";
 import { NextConfig } from "next";
 import { NextJsWebpackConfig } from "next/dist/server/config-shared";
@@ -7,7 +8,9 @@ import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 
 const nextConfig: NextConfig = {
   i18n: {
-    locales: ["_default", "en", "es"],
+    // "_default" is a sentinel for unprefixed URLs; the middleware redirects
+    // those to a real locale based on Accept-Language / cookie.
+    locales: ["_default", ...locales],
     defaultLocale: "_default",
     localeDetection: false,
   },

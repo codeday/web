@@ -17,7 +17,7 @@ export type RegionMap = Record<string, string>;
 // ---------------------------------------------------------------------------
 
 /** Default region when the hostname doesn't match any configured TLD. */
-export const DEFAULT_REGION = "us";
+export const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION || "us";
 
 /** HTTP header name used to forward the resolved region from middleware. */
 export const REGION_HEADER = "x-codeday-region";
@@ -31,16 +31,16 @@ export const REGION_HEADER = "x-codeday-region";
 export const TLD_REGION_MAP: RegionMap = {
   "org": "us",
   "us": "us",
-  "ca": "ca",
+  "ca": "canada",
   "co.uk": "uk",
-  "in": "in",
-  "ee": "eu",
-  "se": "eu",
-  "it": "eu",
-  "fr": "eu",
-  "es": "eu",
-  "ch": "eu",
-  "be": "eu",
+  "in": "india",
+  "ee": "estonia",
+  "se": "estonia",
+  "it": "estonia",
+  "fr": "estonia",
+  "es": "estonia",
+  "ch": "estonia",
+  "be": "estonia",
 };
 
 // ---------------------------------------------------------------------------

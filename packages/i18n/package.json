@@ -4,19 +4,25 @@
   "private": true,
   "scripts": {
     "build": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy baseLocale",
-    "dev": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy baseLocale --watch"
+    "dev": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy baseLocale --watch",
+    "clean": "rm -rf src/paraglide"
   },
   "dependencies": {
     "@inlang/paraglide-js": "^2.0.0"
   },
   "devDependencies": {
     "@codeday/tsconfig": "workspace:*",
+    "next": "catalog:",
     "typescript": "catalog:"
   },
   "exports": {
     "./messages": "./src/paraglide/messages.js",
     "./runtime": "./src/paraglide/runtime.js",
     "./server": "./src/paraglide/server.js",
-    "./next-pages": "./src/next-pages.ts"
+    "./next-pages": "./src/next-pages.ts",
+    "./locales": "./src/locales.ts"
+  },
+  "peerDependencies": {
+    "next": "catalog:"
   }
 }
