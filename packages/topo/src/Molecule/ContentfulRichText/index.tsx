@@ -1,33 +1,11 @@
-import { Box, Image, Text, Link, Heading, List, ListItem, Divider } from "@codeday/topo/Atom";
+import { Text, Link, Heading, List, ListItem, Divider } from "@codeday/topo/Atom";
 import React, { Fragment } from "react";
 
-import StaticContent from "./StaticContent";
-
-const MEDIA_TYPE_VIDEO = ["video/mp4", "video/mov"];
-const MEDIA_TYPE_IMAGE = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
+import { ContentfulAsset } from "./ContentfulAsset";
 
 function getSize(initialSize: string, offset: number): string {
   const sizes = ["xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl", "5xl", "6xl"];
   return sizes[sizes.indexOf(initialSize) + offset];
-}
-
-function ContentfulAsset({ id, links, ...props }: any) {
-  const asset = links?.assets?.block?.filter((l: any) => l.sys.id === id)[0];
-  if (!asset) return <></>;
-
-  if (MEDIA_TYPE_VIDEO.includes(asset.contentType)) {
-    return (
-      <Box {...props}>
-        <video src={asset.url} controls={true} preload="auto" />
-      </Box>
-    );
-  }
-
-  if (MEDIA_TYPE_IMAGE.includes(asset.contentType)) {
-    return <Image src={`${asset.url}?w=600`} alt="" {...props} />;
-  }
-
-  return null;
 }
 
 function renderTextContent({ value, marks }: { value: string; marks?: any[] }): any {
@@ -151,7 +129,10 @@ interface ContentfulRichTextProps {
   h1Size?: string;
 }
 
-export default function ContentfulRichText({ json, links, h1Size }: ContentfulRichTextProps) {
+function ContentfulRichText({ json, links, h1Size }: ContentfulRichTextProps) {
   if (!json) return <></>;
-  return <StaticContent>{mapRichText({ ...json, links, h1Size })}</StaticContent>;
+  return <>{mapRichText({ ...json, links, h1Size })}</>;
 }
+
+export { ContentfulRichText };
+export type { ContentfulRichTextProps };

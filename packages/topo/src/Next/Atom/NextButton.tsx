@@ -6,10 +6,7 @@ import React from "react";
 
 type ButtonAsLinkProps = ButtonProps & Omit<NextLinkProps, "passHref" | "legacyBehavior">;
 
-export const NextButton: ComponentWithAs<"button", ButtonAsLinkProps> = React.forwardRef<
-  HTMLButtonElement,
-  ButtonAsLinkProps
->(({ as, ...props }: any, ref) => {
+export const NextButton: ComponentWithAs<"button", ButtonAsLinkProps> = (({ as, ref, ...props }: any) => {
   if (as == "a") {
     const { href = "", replace, scroll, shallow, prefetch, locale, ...boxProps } = props;
     return (

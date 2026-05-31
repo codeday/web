@@ -1,5 +1,5 @@
 import { Box as ChakraBox, type BoxProps as ChakraBoxProps } from "@chakra-ui/react";
-import { dereferenceDottedString, type ComponentWithAs } from "@codeday/topo/_utils";
+import { dereferenceDottedString } from "@codeday/topo/_utils";
 import { useTheme } from "@codeday/topo/utils";
 import React from "react";
 
@@ -28,6 +28,6 @@ const Box = React.forwardRef<HTMLElement, BoxProps>(({ grad, visuallyHidden, ...
       {...(visuallyHidden ? hiddenProps : {})}
     />
   );
-}) as ComponentWithAs<"div", BoxProps>;
+});
 
 export { Box, type BoxProps };

@@ -1,9 +1,19 @@
+import { paraglideWebpackPlugin } from "@inlang/paraglide-js";
 import { apiFetch } from "@codeday/topo/utils";
+import { locales } from "@codeday/i18n/locales";
 import { withBotId } from "botid/next/config";
+import { NextConfig } from "next";
 import { NextJsWebpackConfig } from "next/dist/server/config-shared";
 import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 
-const nextConfig = {
+const nextConfig: NextConfig = {
+  i18n: {
+    // "_default" is a sentinel for unprefixed URLs; the middleware redirects
+    // those to a real locale based on Accept-Language / cookie.
+    locales: ["_default", ...locales],
+    defaultLocale: "_default",
+    localeDetection: false,
+  },
   turbopack: {
     rules: {
       "*.gql": {
@@ -29,6 +39,14 @@ const nextConfig = {
       exclude: /node_modules/,
       use: [require.resolve("./gql-loader.js")],
     });
+
+    config.plugins.push(
+      paraglideWebpackPlugin({
+        outdir: "./src/paraglide",
+        project: "../../packages/i18n/project.inlang",
+        strategy: ["baseLocale"],
+      }),
+    );
 
     if (process.env.ANALYZE) {
       config.plugins.push(

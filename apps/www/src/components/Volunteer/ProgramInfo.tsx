@@ -2,7 +2,7 @@ import { Box, Grid, Text, Image, List, ListItem, Button } from "@codeday/topo/At
 import React from "react";
 
 import { formatInterval } from "../../utils/time";
-import ContentfulRichText from "../ContentfulRichText";
+import { ContentfulRichText } from "@codeday/topo/Molecule";
 import ProgramShareBlurb from "./ProgramShareBlurb";
 import { VOLUNTEER_ROLES } from "./wizardConfig";
 

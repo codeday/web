@@ -3,7 +3,7 @@ import { Content } from "@codeday/topo/Molecule";
 import { GetStaticProps, GetStaticPaths } from "next";
 import React from "react";
 
-import Calendly from "../../components/Calendly";
+import { CalendlyEmbed as Calendly } from "@codeday/topo/Molecule";
 import Page from "../../components/Page";
 
 interface CalendlyPageProps {

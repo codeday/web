@@ -1,9 +1,10 @@
 import { Box, Text, Heading, Grid, VisibilityCheckBox, RatioBox } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import shuffle from "knuth-shuffle-seeded";
 import React, { useState, useReducer, useEffect } from "react";
 
-import { useQuery } from "../../../query";
+import { usePageData } from "@codeday/topo/Theme";
 import VideoTestimonialThumbnail from "../../VideoTestimonialThumbnail";
 import Globe from "./Globe";
 import TextQuote from "./TextQuote";
@@ -18,7 +19,7 @@ interface QuotesProps {
 export default function Quotes({ seed }: QuotesProps) {
   const {
     cms: { quoteRegions, quoteTestimonials },
-  } = useQuery();
+  } = usePageData();
   const textQuotes = shuffle(
     quoteTestimonials?.items.filter((q: any) => !q.video),
     seed,
@@ -56,7 +57,7 @@ export default function Quotes({ seed }: QuotesProps) {
     <>
       <Content>
         <Heading as="h3" fontSize="2xl" fontWeight="bold" mt={0} textAlign="center">
-          In-person events in {quoteRegions?.items?.length} cities + worldwide online programs.
+          {m.www_quotes_locations({ count: String(quoteRegions?.items?.length) })}
         </Heading>
         <Grid
           templateColumns={{ base: "1fr", lg: "40% 60%" }}
@@ -83,7 +84,7 @@ export default function Quotes({ seed }: QuotesProps) {
       </Content>
       <Content wide>
         <Text color="current.textLight" fontSize="2xl" mt={12} mb={8} textAlign="center">
-          Hear from more students and volunteers:
+          {m.www_quotes_hear_more()}
         </Text>
         <Grid templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(4, minmax(0, 1fr))" }} gap={6}>
           {videoQuotes.map((q: any) => (

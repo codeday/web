@@ -2,7 +2,7 @@ import { Box } from "@codeday/topo/Atom";
 import { MediaPlay } from "@codeday/topocons";
 import React from "react";
 
-import VideoLink from "./VideoLink";
+import { VideoLink } from "@codeday/topo/Molecule";
 
 interface VideoTestimonialThumbnailProps {
   video: any;

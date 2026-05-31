@@ -1,32 +1,24 @@
-import { Heading } from "@codeday/topo/Atom";
+import { Heading, Skelly } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
 import { apiFetch } from "@codeday/topo/utils";
 import { print } from "graphql";
 import { GetStaticProps, GetStaticPaths } from "next";
 import React from "react";
 
-import Markdown from "../../components/Markdown";
+import { Markdown } from "@codeday/topo/Molecule";
 import Page from "../../components/Page";
-import { useQuery } from "../../query";
+import { usePageData } from "@codeday/topo/Theme";
 import { LegalPathsQuery, LegalContentQuery, TermageddonLegalContentQuery } from "./policy.gql";
-
-const TERMAGEDDON_POLICIES = ["tos", "privacy", "cookies", "disclaimer"];
+import { notFound } from "next/navigation";
 
 interface PolicyProps {
   slug: string;
+  page: { title: string; content: string } | undefined;
 }
 
-export default function Policy({ slug }: PolicyProps) {
-  const { termageddon, notion } = useQuery();
-  const page = TERMAGEDDON_POLICIES.includes(slug)
-    ? {
-        content: termageddon.terms[slug],
-        title: slug === "tos" ? "Terms of Service" : slug.charAt(0).toUpperCase() + slug.slice(1),
-      }
-    : notion?.page || { content: "", title: "Not Found" };
-
+export default function Policy({ slug, page }: PolicyProps) {
   return (
-    <Page title={page.title} slug={`/legal/${page.slug}`}>
+    <Page title={page.title} slug={`/legal/${slug}`}>
       <Content>
         <Heading as="h2" fontSize="5xl" mt={-2} mb={8} lineHeight="1.6">
           {page.title}
@@ -39,6 +31,7 @@ export default function Policy({ slug }: PolicyProps) {
   );
 }
 
+const TERMAGEDDON_POLICIES = ["tos", "privacy", "cookies", "disclaimer"];
 export const getStaticPaths: GetStaticPaths = async () => {
   const { notion } = await apiFetch(print(LegalPathsQuery), {}, {});
   return {
@@ -46,36 +39,41 @@ export const getStaticPaths: GetStaticPaths = async () => {
       ...notion.pages.map((p: any) => ({ params: { policy: p.slug } })),
       ...TERMAGEDDON_POLICIES.map((p) => ({ params: { policy: p } })),
     ],
-    fallback: true,
+    fallback: 'blocking',
   };
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  try {
-    if (TERMAGEDDON_POLICIES.includes(params!.policy as string)) {
-      return {
-        props: {
-          query: await apiFetch(print(TermageddonLegalContentQuery), {}, {}),
-          slug: params!.policy,
-        },
-        revalidate: 300,
-      };
-    } else {
-      return {
-        props: {
-          query: await apiFetch(
-            print(LegalContentQuery),
-            { slug: params!.policy, parentSlug: "legal" },
-            {},
-          ),
-          slug: params!.policy,
-        },
-        revalidate: 300,
-      };
+  if (TERMAGEDDON_POLICIES.includes(params!.policy as string)) {
+    const data = await apiFetch(print(TermageddonLegalContentQuery), {}, {});
+    const terms = data?.termageddon?.terms;
+    if (!terms?.[params!.policy as string]) {
+      return { notFound: true };
     }
-  } catch {
+
     return {
-      notFound: true,
+      props: {
+        page: {
+          content: terms[params!.policy as string],
+          title: params!.policy === "tos" ? "Terms of Service" : (params!.policy as string).charAt(0).toUpperCase() + params!.policy.slice(1),
+        },
+        slug: params!.policy,
+      },
+      revalidate: 300,
+    };
+
+  } else {
+    const data = await apiFetch(
+      print(LegalContentQuery),
+      { slug: params!.policy, parentSlug: "legal" },
+      {},
+    )
+    if (!data.notion) {
+      return { notFound: true };
+    }
+    return {
+      props: data.notion,
+      revalidate: 300,
     };
   }
 };

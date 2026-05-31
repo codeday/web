@@ -1,19 +1,18 @@
 import { Heading, Image, Skelly, Spinner, Box, Grid } from "@codeday/topo/Atom";
-import { Content, CognitoForm } from "@codeday/topo/Molecule";
+import { Content, CognitoForm, ContentfulRichText } from "@codeday/topo/Molecule";
 import { apiFetch } from "@codeday/topo/utils";
 import { print } from "graphql";
 import { GetStaticProps, GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 import React from "react";
 
-import ContentfulRichText from "../../components/ContentfulRichText";
 import Page from "../../components/Page";
-import { useQuery } from "../../query";
+import { usePageData } from "@codeday/topo/Theme";
 import Error404 from "../404";
 import { FormQuery, ListFormsQuery } from "./form.gql";
 
 export default function Home() {
-  const { cms } = useQuery();
+  const { cms } = usePageData();
   const { query } = useRouter();
 
   if (!cms) {

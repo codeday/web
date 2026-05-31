@@ -13,7 +13,9 @@
     "./utils": "./src/utils.ts",
     "./_utils": "./src/_utils.tsx",
     "./Next/Atom": "./src/Next/Atom/index.ts",
-    "./Next": "./src/Next/index.ts"
+    "./Next": "./src/Next/index.ts",
+    "./Region": "./src/Region/index.ts",
+    "./Region/config": "./src/Region/config.ts"
   },
   "scripts": {
     "build": "tsc --build",
@@ -25,6 +27,7 @@
   "dependencies": {
     "@accessible/use-id": "^1.1.2",
     "@chakra-ui/react": "catalog:",
+    "@codeday/i18n": "workspace:*",
     "@codeday/topocons": "workspace:*",
     "@codeday/utils": "workspace:*",
     "@emotion/react": "catalog:",
@@ -34,20 +37,26 @@
     "form-data": "^4.0.0",
     "graphql": "catalog:",
     "graphql-request": "^3.6.1",
+    "hls.js": "^0.14.17",
     "lodash.get": "^4.4.2",
     "next": "catalog:",
-    "prop-types": "catalog:",
     "react": "catalog:",
+    "react-dom": "catalog:",
     "react-load-script": "^0.0.6",
+    "react-markdown": "^10.1.0",
+    "react-responsive-modal": "^7.1.0",
     "recompose": "npm:react-recompose@^0.33.0",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.1",
     "stylis": "~4.0.10",
-    "swr": "^1.0.1"
+    "random-seed": "^0.3.0",
+    "swr": "^2.4.1"
   },
   "devDependencies": {
     "@codeday/tsconfig": "workspace:*",
     "@types/lodash.get": "^4.4.6",
+    "@types/random-seed": "^0.3.5",
     "@types/node": "catalog:",
-    "@types/prop-types": "^15.7.0",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@types/react-pdf": "^5.0.9",

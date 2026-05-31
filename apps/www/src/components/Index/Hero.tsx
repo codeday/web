@@ -1,17 +1,18 @@
 import { Box, Grid, VisibilityCheckBox, Text, Heading, Button } from "@codeday/topo/Atom";
 import { MediaPlay as Play, Broadcast } from "@codeday/topocons";
+import * as m from "@codeday/i18n/messages";
 import React from "react";
 
-import { useQuery } from "../../query";
+import { usePageData } from "@codeday/topo/Theme";
 import useTwitch from "../../useTwitch";
-import VideoLink from "../VideoLink";
+import { VideoLink } from "@codeday/topo/Molecule";
 import Live from "./Live";
 import Teaser from "./Teaser";
 
 export default function Hero({ ...props }: any) {
   const {
     cms: { tagline, mission, explainer },
-  } = useQuery();
+  } = usePageData();
   const twitch = useTwitch();
 
   const taglineBlock = (
@@ -29,7 +30,7 @@ export default function Hero({ ...props }: any) {
       {explainer && (
         <VideoLink url={explainer.url} autoPlay>
           <Button colorPalette="red">
-            Learn More&nbsp;
+            {m.www_hero_learn_more()}&nbsp;
             <Play style={{ position: "relative", top: "-0.15em" }} />
           </Button>
         </VideoLink>

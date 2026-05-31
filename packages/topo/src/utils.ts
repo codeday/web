@@ -1,6 +1,7 @@
 import { createToaster } from "@chakra-ui/react";
 import { GraphQLClient } from "graphql-request";
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import useSwr, { SWRConfiguration } from "swr";
 
 // ---------------------------------------------------------------------------
 // ThemeData context (inlined here so next.config.js require() works without
@@ -14,10 +15,12 @@ export interface ThemeData {
   space: Record<string | number, string>;
   radii: Record<string, string>;
   cognito: { id: string };
+  /** @deprecated Use Paraglide messages directly instead of useString(). */
   strings: Record<string, string>;
   visibility: string;
   programWebname?: string;
   config?: Record<string, any>;
+  apiEndpoint?: string;
   [key: string]: any;
 }
 
@@ -95,6 +98,7 @@ const ThemeDataContext = createContext<ThemeData>({
   cognito: { id: "7hYXr3TPxk6yIpJxjqVoFQ" },
   strings: {},
   visibility: "Public",
+  apiEndpoint: "https://graph.codeday.org/",
 });
 
 export const ThemeDataProvider = ThemeDataContext.Provider;
@@ -110,10 +114,28 @@ export function useSsr() {
 }
 
 export const api = "https://graph.codeday.org/";
-export const apiFetch = (query: any, variables: any, headers: any) => {
-  const client = new GraphQLClient(api, { headers });
+interface FetchParams {
+  query: any;
+  variables: any;
+  headers?: any;
+  endpoint?: string;
+}
+export const apiFetch = (query: any, variables: any, headers?: any, endpoint?: string) => {
+  const client = new GraphQLClient(endpoint || api, { headers: headers || {} });
   return client.request(query, variables);
 };
+export function useApi(params: FetchParams & SWRConfiguration) {
+  const { query, variables, headers, endpoint, ...swrConfig } = params;
+  return useSwr(
+    { query, variables, headers, endpoint },
+    (p: FetchParams) => apiFetch(p.query, p.variables, p.headers, p.endpoint),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      ...swrConfig,
+    },
+  );
+}
 
 /**
  * usePrefersReducedMotion - removed from Chakra UI v3, reimplemented here.
@@ -166,6 +188,9 @@ export function useToasts(): UseToastsOptions {
 // Theme helpers
 // ---------------------------------------------------------------------------
 
+/**
+ * @deprecated Use Paraglide message functions from `@codeday/i18n/messages` directly instead.
+ */
 export function useString(key: string | number, initialValue: any) {
   const { strings } = useThemeData();
   return (strings as Record<string | number, string>)[key] || initialValue;
@@ -269,4 +294,31 @@ export function subscribeQuerySelectorAll(
     subtree: true,
   });
   return () => observer.disconnect();
+}
+
+/**
+ * Creates a Next.js getStaticProps that fetches a GraphQL query and returns
+ * the result as `props.query` for use with PageDataProvider / usePageData.
+ *
+ * @example
+ * import { print } from "graphql";
+ * export const getStaticProps = createStaticProps(print(MyQuery), { someVar: "value" });
+ */
+export function createStaticProps(
+  query: string,
+  variables?: Record<string, any> | (() => Record<string, any>),
+  options?: {
+    revalidate?: number | false;
+    headers?: Record<string, string>;
+    endpoint?: string;
+  },
+) {
+  return async () => {
+    const vars = typeof variables === "function" ? variables() : variables || {};
+    const result = await apiFetch(query, vars, options?.headers || {}, options?.endpoint);
+    return {
+      props: { query: result },
+      revalidate: options?.revalidate ?? 300,
+    };
+  };
 }

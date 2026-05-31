@@ -2,7 +2,7 @@ import { Box, Grid, Text, Heading, Image, Button, Divider, Link } from "@codeday
 import { UiArrowDown, UiArrowUp, FilePdf } from "@codeday/topocons";
 import React, { useState } from "react";
 
-import ContentfulRichText from "../ContentfulRichText";
+import { ContentfulRichText } from "@codeday/topo/Molecule";
 
 interface ProgramShareBlurbProps {
   program: any;

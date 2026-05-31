@@ -2,7 +2,7 @@ import { Box } from "@codeday/topo/Atom";
 /* eslint-disable no-undef */
 import React, { useRef, useState, useLayoutEffect, ReactNode } from "react";
 
-export default function OnlyVisibleBox({
+export function OnlyVisibleBox({
   children,
   ...props
 }: {

@@ -1,6 +1,19 @@
 packages:
   - apps/*
   - packages/*
+peerDependencyRules:
+  allowedVersions:
+    # Packages that haven't published React 19-compatible versions yet
+    # but work fine at runtime with React 19:
+    react-fast-marquee>react: ">=19"
+    react-fast-marquee>react-dom: ">=19"
+    react-page-visibility>react: ">=19"
+    react-recompose>react: ">=19"
+    "@tylermenezes/cognitoforms-react>react": ">=19"
+
+    # transitive deps of react-responsive-modal v7
+    "@bedrock-layout/use-forwarded-ref>react": ">=19"
+    "@bedrock-layout/use-stateful-ref>react": ">=19"
 allowBuilds:
   core-js: true
   ejs: true

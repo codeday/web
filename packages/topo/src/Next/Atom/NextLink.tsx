@@ -5,8 +5,8 @@ import React from "react";
 
 type NextLinkProps = LinkProps & Omit<NextJsLinkProps, "passHref" | "legacyBehavior">;
 
-export const NextLink = React.forwardRef<HTMLAnchorElement, NextLinkProps>(
-  ({ href = "", replace, scroll, shallow, prefetch, locale, ...props }, ref) => {
+export const NextLink = (
+  ({ href = "", replace, scroll, shallow, prefetch, locale, ref, ...props }: NextLinkProps & { ref?: React.Ref<HTMLAnchorElement> }) => {
     return (
       <NextJsLink
         href={href}
@@ -21,5 +21,5 @@ export const NextLink = React.forwardRef<HTMLAnchorElement, NextLinkProps>(
         <Link ref={ref as any} {...(props as any)} />
       </NextJsLink>
     );
-  },
+  }
 );

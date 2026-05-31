@@ -1,35 +1,23 @@
 import { Box, Grid, Button, Image, Text, CodeDay, Link } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import { useColorMode } from "@codeday/topo/Theme";
+import * as m from "@codeday/i18n/messages";
+import { useColorMode, usePageData } from "@codeday/topo/Theme";
 import { apiFetch } from "@codeday/topo/utils";
-import { UiStar } from "@codeday/topocons";
 import { print } from "graphql";
 import haversine from "haversine-distance";
 import React, { useEffect, useState } from "react";
 
-import { useQuery } from "../../query";
-import { nextUpcomingEvent, upcomingEvents, formatInterval } from "../../utils/time";
 import { GetMyLocation } from "./Programs.gql";
-
-function NextEventDate({ upcoming }: { upcoming: any[] }) {
-  const next = nextUpcomingEvent(upcoming);
-  return next ? (
-    <Text color="current.textLight" mb={0} fontWeight="bold">
-      {upcomingEvents(upcoming)
-        .map((e) => formatInterval(e.startsAt, e.endsAt))
-        .join("; ")}
-    </Text>
-  ) : (
-    <></>
-  );
-}
+import NextEventDate from "./NextEventDate";
+import ProgramCard from "./ProgramCard";
+import RegionList from "./RegionList";
 
 export default function Programs() {
   const { colorMode } = useColorMode();
   const {
     cms: { regions, mainPrograms, codeDayProgram, labsProgram },
     clear: { events },
-  } = useQuery();
+  } = usePageData();
   const [geo, setGeo] = useState<any>();
   const codeDay = codeDayProgram?.items[0];
   const labs = labsProgram?.items[0];
@@ -83,42 +71,17 @@ export default function Programs() {
             {codeDay?.shortDescription}
           </Text>
           <Text mb={4} fontSize="sm">
-            (Nothing planned nearby?{" "}
+            ({m.www_programs_nothing_planned()}{" "}
             <Link color="red.600" href="https://event.codeday.org/organize">
-              Organize a CodeDay!
+              {m.www_programs_organize()}
             </Link>
             )
           </Text>
-          <Box borderWidth={1} maxHeight={{ base: "sm", md: "md" }} overflowY="auto">
-            {sortedRegions.map((region: any) => (
-              <Box
-                p={2}
-                as="a"
-                display="block"
-                {...({ href: `https://event.codeday.org/${region.webname}` } as any)}
-                target="_blank"
-                fontSize="xl"
-                borderBottomWidth="1px"
-                key={region.webname}
-              >
-                {upcomingNameOverrides[region.webname] || region.name}
-                {region.upcoming && (
-                  <Box fontSize="sm" ml={2} display="inline-block" color="current.textLight">
-                    <Box position="relative" top="-0.2em" display="inline-block" mr={2}>
-                      <UiStar />
-                    </Box>
-                    {registrationOpenWebnames.includes(region.webname) ? `Registrations open!` : ``}
-                  </Box>
-                )}
-              </Box>
-            ))}
-          </Box>
-          <Box fontSize="sm" mt={4} display="inline-block" color="current.textLight">
-            <Box position="relative" top="-0.2em" display="inline-block" mr={2}>
-              <UiStar />
-            </Box>
-            Event planned this season.
-          </Box>
+          <RegionList
+            sortedRegions={sortedRegions}
+            registrationOpenWebnames={registrationOpenWebnames}
+            upcomingNameOverrides={upcomingNameOverrides}
+          />
         </Box>
 
         {/* More Programs */}
@@ -155,36 +118,11 @@ export default function Programs() {
               alt="1 mentor + 3 students + 1 project"
             />
             <Box>
-              <Button size="sm">Learn More &raquo;</Button>
+              <Button size="sm">{m.www_programs_learn_more()}</Button>
             </Box>
           </Box>
           {mainPrograms?.items?.map((program: any) => (
-            <Box
-              p={4}
-              mb={4}
-              display="block"
-              as="a"
-              {...({ href: program.url } as any)}
-              target="_blank"
-              rel="noopener"
-              key={program.name}
-            >
-              <Box mb={1}>
-                <Box float="left" width={10} pr={4}>
-                  <Image src={program.logo.url} height={6} alt="" />
-                </Box>
-                <Text fontSize="lg" mb={0} bold>
-                  {program.name}
-                </Text>
-              </Box>
-              <NextEventDate upcoming={program.linkedFrom?.events?.items} />
-              <Text mt={2} style={{ clear: "both" }}>
-                {program.shortDescription}
-              </Text>
-              <Box>
-                <Button size="sm">Learn More &raquo;</Button>
-              </Box>
-            </Box>
+            <ProgramCard key={program.name} program={program} />
           ))}
         </Box>
       </Grid>

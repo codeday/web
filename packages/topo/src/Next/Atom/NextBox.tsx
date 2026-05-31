@@ -5,10 +5,7 @@ import React from "react";
 
 type BoxAsLinkProps = BoxProps & Omit<NextLinkProps, "passHref" | "legacyBehavior">;
 
-export const NextBox: ComponentWithAs<"div", BoxAsLinkProps> = React.forwardRef<
-  HTMLDivElement,
-  BoxAsLinkProps
->(({ as, ...props }: any, ref) => {
+export const NextBox: ComponentWithAs<"div", BoxAsLinkProps> = (({ as, ref, ...props }: any) => {
   if (as == "a") {
     const { href = "", replace, scroll, shallow, prefetch, locale, ...boxProps } = props;
     return (

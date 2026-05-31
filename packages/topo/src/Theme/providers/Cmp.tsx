@@ -32,7 +32,7 @@ type AwaitingConsentAction =
   | { type: "remove"; provider: string }
   | { type: "clear" };
 
-export function CmpProvider({ children }: { children: ReactNode }) {
+export function CmpProvider({ children, usercentricsSettingsId }: { children: ReactNode; usercentricsSettingsId?: string }) {
   const [isCmpLoaded, setIsCmpLoaded] = useState(false);
   const [isConsentRequired, setIsConsentRequired] = useState(true);
   const [uc, setUc] = useState<any>(undefined);
@@ -126,7 +126,7 @@ export function CmpProvider({ children }: { children: ReactNode }) {
       <Script
         id="usercentrics-cmp"
         src="https://app.usercentrics.eu/browser-ui/latest/loader.js"
-        data-settings-id="FQ314iLcg1whiu"
+        data-settings-id={usercentricsSettingsId || "FQ314iLcg1whiu"}
         strategy="beforeInteractive"
         onReady={() => {
           const checkCmpLoaded = () =>

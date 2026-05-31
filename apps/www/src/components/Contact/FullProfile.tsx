@@ -1,5 +1,6 @@
 import { Box, Grid, Text, Image } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import React from "react";
 
 interface FullProfileProps {
@@ -30,7 +31,7 @@ export default function FullProfile({ entries, ...props }: FullProfileProps) {
                 {director.givenName} {director.familyName}
               </Text>
               <Text fontSize="sm" color="current.textLight">
-                Board Member
+                {m.www_contact_board_member()}
               </Text>
             </Box>
             <Box mt={4} ml="64px" pl={4}>

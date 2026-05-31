@@ -8,8 +8,7 @@ interface CopyTextProps extends TextProps {
   label: string;
 }
 
-const CopyText: ComponentWithAs<"p", CopyTextProps> = React.forwardRef<HTMLElement, CopyTextProps>(
-  ({ children, label, ...props }, ref) => {
+const CopyText: ComponentWithAs<"p", CopyTextProps> = (({ children, label, ref, ...props }: any) => {
     const [width, setWidth] = useState(10);
     const myRef = ref || useRef(null);
     const id = useId();
@@ -47,7 +46,6 @@ const CopyText: ComponentWithAs<"p", CopyTextProps> = React.forwardRef<HTMLEleme
         />
       </>
     );
-  },
-) as ComponentWithAs<"p", CopyTextProps>;
+}) as ComponentWithAs<"p", CopyTextProps>;
 CopyText.displayName = "CopyText";
 export { CopyText, type CopyTextProps };

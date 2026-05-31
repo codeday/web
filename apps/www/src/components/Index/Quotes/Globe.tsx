@@ -1,88 +1,13 @@
 import { Box } from "@codeday/topo/Atom";
-import { useTheme } from "@codeday/topo/utils";
 import dynamic from "next/dynamic";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useInView } from "react-intersection-observer";
 
-const options = {
-  cameraRotateSpeed: 0.2,
-  focusAnimationDuration: 1000,
-  focusEasingFunction: ["Linear", "None"] as any,
-  markerTooltipRenderer: () => ``,
-  markerRadiusScaleRange: [0.02, 0.03] as [number, number],
-  enableCameraRotate: false,
-  enableCameraZoom: false,
-  focusDistanceRadiusScale: 3.5,
-  enableMarkerGlow: false,
-  enableDefocus: false,
-  globeGlowCoefficient: 0.05,
-  ambientLightIntensity: 1,
-  pointLightIntensity: 0.5,
-};
-
-//@ts-ignore
-const ReactGlobe = dynamic(() => import("react-globe"), { ssr: false });
-
-function InnerGlobe({ regions, testimonial }: { regions: any[]; testimonial: any }) {
-  const { colors } = useTheme();
-  const [globe, setGlobe] = useState<any>();
-  const [lastTestimonialHadRegion, setLastTestimonialHadRegion] = useState(false);
-
-  useEffect(() => {
-    if (!globe) return;
-    if (!lastTestimonialHadRegion && !testimonial?.region) return;
-
-    setLastTestimonialHadRegion(Boolean(testimonial?.region));
-
-    const focusOn = testimonial?.region
-      ? [testimonial.region.location.lat, testimonial.region.location.lon + 4]
-      : [38.0, -88.0];
-    globe.updateFocus(focusOn, {
-      ...options,
-      ...(!testimonial?.region
-        ? {
-            cameraRotateSpeed: 0,
-            disableCameraRotate: true,
-          }
-        : {}),
-    });
-  }, [globe, testimonial]);
-
-  const markers = regions
-    ?.map((r) => ({
-      id: `${r.webname}-${testimonial?.region?.webname === r.webname ? "active" : "inactive"}`,
-      color:
-        testimonial?.region?.webname === r.webname
-          ? (colors as any).red[600]
-          : (colors as any).white,
-      value: testimonial?.region?.webname === r.webname ? 20 : 10,
-      coordinates: [r.location.lat, r.location.lon] as [number, number],
-    }))
-    .sort((a, b) => b.value - a.value);
-
-  useEffect(() => {
-    if (globe) globe.updateFocus([38.0, -88.0]);
-  }, [globe]);
-
-  return (
-    <ReactGlobe
-      //@ts-ignore
-      height="100%"
-      width="100%"
-      globeCloudsTexture={null}
-      markers={markers}
-      globeTexture="/globe.jpg"
-      globeBackgroundTexture={null}
-      options={{
-        ...options,
-      }}
-      onClickMarker={() => {}}
-      onMouseOutMarker={() => {}}
-      onMouseOverMarker={() => {}}
-      onGetGlobe={setGlobe}
-    />
-  );
-}
+// Dynamically import the inner component (which statically imports
+// react-globe.gl) so the ref binds directly to the real Globe instance.
+const GlobeInner = dynamic(() => import("./GlobeInner").then((m) => m.default), {
+  ssr: false,
+});
 
 interface GlobeProps {
   testimonial: any;
@@ -94,17 +19,38 @@ export default function Globe({ testimonial, regions }: GlobeProps) {
     return null;
   }
 
-  const { ref, inView } = useInView({ rootMargin: "500px" });
+  const { ref: inViewRef, inView } = useInView({ rootMargin: "500px" });
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [size, setSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
+
   useEffect(() => {
-    if (inView) {
-      setHasLoaded(true);
-    }
+    if (inView) setHasLoaded(true);
   }, [inView]);
 
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => setSize({ w: el.clientWidth, h: el.clientHeight });
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [hasLoaded]);
+
+  const setRefs = useCallback(
+    (node: HTMLDivElement | null) => {
+      containerRef.current = node;
+      inViewRef(node);
+    },
+    [inViewRef],
+  );
+
   return (
-    <Box ref={ref} height="100%" width="100%">
-      {hasLoaded && <InnerGlobe regions={regions} testimonial={testimonial} />}
+    <Box ref={setRefs} height="100%" width="100%">
+      {hasLoaded && size.w > 0 && size.h > 0 && (
+        <GlobeInner regions={regions} testimonial={testimonial} width={size.w} height={size.h} />
+      )}
     </Box>
   );
 }

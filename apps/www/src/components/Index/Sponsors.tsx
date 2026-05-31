@@ -1,22 +1,23 @@
 import { Grid, Heading, Link, Box, Text, Image } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import { useColorMode } from "@codeday/topo/Theme";
+import * as m from "@codeday/i18n/messages";
+import { useColorMode, usePageData } from "@codeday/topo/Theme";
 import React from "react";
 
-import { useQuery } from "../../query";
+
 import PreviousCoverageLogos from "../PreviousCoverageLogos";
 
 export default function Sponsors(props: any) {
   const { colorMode } = useColorMode();
   const {
     cms: { majorSponsors, minorSponsors },
-  } = useQuery();
+  } = usePageData();
   return (
     <Content {...props}>
       <Grid templateColumns={{ base: "1fr", md: "1fr 4fr" }} gap={4}>
         <Box>
           <Text fontSize="xl" display="inline-block" color="current.textLight" mb={4} bold>
-            Recognized by...
+            {m.www_sponsors_recognized_by()}
           </Text>
           <Grid templateColumns={{ base: "1fr 1fr", md: "1fr" }} gap={2}>
             <Link
@@ -33,11 +34,11 @@ export default function Sponsors(props: any) {
 
         <Box>
           <Text fontSize="xl" display="inline-block" color="current.textLight" mb={4} bold>
-            As seen in...
+            {m.www_sponsors_as_seen_in()}
           </Text>
           <PreviousCoverageLogos num={5} h={8} mr={4} ml={0} mb={2} />
           <Heading as="h2" color="current.textLight" fontSize="xl" mt={12} mb={2} fontWeight="bold">
-            With support from...
+            {m.www_sponsors_with_support_from()}
           </Heading>
           <Grid
             templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(4, 1fr)", lg: "repeat(6, 1fr)" }}

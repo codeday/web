@@ -12,11 +12,11 @@ import { GetStaticProps } from "next";
 import React from "react";
 
 import Page from "../../components/Page";
-import { useQuery } from "../../query";
+import { usePageData } from "@codeday/topo/Theme";
 import { HelpIndexQuery } from "./index.gql";
 
 export default function Help() {
-  const { programs } = useQuery().cms || {};
+  const { programs } = usePageData().cms || {};
   const programsWithFaqs =
     programs?.items?.filter((p: any) => p.linkedFrom?.faqs?.items?.length > 0) || [];
 

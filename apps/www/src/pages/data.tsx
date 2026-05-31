@@ -1,17 +1,18 @@
 import { Text, Link, Heading, Skelly, Spinner, Box, List, ListItem } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import { apiFetch } from "@codeday/topo/utils";
 import { print } from "graphql";
 import { DateTime } from "luxon";
 import { GetStaticProps } from "next";
 
 import Page from "../components/Page";
-import { useQuery } from "../query";
+import { usePageData } from "@codeday/topo/Theme";
 import Error404 from "./404";
 import { DataListPublicationsQuery } from "./data.gql";
 
 export default function Home() {
-  const { cms } = useQuery();
+  const { cms } = usePageData();
 
   if (!cms) {
     return (
@@ -32,7 +33,7 @@ export default function Home() {
     <Page slug={`/data`} title="Open Datasets">
       <Content mt={-8} mb={2}>
         <Heading as="h2" fontSize={{ base: "2xl", md: "4xl" }} mb={2}>
-          CodeDay Open Data Repository
+          {m.www_data_heading()}
         </Heading>
         <Box mb={4}>
           <Link

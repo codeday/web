@@ -10,7 +10,7 @@ import { useMemo } from "react";
 import xmlbuilder from "xmlbuilder";
 
 import Page from "../../../../components/Page";
-import { useQuery } from "../../../../query";
+import { usePageData } from "@codeday/topo/Theme";
 import { PublicationQuery, ListPublicationsQuery } from "../../[...doi]/index.gql";
 
 function licenseToLink(license: string): string | undefined {
@@ -206,7 +206,7 @@ function getCrossrefXml(publication: any, id: string): string {
 }
 
 export default function Crossref() {
-  const { cms } = useQuery();
+  const { cms } = usePageData();
   const { query } = useRouter();
 
   const id = useMemo(() => `codeday-${Math.random().toString(36).substring(2, 8)}`, []);

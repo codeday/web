@@ -12,7 +12,7 @@ interface FlexScatterProps {
   [key: string]: any;
 }
 
-export default function FlexScatter({
+export function FlexScatter({
   children,
   seed,
   gapMin,
@@ -51,3 +51,5 @@ export default function FlexScatter({
     </Flex>
   );
 }
+
+export type { FlexScatterProps };

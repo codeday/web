@@ -1,16 +1,16 @@
 import { Box, Flex, Grid, Text, Heading, Link, Button, Image } from "@codeday/topo/Atom";
-import { Content } from "@codeday/topo/Molecule";
+import { Content, ContentfulRichText } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import { apiFetch } from "@codeday/topo/utils";
 import { print } from "graphql";
 import { DateTime } from "luxon";
 import { GetStaticProps } from "next";
 import React from "react";
 
-import ContentfulRichText from "../components/ContentfulRichText";
 import Page from "../components/Page";
 import PhotoGallery from "../components/Press/PhotoGallery";
 import PreviousCoverageLogos from "../components/PreviousCoverageLogos";
-import { useQuery } from "../query";
+import { usePageData } from "@codeday/topo/Theme";
 import { PressQuery } from "./press.gql";
 
 interface PressProps {
@@ -20,13 +20,13 @@ interface PressProps {
 export default function Press({ seed }: PressProps) {
   const {
     cms: { mission, pressContact, pressDetails, programs, previousCoverage },
-  } = useQuery();
+  } = usePageData();
 
   return (
     <Page slug="/press" title="Press">
       <Content>
         <Heading as="h2" fontSize="5xl" mb={8} mt={-8}>
-          Press Kit
+          {m.www_press_kit()}
         </Heading>
         <Grid templateColumns={{ base: "1fr", md: "2fr 1fr" }} gap={8} mb={8}>
           <Box>
@@ -36,7 +36,7 @@ export default function Press({ seed }: PressProps) {
             <ContentfulRichText json={pressDetails?.items[0]?.richValue?.json} />
 
             <Heading as="h4" fontSize="lg" mt={6} mb={4}>
-              Our Programs:
+              {m.www_press_our_programs()}
             </Heading>
             {programs?.items?.map((program: any) => (
               <Box key={program.name}>
@@ -59,20 +59,20 @@ export default function Press({ seed }: PressProps) {
               color="blue.900"
             >
               <Heading as="h3" fontSize="lg" mb={4} fontWeight="bold">
-                Press Contact
+                {m.www_press_contact()}
               </Heading>
               <ContentfulRichText json={pressContact?.items[0]?.richValue?.json} />
             </Box>
 
             <Box textAlign="center">
               <Button colorPalette="blue" as="a" {...({ href: "#assets" } as any)}>
-                Download Press Images &amp; Logos
+                {m.www_press_download_images()}
               </Button>
             </Box>
 
             <Box textAlign="center" mt={4}>
               <Text color="current.textLight" fontWeight="bold">
-                As Seen In
+                {m.www_press_as_seen_in()}
               </Text>
               <PreviousCoverageLogos
                 num={4}
@@ -89,7 +89,7 @@ export default function Press({ seed }: PressProps) {
 
       <Content wide borderWidth={1} rounded="md" p={4} shadow="lg" mb={16}>
         <Heading as="h3" fontSize="2xl" mb={8} textAlign="center">
-          Recent Coverage
+          {m.www_press_recent_coverage()}
         </Heading>
         <Grid
           templateColumns={{
@@ -121,7 +121,7 @@ export default function Press({ seed }: PressProps) {
 
       <Content>
         <Heading as="h3" fontSize="2xl" mb={4}>
-          <a {...({ name: "assets" } as any)}></a>Assets
+          <a {...({ name: "assets" } as any)}></a>{m.www_press_assets()}
         </Heading>
         <Box
           as="a"
@@ -136,15 +136,14 @@ export default function Press({ seed }: PressProps) {
           />
         </Box>
         <Text>
-          The assets on this page are licensed under a{" "}
+          {m.www_press_assets_license()}{" "}
           <Link rel="license" href="http://creativecommons.org/licenses/by/4.0/">
-            Creative Commons Attribution 4.0 International License
+            {m.www_press_cc_license()}
           </Link>
-          , you may use them without prior permission so long as you provide credit to CodeDay.
+          {m.www_press_assets_license_suffix()}
         </Text>
         <Text>
-          Editorial use by the media without attribution is permitted. All pictured individuals have
-          media waivers on file.
+          {m.www_press_editorial_use()}
         </Text>
         <Flex alignItems="center">
           <Button
@@ -152,10 +151,10 @@ export default function Press({ seed }: PressProps) {
             colorPalette="blue"
             {...({ href: "https://f1.codeday.org/logos.zip" } as any)}
           >
-            Download Logos
+            {m.www_press_download_logos()}
           </Button>
           <Text mb={0} pl={4} fontSize="sm" color="current.textLight">
-            All logos and names are trademarks of CodeDay.
+            {m.www_press_trademarks()}
           </Text>
         </Flex>
       </Content>

@@ -14,7 +14,7 @@ export const IconBoxText = makePureBox("IconBoxText");
 export const IconBoxBody = makePureBox("Body");
 
 const IconBox: ComponentWithAs<"div", BoxProps> = pureRef<BoxProps, "div">(
-  ({ children, ...props }: any, ref) => {
+  ({ children, ref, ...props }: any) => {
     const headerIcon = childrenOfType(children, IconBoxIcon);
     const headerText = childrenOfType(children, IconBoxText);
     const body = childrenOfType(children, IconBoxBody);

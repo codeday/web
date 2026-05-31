@@ -2,7 +2,7 @@ import { Box, Grid, Text, Image } from "@codeday/topo/Atom";
 import shuffle from "knuth-shuffle-seeded";
 
 import { useSlideshow } from "../../providers";
-import { useQuery } from "../../query";
+import { usePageData } from "@codeday/topo/Theme";
 
 const QUOTE_DURATION = 10000;
 
@@ -12,7 +12,7 @@ interface TestimonialsProps {
 }
 
 export default function Testimonials({ seed, ...props }: TestimonialsProps) {
-  const { cms } = useQuery();
+  const { cms } = usePageData();
   const testimonials = shuffle(
     (cms?.volunteerTestimonials?.items || []).filter(
       (t: any) => t.quote.split(" ").length <= 6 * 8,

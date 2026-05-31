@@ -1,4 +1,4 @@
-query ContactQuery {
+query ContactQuery ($region: String!, $locale: String!) {
   account {
     employees: roleUsers(roleId: "rol_llN0357VXrEoIxoj") {
       id
@@ -86,33 +86,32 @@ query ContactQuery {
   }
 
   cms {
-    email: strings(where: { key: "contact.public.email" }, limit: 1) {
+    localizationConfigs (where: { id: $region }, locale: $locale) {
       items {
-        value
-      }
-    }
-
-    phone: strings(where: { key: "contact.public.phone" }, limit: 1) {
-      items {
-        value
-      }
-    }
-
-    fax: strings(where: { key: "contact.public.fax" }, limit: 1) {
-      items {
-        value
-      }
-    }
-
-    address: strings(where: { key: "contact.public.address" }, limit: 1) {
-      items {
-        value
-      }
-    }
-
-    officeAddress: strings(where: { key: "contact.public.office-address" }, limit: 1) {
-      items {
-        value
+        contactDefaultType
+        contactDefaultValue
+        domainName
+        legalEntity {
+          legalName
+          headquarters {
+            addressLine1
+            addressLine2
+            addressLine3
+            city
+            region
+            postalCode
+            country
+          }
+        }
+        mailingAddress {
+          addressLine1
+          addressLine2
+          addressLine3
+          city
+          region
+          postalCode
+          country
+        }
       }
     }
   }

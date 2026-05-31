@@ -8,8 +8,9 @@ export interface RatioBoxProps extends BoxProps {
   autoDefault?: string;
 }
 
-const RatioBoxInner = React.forwardRef<HTMLDivElement, RatioBoxProps>(
-  ({ w, h, auto = "h", autoDefault = "100%", children, ...props }, forwardedRef) => {
+const RatioBoxInner = (
+  { w, h, auto = "h", autoDefault = "100%", children, ref: forwardedRef, ...props }: RatioBoxProps & { ref?: React.Ref<HTMLDivElement> },
+) => {
     const ref = useRef(null);
     const [computed, setComputed] = useState<number | string>(autoDefault);
 
@@ -49,13 +50,9 @@ const RatioBoxInner = React.forwardRef<HTMLDivElement, RatioBoxProps>(
         {children}
       </Box>
     );
-  },
-);
+  };
 
-export const RatioBox: ComponentWithAs<"div", RatioBoxProps> = React.forwardRef<
-  HTMLDivElement,
-  RatioBoxProps
->(({ auto = "h", autoDefault = "100%", children, ...props }, ref) => {
+export const RatioBox: ComponentWithAs<"div", RatioBoxProps> = (({ auto = "h", autoDefault = "100%", children, ref, ...props }: any) => {
   const ssr = useSsr();
   if (ssr) {
     return (

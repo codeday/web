@@ -1,5 +1,6 @@
 import { Box, Grid, Text, Heading, Link } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
+import * as m from "@codeday/i18n/messages";
 import { apiFetch } from "@codeday/topo/utils";
 import { print } from "graphql";
 import { GetStaticProps } from "next";
@@ -8,7 +9,7 @@ import React from "react";
 import Page from "../../components/Page";
 import VideoTestimonialThumbnail from "../../components/VideoTestimonialThumbnail";
 import ProgramInfo from "../../components/Volunteer/ProgramInfo";
-import { useQuery } from "../../query";
+import { usePageData } from "@codeday/topo/Theme";
 import { upcomingEvents } from "../../utils/time";
 import { VolunteerQuery } from "./volunteer.gql";
 
@@ -17,7 +18,7 @@ const PROGRAM_WEIGHT = ["primary", "secondary", "minor"];
 export default function Volunteer() {
   const {
     cms: { volunteerPrograms, testimonials },
-  } = useQuery();
+  } = usePageData();
   const programsWithUpcoming =
     volunteerPrograms?.items
       ?.map((program: any) => {
@@ -40,7 +41,7 @@ export default function Volunteer() {
     <Page slug="/volunteer" title="Volunteer">
       <Content mt={-8}>
         <Heading as="h2" fontSize="5xl" mb={8} mt={8}>
-          Have fun. Make a difference. Volunteer.
+          {m.www_share_heading()}
         </Heading>
         <Grid templateColumns={{ base: "1fr", md: "1fr 1fr", lg: "3fr 2fr" }} gap={8}>
           <Box>
@@ -52,7 +53,7 @@ export default function Volunteer() {
           </Box>
           <Box>
             <Heading as="h3" fontSize="md" color="current.textLight" textAlign="center" mb={2}>
-              Hear why {videoTestimonial.firstName}
+              {m.www_share_hear_why({ name: videoTestimonial.firstName })}
               {videoTestimonial.company && (
                 <>
                   {videoTestimonial.title ? `, ${videoTestimonial.title} at ` : " from "}

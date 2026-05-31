@@ -1,10 +1,11 @@
 import { Text, Grid, Box } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import { useColorMode } from "@codeday/topo/Theme";
+import * as m from "@codeday/i18n/messages";
+import { useColorMode, usePageData } from "@codeday/topo/Theme";
 import React from "react";
 import CountUp from "react-countup";
 
-import { useQuery } from "../../query";
+
 
 function rollup(events: any[]): Record<string, number> {
   const stats: Record<string, number> = {};
@@ -47,7 +48,7 @@ export default function Stats(props: any) {
   const {
     cms: { stats, quoteRegions },
     labs: { statTotalOutcomes },
-  } = useQuery();
+  } = usePageData();
   const rollupStats = rollup(stats.items);
 
   const hours = statTotalOutcomes.find((o: any) => o.key === "hoursCount");
@@ -62,23 +63,23 @@ export default function Stats(props: any) {
         >
           <StatBox
             num={rollupStats.statEventCount}
-            label={`In-Person Events in ${quoteRegions?.items?.length} Cities Worldwide`}
+            label={m.www_stats_events_in_cities({ count: String(quoteRegions?.items?.length) })}
             opacity="0.7"
           />
-          <StatBox num={rollupStats.statStudentCount} label="Total CodeDay Alumni" opacity="0.7" />
+          <StatBox num={rollupStats.statStudentCount} label={m.www_stats_total_alumni()} opacity="0.7" />
           <StatBox
             num={rollupStats.statLowInterestCount}
-            label="High School Students Started Pursuing Tech Because of CodeDay"
+            label={m.www_stats_high_school_pursuing_tech()}
             opacity="0.7"
           />
           <StatBox
             num={labsStudentCount?.value}
-            label="College Students Became Open Source Software Contributors"
+            label={m.www_stats_college_open_source()}
             opacity="0.7"
           />
           <StatBox
             num={rollupStats.statStudentCount * 24 + hours?.value}
-            label="Hours Spent Solving Meaningful Problems"
+            label={m.www_stats_hours_solving_problems()}
             opacity="0.7"
           />
         </Grid>

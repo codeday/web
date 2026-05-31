@@ -14,8 +14,9 @@ const MarketingContext = createContext<MarketingContextType>({
   linkedInConversion: () => {},
 });
 
-const LINKEDIN_CMP_PROVIDER = "JQ2XQxIk";
-const LINKEDIN_PARTNER_ID = "1831116";
+const LINKEDIN_CMP_PROVIDER = process.env.NEXT_PUBLIC_LINKEDIN_CMP_PROVIDER || "JQ2XQxIk";
+const LINKEDIN_PARTNER_ID = process.env.NEXT_PUBLIC_LINKEDIN_PARTNER_ID || "1831116";
+const POSTHOG_CMP_PROVIDER = process.env.NEXT_PUBLIC_POSTHOG_CMP_PROVIDER || "uRoG9JxhEUtI4V";
 
 export function MarketingProvider({ children }: { children: ReactNode }) {
   const { withConsent } = useCmp();
@@ -26,7 +27,7 @@ export function MarketingProvider({ children }: { children: ReactNode }) {
     withConsent(LINKEDIN_CMP_PROVIDER, () => {
       LinkedInTag.init(LINKEDIN_PARTNER_ID, null, false);
     });
-    withConsent("uRoG9JxhEUtI4V", () => {
+    withConsent(POSTHOG_CMP_PROVIDER, () => {
       DEBUG("posthog consent granted, opt in capturing");
       posthog.opt_in_capturing();
     });

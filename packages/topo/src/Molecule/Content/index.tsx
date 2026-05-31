@@ -8,7 +8,7 @@ interface ContentProps extends BoxProps {
 }
 
 const Content: ComponentWithAs<"div", ContentProps> = pureRef<ContentProps, "div">(
-  ({ wide, full, ...props }: any, ref) => {
+  ({ wide, full, ref, ...props }: any) => {
     const boxProps: any = {
       paddingLeft: 3,
       paddingRight: 3,

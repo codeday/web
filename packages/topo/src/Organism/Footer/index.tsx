@@ -13,17 +13,26 @@ import {
 } from "@codeday/topo/Atom";
 import { Content, GithubAuthors } from "@codeday/topo/Molecule";
 import { useCmp, useQuery } from "@codeday/topo/Theme";
-import { useString } from "@codeday/topo/utils";
-import React, { forwardRef, type ReactNode } from "react";
+import { useApi } from "@codeday/topo/utils";
+import { useRegion } from "@codeday/topo/Region";
+import * as m from "@codeday/i18n/messages";
+import { fixLocaleCasing } from "@codeday/utils";
+import { getLocale } from "@codeday/i18n/runtime";
+import React, { type ReactNode } from "react";
+
 
 export const CustomLinks: ComponentWithAs<"div", BoxProps> = makePureBox("Custom Links");
 export const CustomText: ComponentWithAs<"div", BoxProps> = makePureBox("CustomText");
 
-const StandardLinks = ({ domainName }: { domainName?: string }) => {
-  const links = useQuery<{ sys: { id: string }; link: string; title: string }[] | undefined>(
-    "cms.sites.items",
-  );
-
+export interface StandardLinksProps {
+  domainName: string;
+  links: {
+    title: string;
+    link: string;
+    sys: { id: string };
+    }[]
+}
+function StandardLinks({ domainName, links }: StandardLinksProps) {
   return (
     <List fontSize="md">
       {!links ? (
@@ -44,7 +53,7 @@ const StandardLinks = ({ domainName }: { domainName?: string }) => {
             !domainName ||
             (!link.startsWith(`https://${domainName}`) && !link.startsWith(`http://${domainName}`));
           return (
-            <ListItem listStyleType="none" key={sys.id}>
+            <ListItem listStyleType="none" fontSize="sm" key={sys.id}>
               <Link
                 href={
                   isExternalLink ? link : link.slice(link.indexOf(domainName) + domainName.length)
@@ -61,7 +70,36 @@ const StandardLinks = ({ domainName }: { domainName?: string }) => {
       )}
     </List>
   );
-};
+}
+
+const query = `
+query CmsConfigQuery ($locale: String!, $region: String!) {
+  cms {
+    sites(where: { type: "Public", display_contains_all: "Footer" }, locale: $locale) {
+      items {
+        sys {
+          id
+        }
+        title
+        link
+      }
+    }
+
+    localizationConfigs(where:{ id: $region }, locale: $locale) {
+      items {
+        name
+        contactDefaultType
+        contactDefaultValue
+        countryNameShort
+        legalEntity {
+          legalName
+          identifierName
+          identifier
+        }
+      }
+    }
+  }
+}`;
 
 export interface FooterProps extends BoxProps {
   repository?: string;
@@ -71,19 +109,24 @@ export interface FooterProps extends BoxProps {
   domainName?: string;
 }
 
-const Footer = forwardRef(
-  ({ children, repository, owner, branch, domainName, ...props }: FooterProps, ref) => {
+const Footer = (
+  ({ children, repository, owner, branch, domainName, ref, ...props }: FooterProps & { ref?: React.Ref<any> }) => {
     const { ucUi } = useCmp();
-    const ccpaLink = useString("legal.ccpa", <Skelly />);
-    const resourcesHeading = useString("resources", <Skelly />);
-    const customHeading = useString("custom-links", <Skelly />);
-    const copyright = useString("copyright", <>&copy; CodeDay</>);
-    const nonprofit = useString("nonprofit", "");
-    const maintainedBy = useString("maintained-by", "This site is open source software created by");
+    const locale = fixLocaleCasing(getLocale());
+    const region = useRegion();
+    const { data: cmsData, isLoading } = useApi({ query, variables: { locale, region } });
+    const localization = cmsData?.cms?.localizationConfigs?.items?.[0];
 
-    const localizationContact = useQuery<
-      { contactDefaultType: string; contactDefaultValue: string } | undefined
-    >("cms.localizationConfig");
+    const ccpaLink = m.topo_footer_ccpa();
+    const resourcesHeading = m.topo_footer_resources();
+    const customHeading = m.topo_footer_custom_links();
+    const copyright = m.topo_footer_copyright({
+      currentYear: String(new Date().getFullYear()),
+      entityName: localization?.legalEntity?.legalName ?? "CodeDay",
+    });
+    const nonprofit = m.topo_footer_nonprofit();
+    const maintainedBy = m.topo_footer_maintained_by();
+
 
     const customLinks = childrenOfType(children, CustomLinks);
     const customText = childrenOfType(children, CustomText);
@@ -115,33 +158,35 @@ const Footer = forwardRef(
                 customText
               ) : (
                 <Text>
-                  {typeof copyright === "string"
-                    ? copyright.replace("{currentYear}", new Date().getFullYear().toString())
-                    : copyright}
+                  {copyright}
                   <br />
-                  {nonprofit}{" "}
-                  <CopyText fontFamily="monospace" label="US EIN: ">
-                    26-4742589
-                  </CopyText>
+                    {nonprofit}{" "}
+                    {localization?.legalEntity && (
+                      <CopyText
+                        fontFamily="monospace"
+                        label={`${localization?.name} ${localization?.legalEntity?.identifierName}: `}
+                        children={localization?.legalEntity?.identifier}
+                      />
+                    )}
                   <br />
-                  {localizationContact &&
-                    (localizationContact.contactDefaultValue === "whatsapp" ? (
+                  {localization &&
+                    (localization.contactDefaultValue === "whatsapp" ? (
                       <Link
-                        href={`https://api.whatsapp.com/send?phone=${localizationContact.contactDefaultValue.replace(
+                        href={`https://api.whatsapp.com/send?phone=${localization.contactDefaultValue.replace(
                           /[^0-9]/g,
                           "",
                         )}`}
                       >
-                        {localizationContact.contactDefaultValue}
+                        {localization.contactDefaultValue}
                       </Link>
                     ) : (
                       <Link
-                        href={`tel:${localizationContact.contactDefaultValue.replace(
+                        href={`tel:${localization.contactDefaultValue.replace(
                           /[^0-9]/g,
                           "",
                         )}`}
                       >
-                        {localizationContact.contactDefaultValue}
+                        {localization.contactDefaultValue}
                       </Link>
                     ))}
                 </Text>
@@ -153,7 +198,7 @@ const Footer = forwardRef(
                 target={isMainSite ? undefined : "_blank"}
                 rel="noopener"
               >
-                Terms of Service
+                {m.topo_footer_terms_of_service()}
               </Link>
               <br />
               <Link
@@ -161,7 +206,7 @@ const Footer = forwardRef(
                 target={isMainSite ? undefined : "_blank"}
                 rel="noopener"
               >
-                Privacy Policy
+                {m.topo_footer_privacy_policy()}
               </Link>
               <br />
               <Link
@@ -169,7 +214,7 @@ const Footer = forwardRef(
                 target={isMainSite ? undefined : "_blank"}
                 rel="noopener"
               >
-                Cookie Policy
+                {m.topo_footer_cookie_policy()}
               </Link>
               <br />
               <Link
@@ -177,7 +222,7 @@ const Footer = forwardRef(
                 target={isMainSite ? undefined : "_blank"}
                 rel="noopener"
               >
-                Disclaimer
+                {m.topo_footer_disclaimer()}
               </Link>
               <br />
               <Link
@@ -189,7 +234,7 @@ const Footer = forwardRef(
               </Link>
               <br />
               <Link as="a" onClick={() => ucUi?.showSecondLayer()} id="usercentrics-psl">
-                Privacy Settings
+                {m.topo_footer_privacy_settings()}
               </Link>
             </Box>
           </Box>
@@ -198,21 +243,24 @@ const Footer = forwardRef(
             marginTop={{ base: customLinks.length > 0 ? 6 : "", md: 0 }}
           >
             {customLinks.length > 0 && (
-              <Heading as="h2" fontSize="xl">
+              <Heading as="h2" fontSize="lg">
                 {customHeading}
               </Heading>
             )}
             {customLinks}
           </Box>
           <Box>
-            <Heading as="h2" fontSize="xl">
+            <Heading as="h2" fontSize="lg">
               {resourcesHeading}
             </Heading>
-            <StandardLinks domainName={domainName} />
+            <StandardLinks
+              links={cmsData?.cms?.sites?.items}
+              domainName={domainName}
+            />
           </Box>
         </Grid>
       </Content>
     );
-  },
+  }
 );
 export { Footer };

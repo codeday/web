@@ -1,10 +1,10 @@
 import { Box, Text, Button, Grid } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import { useColorMode } from "@codeday/topo/Theme";
+import { useColorMode, usePageData } from "@codeday/topo/Theme";
 import { DateTime } from "luxon";
 import React from "react";
 
-import { useQuery } from "../../query";
+
 
 const fromIso = (s: string) => {
   var b = s.split(/\D+/).map(Number);
@@ -16,7 +16,7 @@ export default function Announcement(props: any) {
   const {
     cms: { announcements },
     announcementWebinar: { events },
-  } = useQuery();
+  } = usePageData();
 
   const now = new Date();
   const webinarAnnouncementEndDate = new Date().setDate(now.getDate() + 2);

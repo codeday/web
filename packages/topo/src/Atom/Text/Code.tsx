@@ -19,8 +19,7 @@ interface CodeProps {
   [key: string]: any;
 }
 
-const Code: ComponentWithAs<"p", CodeProps> = React.forwardRef<HTMLElement, CodeProps>(
-  ({ children, ...props }, ref) => {
+const Code: ComponentWithAs<"p", CodeProps> = (({ children, ref, ...props }: any) => {
     const bg = useColorModeValue("gray.50", "gray.800");
     const borderColor = useColorModeValue("gray.100", "gray.800");
     return (
@@ -41,8 +40,7 @@ const Code: ComponentWithAs<"p", CodeProps> = React.forwardRef<HTMLElement, Code
         {children}
       </Text>
     );
-  },
-) as ComponentWithAs<"p", CodeProps>;
+}) as ComponentWithAs<"p", CodeProps>;
 
 Code.displayName = "Code";
 export { Code, type CodeProps };

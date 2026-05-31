@@ -1,5 +1,5 @@
 import { Text, Heading, Link, Box, List, ListItem } from "@codeday/topo/Atom";
-import { Content } from "@codeday/topo/Molecule";
+import { Content, ContentfulRichText } from "@codeday/topo/Molecule";
 import { apiFetch } from "@codeday/topo/utils";
 import { UiArrowRight } from "@codeday/topocons";
 import { print } from "graphql";
@@ -7,7 +7,6 @@ import { DateTime } from "luxon";
 import { GetStaticProps, GetStaticPaths } from "next";
 import React from "react";
 
-import ContentfulRichText from "../../../components/ContentfulRichText";
 import Page from "../../../components/Page";
 import { HelpArticleQuery, HelpArticlePathsQuery } from "./article.gql";
 
