@@ -12,6 +12,7 @@ import {
   Button,
 } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
+import { usePageData } from "@codeday/topo/Theme";
 import { apiFetch } from "@codeday/topo/utils";
 import {
   FileDb as FileDbIcon,
@@ -30,7 +31,6 @@ import { useRouter } from "next/router";
 import Markdown from "react-markdown";
 
 import Page from "../../../components/Page";
-import { usePageData } from "@codeday/topo/Theme";
 import Error404 from "../../404";
 import { PublicationQuery, ListPublicationsQuery } from "./index.gql";
 
@@ -203,6 +203,7 @@ export default function Home() {
                   display="inline-block"
                   colorPalette="blue"
                   size="lg"
+                  height="16"
                   {...({ href: files.items[0].contentfulBaseUrl } as any)}
                 >
                   <Text mb={0} mt={1.5}>
