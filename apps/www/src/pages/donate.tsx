@@ -16,7 +16,7 @@ export default function Donate() {
   return (
     <Page title="Donate" slug="/donate">
       <Content maxWidth="container.sm">
-        <Heading as="h2" fontSize="5xl" mt={-2} mb={8}>
+        <Heading as="h2" fontSize="5xl" mt={-2} mb={8} lineHeight="1">
           {m.www_donate_heading()}
         </Heading>
         <Text>
