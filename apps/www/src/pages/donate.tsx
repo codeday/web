@@ -50,9 +50,6 @@ export default function Donate() {
         <Heading as="h2" fontSize="5xl" mt={-2} mb={8} lineHeight="1">
           {m.www_donate_form_heading()}
         </Heading>
-        <Text mb={4}>
-          {m.www_donate_form_description({ mission: mission?.items?.[0]?.value.toLowerCase() })}
-        </Text>
 
         <DonateBox mb={12} />
 
@@ -70,11 +67,11 @@ export default function Donate() {
           </Text>
         </Text>
 
-        <DonateBox />
-
-        <Text mb={12} fontSize="xl" p={2} bg="yellow">
+        <Text mb={4} fontSize="xl" p={2} bg="yellow">
           {m.www_donate_impact_line()}
         </Text>
+
+        <DonateBox mb={12} />
 
         <Heading as="h2" fontSize="4xl" mb={4} lineHeight="1">
           {m.www_donate_stories_heading()}
@@ -85,7 +82,11 @@ export default function Donate() {
         </Text>
 
         <StoryList />
- 
+
+        <Text mb={4} fontSize="xl" fontWeight="bold">
+          {m.www_donate_stories_closing()}
+        </Text>
+
         <DonateBox />
       </Content>
     </Page>
