@@ -7,7 +7,8 @@ import { print } from "graphql";
 import { GetStaticProps } from "next";
 
 import EmploymentChart from "../components/Donate/EmploymentChart";
-import StoryCarousel from "../components/Donate/StoryCarousel";
+import PrestigeGapChart from "../components/Donate/PrestigeGapChart";
+import StoryList from "../components/Donate/StoryList";
 import Page from "../components/Page";
 import { DonateQuery } from "./donate.gql";
 
@@ -53,7 +54,6 @@ export default function Donate() {
           {m.www_donate_form_description({ mission: mission?.items?.[0]?.value.toLowerCase() })}
         </Text>
 
-        {/* Donate #1 */}
         <DonateBox mb={12} />
 
         <Heading as="h3" fontSize="4xl" mb={4} lineHeight="1.1">
@@ -61,24 +61,31 @@ export default function Donate() {
         </Heading>
 
         <EmploymentChart mb={8} />
+        <PrestigeGapChart mb={8} />
 
-        <Text fontSize="lg" mb={12}>
+        <Text fontSize="lg" mb={4}>
           {m.www_donate_description()}{" "}
           <Text as="span" fontWeight="bold">
             {m.www_donate_impact_students()}
           </Text>
         </Text>
 
-        <Heading as="h3" fontSize="2xl" mb={4}>
-          {m.www_donate_stories_heading()}
-        </Heading>
-        <StoryCarousel mb={12} />
+        <DonateBox />
 
-        <Text mb={4} fontSize="lg">
+        <Text mb={12} fontSize="xl" p={2} bg="yellow">
           {m.www_donate_impact_line()}
         </Text>
 
-        {/* Donate #2 */}
+        <Heading as="h2" fontSize="4xl" mb={4} lineHeight="1">
+          {m.www_donate_stories_heading()}
+        </Heading>
+
+        <Text mb={4} fontSize="xl">
+          {m.www_donate_stories_description()}
+        </Text>
+
+        <StoryList />
+ 
         <DonateBox />
       </Content>
     </Page>
