@@ -35,7 +35,7 @@ export default function EmploymentChart(props: any) {
 
   return (
     <Box {...props}>
-      <Text mb={4} fontSize="sm" fontWeight="bold" color="current.textLight">
+      <Text mb={4} fontSize="md" color="current">
         {m.www_donate_chart_employment_heading()}
       </Text>
 

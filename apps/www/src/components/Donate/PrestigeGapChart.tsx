@@ -27,7 +27,7 @@ export default function PrestigeGapChart(props: any) {
   const mostRecentYear = SHORTLIST_ONLY_BY_YEAR[SHORTLIST_ONLY_BY_YEAR.length - 1].year;
   return (
     <Box {...props}>
-      <Text mb={4} fontSize="sm" fontWeight="bold" color="current.textLight">
+      <Text mb={4} fontSize="md" color="current">
         {m.www_donate_chart_prestige_heading()}
       </Text>
 
