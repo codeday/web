@@ -1,12 +1,12 @@
+import * as m from "@codeday/i18n/messages";
 import { Box, CodeDay } from "@codeday/topo/Atom";
 import { Header, SiteLogo, Main, Menu, Footer } from "@codeday/topo/Organism";
-import * as m from "@codeday/i18n/messages";
+import { usePageData } from "@codeday/topo/Theme";
 import { DefaultSeo } from "next-seo";
 import Head from "next/head";
 import React, { ReactNode } from "react";
 
 import { useFundraise } from "../../providers";
-import { usePageData } from "@codeday/topo/Theme";
 import DisclaimerFooter from "./DisclaimerFooter";
 import NavMenu from "./NavMenu";
 
@@ -19,10 +19,11 @@ interface PageProps {
   slug?: string;
   seo?: any;
   fun?: boolean;
+  minimal?: boolean;
   [key: string]: any;
 }
 
-export default function Page({ children, title, darkHeader, slug, seo }: PageProps) {
+export default function Page({ children, title, darkHeader, slug, seo, minimal }: PageProps) {
   const { cms } = usePageData();
   const { mission } = cms || {};
   const { isFundraiseLoaded } = useFundraise();
@@ -63,13 +64,13 @@ export default function Page({ children, title, darkHeader, slug, seo }: PagePro
               </Box>
             </a>
           </SiteLogo>
-          <Menu>
-            <NavMenu isFundraiseLoaded={isFundraiseLoaded} />
-          </Menu>
+          {/* Header's child handling chokes on a bare `false` child, so keep
+              <Menu> itself always present and hide its contents instead. */}
+          <Menu>{!minimal && <NavMenu isFundraiseLoaded={isFundraiseLoaded} />}</Menu>
         </Header>
         <Main>{children}</Main>
         <Box mt={16}>
-          <DisclaimerFooter disclaimerTexts={disclaimerTexts} />
+          {!minimal && <DisclaimerFooter disclaimerTexts={disclaimerTexts} />}
           <Footer repository="web" branch="master" domainName="www.codeday.org">
             {""}
           </Footer>
