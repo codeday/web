@@ -18,7 +18,7 @@ export const ALUMNI_STORIES: AlumniStory[] = [
     thenLabel: "Student at Bellevue College",
     nowLabel: "Software Engineer II at Boeing",
     quote:
-      "As an international student in a programming major, you guys totally helped me start my career path! I had CodeDay Labs as my first experience, Meta as my second, and Microsoft as my third — and this last one gave me a full-time return offer.",
+      "As an international student in a programming major, you guys totally helped me to start my wonderful career path! In a three years degree, I had you guys as my first experience, Meta as my second, and Microsoft as my third, and this last one gave me a full time return offer.",
   },
   {
     name: "Kelly Dong",
