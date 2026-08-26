@@ -19,11 +19,10 @@ interface PageProps {
   slug?: string;
   seo?: any;
   fun?: boolean;
-  minimal?: boolean;
   [key: string]: any;
 }
 
-export default function Page({ children, title, darkHeader, slug, seo, minimal }: PageProps) {
+export default function Page({ children, title, darkHeader, slug, seo }: PageProps) {
   const { cms } = usePageData();
   const { mission } = cms || {};
   const { isFundraiseLoaded } = useFundraise();
@@ -64,13 +63,11 @@ export default function Page({ children, title, darkHeader, slug, seo, minimal }
               </Box>
             </a>
           </SiteLogo>
-          {/* Header's child handling chokes on a bare `false` child, so keep
-              <Menu> itself always present and hide its contents instead. */}
-          <Menu>{!minimal && <NavMenu isFundraiseLoaded={isFundraiseLoaded} />}</Menu>
+          <Menu><NavMenu isFundraiseLoaded={isFundraiseLoaded} /></Menu>
         </Header>
         <Main>{children}</Main>
         <Box mt={16}>
-          {!minimal && <DisclaimerFooter disclaimerTexts={disclaimerTexts} />}
+          <DisclaimerFooter disclaimerTexts={disclaimerTexts} />
           <Footer repository="web" branch="master" domainName="www.codeday.org">
             {""}
           </Footer>

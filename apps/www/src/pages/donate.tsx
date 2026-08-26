@@ -1,5 +1,5 @@
 import * as m from "@codeday/i18n/messages";
-import { Box, Grid, Heading, Image, Link, Text } from "@codeday/topo/Atom";
+import { Box, Grid, Heading, Image, Link, Skeleton, Text } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
 import { usePageData } from "@codeday/topo/Theme";
 import { apiFetch } from "@codeday/topo/utils";
@@ -7,17 +7,19 @@ import { print } from "graphql";
 import { GetStaticProps } from "next";
 
 import EmploymentChart from "../components/Donate/EmploymentChart";
-import PrestigeGapChart from "../components/Donate/PrestigeGapChart";
 import StoryList from "../components/Donate/StoryList";
 import Page from "../components/Page";
+import { useFundraise } from "../providers";
 import { DonateQuery } from "./donate.gql";
 
 function DonateBox(props: any) {
+  const { isFundraiseLoaded } = useFundraise();
+
   return (
     <Grid templateColumns={{ base: "1fr", sm: "2fr 1fr" }} gap={6} alignItems="center" {...props}>
-      <Box>
-        <a href="#XKKVUQAL" style={{ display: "none" }}></a>
-      </Box>
+      <Skeleton loading={!isFundraiseLoaded} minH="460px" borderRadius="md">
+        <a href="#XKKVUQAL"></a>
+      </Skeleton>
 
       <Box>
         <Grid templateColumns="repeat(2, 1fr)" gap={2} maxW="200px" mb={3}>
@@ -45,7 +47,7 @@ export default function Donate() {
   } = usePageData();
 
   return (
-    <Page title="Donate" slug="/donate" minimal>
+    <Page title="Donate" slug="/donate">
       <Content mt={-8} maxWidth="container.sm">
         <Heading as="h2" fontSize="5xl" mt={-2} mb={8} lineHeight="1">
           {m.www_donate_form_heading()}
