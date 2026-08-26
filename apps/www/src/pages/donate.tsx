@@ -58,7 +58,6 @@ export default function Donate() {
         </Heading>
 
         <EmploymentChart mb={8} />
-        <PrestigeGapChart mb={8} />
 
         <Text fontSize="lg" mb={4}>
           {m.www_donate_description()}{" "}
