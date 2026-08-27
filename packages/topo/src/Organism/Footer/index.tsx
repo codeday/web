@@ -111,7 +111,7 @@ export interface FooterProps extends BoxProps {
 
 const Footer = (
   ({ children, repository, owner, branch, domainName, ref, ...props }: FooterProps & { ref?: React.Ref<any> }) => {
-    const { ucUi } = useCmp();
+    const { ucUi, isCmpBlocked } = useCmp();
     const locale = fixLocaleCasing(getLocale());
     const region = useRegion();
     const { data: cmsData, isLoading } = useApi({ query, variables: { locale, region } });
@@ -232,10 +232,14 @@ const Footer = (
               >
                 {ccpaLink}
               </Link>
-              <br />
-              <Link as="a" onClick={() => ucUi?.showSecondLayer()} id="usercentrics-psl">
-                {m.topo_footer_privacy_settings()}
-              </Link>
+              {!isCmpBlocked && (
+                <>
+                  <br />
+                  <Link as="a" onClick={() => ucUi?.showSecondLayer()} id="usercentrics-psl">
+                    {m.topo_footer_privacy_settings()}
+                  </Link>
+                </>
+              )}
             </Box>
           </Box>
           <Box
