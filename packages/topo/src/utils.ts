@@ -255,7 +255,7 @@ export function useLocalStorage(key: string, initialValue: any) {
 
 export function awaitQuerySelectorAll(selector: string): Promise<NodeListOf<Element>> {
   return new Promise((resolve) => {
-    if (document.querySelectorAll(selector)) {
+    if (document.querySelectorAll(selector).length > 0) {
       return resolve(document.querySelectorAll(selector));
     }
 
@@ -278,7 +278,7 @@ export function subscribeQuerySelectorAll(
   selector: string,
   callback: (elements: NodeListOf<Element>) => void,
 ): () => void {
-  if (document.querySelectorAll(selector)) {
+  if (document.querySelectorAll(selector).length > 0) {
     callback(document.querySelectorAll(selector));
   }
 

@@ -1,12 +1,12 @@
+import * as m from "@codeday/i18n/messages";
 import { Box, CodeDay } from "@codeday/topo/Atom";
 import { Header, SiteLogo, Main, Menu, Footer } from "@codeday/topo/Organism";
-import * as m from "@codeday/i18n/messages";
+import { usePageData } from "@codeday/topo/Theme";
 import { DefaultSeo } from "next-seo";
 import Head from "next/head";
 import React, { ReactNode } from "react";
 
 import { useFundraise } from "../../providers";
-import { usePageData } from "@codeday/topo/Theme";
 import DisclaimerFooter from "./DisclaimerFooter";
 import NavMenu from "./NavMenu";
 
@@ -63,9 +63,7 @@ export default function Page({ children, title, darkHeader, slug, seo }: PagePro
               </Box>
             </a>
           </SiteLogo>
-          <Menu>
-            <NavMenu isFundraiseLoaded={isFundraiseLoaded} />
-          </Menu>
+          <Menu><NavMenu isFundraiseLoaded={isFundraiseLoaded} /></Menu>
         </Header>
         <Main>{children}</Main>
         <Box mt={16}>
