@@ -68,7 +68,7 @@ export default function Donate() {
           </Text>
         </Text>
 
-        <Text mb={4} fontSize="xl" p={2} bg="yellow">
+        <Text mb={4} fontSize="xl" p={2} color="current.textLight" bg="yellow" >
           {m.www_donate_impact_line()}
         </Text>
 
