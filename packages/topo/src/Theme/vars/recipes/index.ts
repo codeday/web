@@ -5,6 +5,7 @@ import { buttonRecipe } from "./button";
 import { cardSlotRecipe } from "./card";
 import { chipSlotRecipe } from "./chip";
 import { dialogSlotRecipe } from "./dialog";
+import { fieldSlotRecipe } from "./field";
 import {
   checkboxSlotRecipe,
   inputRecipe,
@@ -56,4 +57,5 @@ export const slotRecipes = {
   table: tableSlotRecipe,
   progress: progressSlotRecipe,
   switch: switchSlotRecipe,
+  field: fieldSlotRecipe,
 };
