@@ -1,5 +1,5 @@
 import { create as createRandom } from "random-seed";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 // ---------------------------------------------------------------------------
 // Grain (.spec.md §5) — a noise overlay used in `mix-blend-mode: overlay`.
@@ -91,3 +91,65 @@ export const grainPresets = {
   badge: { tileSizePx: 34, opacity: 0.3 },
   slide: { tileFractionMultiplier: 2, opacity: 0.55 },
 } as const;
+
+export interface FieldGrainOverlay {
+  /** Attach to the actual DOM node whose width the tile should be sized to. */
+  ref: (node: HTMLElement | null) => void;
+  /** Merge into a `css` prop; `null` until measured (nothing to show yet). */
+  overlayCss: Record<string, unknown> | null;
+}
+
+/**
+ * Grain sized as a fraction of the FIELD'S OWN width (.spec.md §5: "7% of
+ * field width"), not a fixed tile stretched/shrunk via CSS `background-size`
+ * percentages. That distinction matters: a fixed-size tile scaled down via
+ * `background-size: 7% auto` gets smoothed by the browser's image scaling —
+ * heavily, the smaller the element — which low-pass-filters the noise into
+ * near-uniform grey and makes it disappear (an overlay blend against flat
+ * 128 grey is a no-op by design). Generating the tile AT the computed pixel
+ * size and tiling it at `background-size: <n>px <n>px` (1:1, native
+ * resolution, `background-repeat` stays the default `repeat`) avoids any
+ * resampling. Uses the same ResizeObserver-measures-then-generate pattern as
+ * `GradientField`'s mesh blur.
+ */
+export function useFieldGrain(tileFraction: number, opacity: number, seed: string): FieldGrainOverlay {
+  const elRef = useRef<HTMLElement | null>(null);
+  const [tileSize, setTileSize] = useState<number | null>(null);
+
+  const ref = useCallback((node: HTMLElement | null) => {
+    elRef.current = node;
+  }, []);
+
+  useEffect(() => {
+    const el = elRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return undefined;
+    const observer = new ResizeObserver(([entry]) => {
+      const { width } = entry.contentRect;
+      if (width > 0) setTileSize(Math.max(4, Math.round(width * tileFraction)));
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [tileFraction]);
+
+  // `tileSize` is null on the server and on the client's first render (before
+  // ResizeObserver has fired), so `overlayCss` is null then too — server and
+  // first client render match, same as `useGrainDataUri`'s mount gate.
+  if (tileSize === null) return { ref, overlayCss: null };
+
+  const uri = generateGrainDataUri(tileSize, seed);
+  return {
+    ref,
+    overlayCss: {
+      "&::after": {
+        content: '""',
+        position: "absolute",
+        inset: 0,
+        backgroundImage: `url("${uri}")`,
+        backgroundSize: `${tileSize}px ${tileSize}px`,
+        opacity,
+        mixBlendMode: "overlay",
+        pointerEvents: "none",
+      },
+    },
+  };
+}

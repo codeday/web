@@ -1,7 +1,7 @@
 import { CloseButton, Dialog as ChakraDialog, type DialogRootProps } from "@chakra-ui/react";
 import React from "react";
 
-import { useGrainDataUri } from "../../Theme/vars/grain";
+import { useFieldGrain } from "../../Theme/vars/grain";
 
 // .spec.md §4.5 — Modal, built on Chakra v3's Dialog (v3's renamed Modal;
 // Topo didn't have one before — the app used react-responsive-modal
@@ -19,28 +19,16 @@ export const Modal = React.forwardRef<HTMLDivElement, DialogRootProps>((props, r
 Modal.displayName = "Modal";
 
 export const ModalHeader = React.forwardRef<HTMLDivElement, React.ComponentProps<typeof ChakraDialog.Header>>(
-  ({ css, ...props }, ref) => {
-    const grainUri = useGrainDataUri(32, "modal-header");
+  ({ css, ...props }, forwardedRef) => {
+    const { ref: grainRef, overlayCss } = useFieldGrain(0.07, 0.5, "modal-header");
     return (
       <ChakraDialog.Header
-        ref={ref}
-        css={{
-          ...(grainUri
-            ? {
-                "&::after": {
-                  content: '""',
-                  position: "absolute",
-                  inset: 0,
-                  backgroundImage: `url("${grainUri}")`,
-                  backgroundSize: "7% auto",
-                  opacity: 0.5,
-                  mixBlendMode: "overlay",
-                  pointerEvents: "none",
-                },
-              }
-            : {}),
-          ...(css as object),
+        ref={(node: HTMLDivElement | null) => {
+          grainRef(node);
+          if (typeof forwardedRef === "function") forwardedRef(node);
+          else if (forwardedRef) (forwardedRef as React.RefObject<HTMLDivElement | null>).current = node;
         }}
+        css={{ ...overlayCss, ...(css as object) }}
         {...props}
       />
     );

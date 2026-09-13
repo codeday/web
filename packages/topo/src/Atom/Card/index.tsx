@@ -1,7 +1,7 @@
 import { Card as ChakraCard, type CardRootProps } from "@chakra-ui/react";
 import React from "react";
 
-import { useGrainDataUri } from "../../Theme/vars/grain";
+import { useFieldGrain } from "../../Theme/vars/grain";
 
 export interface CardProps extends Omit<CardRootProps, "variant"> {
   variant?: "elevated" | "outline" | "subtle" | "plain";
@@ -14,31 +14,21 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => 
 ));
 Card.displayName = "Card";
 
-// The gradient field — grain overlay at opacity .5 (.spec.md §4.5), which
-// needs the generated data URI a static recipe can't produce.
+// The gradient field — grain overlay at opacity .5 (.spec.md §4.5), sized
+// as 7% of the field's own width (not a fixed tile scaled via CSS
+// background-size, which the browser's downsampling smooths into
+// near-invisibility — see `useFieldGrain`).
 export const CardHeader = React.forwardRef<HTMLDivElement, React.ComponentProps<typeof ChakraCard.Header>>(
-  ({ css, ...props }, ref) => {
-    const grainUri = useGrainDataUri(32, "card-header");
+  ({ css, ...props }, forwardedRef) => {
+    const { ref: grainRef, overlayCss } = useFieldGrain(0.07, 0.5, "card-header");
     return (
       <ChakraCard.Header
-        ref={ref}
-        css={{
-          ...(grainUri
-            ? {
-                "&::after": {
-                  content: '""',
-                  position: "absolute",
-                  inset: 0,
-                  backgroundImage: `url("${grainUri}")`,
-                  backgroundSize: "7% auto",
-                  opacity: 0.5,
-                  mixBlendMode: "overlay",
-                  pointerEvents: "none",
-                },
-              }
-            : {}),
-          ...(css as object),
+        ref={(node: HTMLDivElement | null) => {
+          grainRef(node);
+          if (typeof forwardedRef === "function") forwardedRef(node);
+          else if (forwardedRef) (forwardedRef as React.RefObject<HTMLDivElement | null>).current = node;
         }}
+        css={{ ...overlayCss, ...(css as object) }}
         {...props}
       />
     );
