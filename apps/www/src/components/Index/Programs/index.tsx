@@ -72,7 +72,7 @@ export default function Programs() {
           </Text>
           <Text mb={4} fontSize="sm">
             ({m.www_programs_nothing_planned()}{" "}
-            <Link color="red.600" href="https://event.codeday.org/organize">
+            <Link color="red.700" href="https://event.codeday.org/organize">
               {m.www_programs_organize()}
             </Link>
             )

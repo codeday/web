@@ -36,7 +36,7 @@ export default function Testimonials({ seed, ...props }: TestimonialsProps) {
               &ldquo;{t.quote}&rdquo;
             </Text>
             <Grid templateColumns="1fr 100%" alignItems="center" mt={4} gap={4}>
-              <Box rounded="full" overflow="hidden" w={8} h={8} backgroundColor="gray.200">
+              <Box rounded="full" overflow="hidden" w={8} h={8} backgroundColor="gray.100">
                 <Image src={t.image?.url} alt="" w="100%" />
               </Box>
               <Text mb={0}>

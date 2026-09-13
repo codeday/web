@@ -36,7 +36,7 @@ export default function ProgramInfoCheck({ program, disabled }: ProgramInfoCheck
           <Box fontSize="3xl" fontWeight="bold" mb={4}>
             <Image src={program.logo.url} height="1em" alt="" display="inline" /> {program.name}
             {program.virtual && (
-              <Box fontWeight="bold" color="red.600" fontSize="md">
+              <Box fontWeight="bold" color="red.700" fontSize="md">
                 Online volunteer opportunity.
               </Box>
             )}

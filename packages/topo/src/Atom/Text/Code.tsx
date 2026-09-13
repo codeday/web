@@ -20,8 +20,10 @@ interface CodeProps {
 }
 
 const Code: ComponentWithAs<"p", CodeProps> = (({ children, ref, ...props }: any) => {
-    const bg = useColorModeValue("gray.50", "gray.800");
-    const borderColor = useColorModeValue("gray.100", "gray.800");
+    // gray.50/.800 no longer exist in the new six-stop scale
+    // (100/300/500/600/700/900) — repointed to the nearest stop by role.
+    const bg = useColorModeValue("gray.100", "gray.700");
+    const borderColor = useColorModeValue("gray.100", "gray.700");
     return (
       <Text
         {...props}

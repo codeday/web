@@ -55,7 +55,7 @@ export default function Press({ seed }: PressProps) {
               mb={4}
               borderWidth={1}
               borderColor="blue.600"
-              bg="blue.50"
+              bg="blue.100"
               color="blue.900"
             >
               <Heading as="h3" fontSize="lg" mb={4} fontWeight="bold">

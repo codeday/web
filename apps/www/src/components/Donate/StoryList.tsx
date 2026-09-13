@@ -52,7 +52,7 @@ export default function StoryList(props: any) {
               overflow="hidden"
               w={16}
               h={16}
-              backgroundColor="gray.200"
+              backgroundColor="gray.100"
               flexShrink={0}
             >
               <Image src={story.photoUrl} alt={story.name} w="100%" />

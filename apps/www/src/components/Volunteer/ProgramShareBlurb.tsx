@@ -16,7 +16,7 @@ export default function ProgramShareBlurb({ program }: ProgramShareBlurbProps) {
     <>
       <Link as="div" onClick={() => setBlurbVisible(!blurbVisible)} position="relative" mt={4}>
         <Box textAlign="center">
-          <Box bg="current.bg" display="inline-block" p={4} color="blue.800">
+          <Box bg="current.bg" display="inline-block" p={4} color="blue.700">
             <Link as="div" display="inline-block" mr={2}>
               {blurbVisible ? "Hide" : "Share With Co-Workers"}
             </Link>

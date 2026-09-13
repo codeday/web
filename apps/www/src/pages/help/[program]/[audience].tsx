@@ -125,7 +125,7 @@ export default function Audience({ programWebname, audience }: AudienceProps) {
                 right={0}
                 textAlign="center"
                 textDecoration="underline"
-                color="blue.800"
+                color="blue.700"
                 pb={2}
               >
                 Read More

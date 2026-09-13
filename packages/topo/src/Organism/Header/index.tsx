@@ -47,7 +47,7 @@ const Header = ({
           <Box
             marginBottom={noPadding ? 0 : 6}
             paddingBottom={noPadding ? 0 : 4}
-            borderBottomColor={darkBackground ? "whiteAlpha.300" : "gray.200"}
+            borderBottomColor={darkBackground ? "whiteAlpha.300" : "gray.300"}
             borderBottomWidth={underscore ? "1px" : 0}
           >
             <Box float="left">{logo}</Box>
@@ -87,7 +87,9 @@ const Header = ({
         left="0"
         zIndex="9000"
         overflowY="auto"
-        background={useColorModeValue("white", "gray.1100")}
+        // gray.1100 is removed from the palette (.spec.md §2.1 step 5) — same
+        // dark-mode value, hardcoded rather than a palette stop.
+        background={useColorModeValue("white", "#292929")}
       >
         <Box
           textAlign="right"

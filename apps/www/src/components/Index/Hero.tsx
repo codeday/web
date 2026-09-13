@@ -52,7 +52,7 @@ export default function Hero({ ...props }: any) {
           {twitch?.username ? (
             <Box>
               <Box fontWeight="bold">
-                <Box as="span" color="red.600">
+                <Box as="span" color="red.700">
                   <Broadcast style={{ position: "relative", top: "-0.15em" }} /> LIVE
                   {twitch.title && ": "}
                 </Box>

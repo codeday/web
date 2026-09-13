@@ -40,7 +40,7 @@ export default function ProgramInfo({ program }: ProgramInfoProps) {
         <Box>
           <ContentfulRichText json={program.volunteerDetails.json} />
           {program.virtual && (
-            <Box fontWeight="bold" color="red.600">
+            <Box fontWeight="bold" color="red.700">
               Online volunteer opportunity.
             </Box>
           )}

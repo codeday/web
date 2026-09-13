@@ -52,7 +52,7 @@ export default function Home() {
           </Box>
           {sidebar && (
             <Box>
-              <Box bg="blue.50" color="blue.900" borderColor="blue.600" borderWidth={1} p={4}>
+              <Box bg="blue.100" color="blue.900" borderColor="blue.600" borderWidth={1} p={4}>
                 <ContentfulRichText json={sidebar?.json ?? {}} links={sidebar.links} h1Size="2xl" />
               </Box>
             </Box>

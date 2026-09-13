@@ -97,16 +97,19 @@ const colorTokens = {
 const semanticColorTokens = {
   current: {
     // Backgrounds
+    // gray.1100 is removed from the palette (.spec.md §2.1 step 5) — the
+    // dark-mode ground is hardcoded here at its old value rather than being
+    // a palette stop; picking a new one is a separate decision.
     bg: {
       value: {
         base: "{colors.white}",
-        _dark: "{colors.gray.1100}",
+        _dark: "#292929",
       },
     },
     background: {
       value: {
         base: "{colors.white}",
-        _dark: "{colors.gray.1100}",
+        _dark: "#292929",
       },
     },
 
@@ -142,13 +145,13 @@ const semanticColorTokens = {
     // Borders
     border: {
       value: {
-        base: "{colors.gray.200}",
+        base: "{colors.gray.300}",
         _dark: "{colors.whiteAlpha.300}",
       },
     },
     borderColor: {
       value: {
-        base: "{colors.gray.200}",
+        base: "{colors.gray.300}",
         _dark: "{colors.whiteAlpha.300}",
       },
     },

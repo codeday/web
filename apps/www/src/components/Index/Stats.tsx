@@ -55,7 +55,7 @@ export default function Stats(props: any) {
   const labsStudentCount = statTotalOutcomes.find((o: any) => o.key === "studentCount");
 
   return (
-    <Content full bg={colorMode === "light" ? "red.50" : "red.900"} pt={4} pb={2} {...props}>
+    <Content full bg={colorMode === "light" ? "red.100" : "red.900"} pt={4} pb={2} {...props}>
       <Content>
         <Grid
           templateColumns={{ base: "repeat(3, 1fr)", md: "repeat(4, 1fr)", lg: "repeat(5, 1fr)" }}
