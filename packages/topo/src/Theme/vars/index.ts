@@ -224,7 +224,6 @@ const config = defineConfig({
       fonts: {
         body: { value: fonts.body },
         heading: { value: fonts.heading },
-        accent: { value: fonts.accent },
         mono: { value: fonts.mono },
         logo: { value: fonts.logo },
       },

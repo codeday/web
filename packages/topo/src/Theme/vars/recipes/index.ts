@@ -24,6 +24,7 @@ import {
   tabsSlotRecipe,
 } from "./misc";
 import { tooltipSlotRecipe } from "./tooltip";
+import { headingRecipe } from "./typography";
 
 // .spec.md §0 — recipes live here (split into per-component files once this
 // got long), not in `vars/components.ts` (which stays the empty stub the
@@ -34,6 +35,7 @@ export const recipes = {
   badge: badgeRecipe,
   input: inputRecipe,
   textarea: textareaRecipe,
+  heading: headingRecipe,
 };
 
 export const slotRecipes = {

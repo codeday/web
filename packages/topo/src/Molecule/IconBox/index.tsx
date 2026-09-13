@@ -39,7 +39,7 @@ const IconBox: ComponentWithAs<"div", BoxProps> = pureRef<BoxProps, "div">(
         {React.Children.map(
           wrapHtml(headerText) as React.ReactElement[],
           setChildProps(null, {
-            fontFamily: "accent",
+            fontFamily: "heading",
             fontSize: "3xl",
             marginBottom: 2,
           }),

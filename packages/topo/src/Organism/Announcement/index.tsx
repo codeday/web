@@ -120,7 +120,7 @@ function Announcement({ box, ...props }: AnnouncementProps) {
         target={item.link ? "_blank" : null}
         {...(props as any)}
       >
-        <Text fontFamily="accent" fontSize="4xl" lineHeight={1.2}>
+        <Text fontFamily="heading" fontSize="4xl" lineHeight={1.2}>
           {item.title}
         </Text>
         <Text>{item.oneline}</Text>

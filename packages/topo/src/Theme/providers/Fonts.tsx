@@ -33,15 +33,6 @@ const fontCss = css`
     font-display: swap;
   }
   @font-face {
-    font-family: "Gosha Sans";
-    font-weight: 700;
-    src:
-      url("https://f1.codeday.org/topo/fonts/GoshaSans-Bold.woff2") format("woff2"),
-      url("https://f1.codeday.org/topo/fonts/GoshaSans-Bold.woff") format("woff"),
-      url("https://f1.codeday.org/topo/fonts/GoshaSans-Bold.ttf") format("truetype");
-    font-display: swap;
-  }
-  @font-face {
     font-family: "Fira Code";
     src:
       url("https://f1.codeday.org/topo/fonts/firacode-bold-webfont.woff2") format("woff2"),
