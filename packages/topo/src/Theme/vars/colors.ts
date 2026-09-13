@@ -67,6 +67,19 @@ export const gradientButtonStops = {
 
 export const GRADIENT_BUTTON_POSITIONS = [0, 62, 100] as const;
 
+// Badge `gradient` variant fills (.spec.md §4.2) — its own hand-tuned
+// two-color set, not the general deep/mid stops. Marmalade has no approved
+// value (it's reserve, not in rotation per §1) — falls back to its own
+// deep/mid stops so the token still resolves for every ramp.
+export const badgeGradientStops: Record<GradientName, readonly [string, string]> = {
+  hibiscus: ["#6A1A43", "#A83A5C"],
+  hotsauce: ["#77240A", "#BC4A1A"],
+  blackberry: ["#59284E", "#9B4A4E"],
+  figjam: ["#472170", "#8A3A78"],
+  chilioil: ["#6B1620", "#A82A2E"],
+  marmalade: [gradientStops.marmalade[2], gradientStops.marmalade[3]],
+};
+
 const colors: Record<string, any> = {
   blackAlpha,
   whiteAlpha,

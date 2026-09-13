@@ -10,6 +10,7 @@ export * from "./Image";
 export * from "./Input";
 export * from "./List";
 export * from "./Logo";
+export * from "./Modal";
 export * from "./Popover";
 export * from "./Skelly";
 export * from "./Spinner";

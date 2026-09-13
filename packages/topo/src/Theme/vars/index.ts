@@ -1,9 +1,10 @@
-import { createSystem, defaultConfig, defineConfig, defineRecipe } from "@chakra-ui/react";
+import { createSystem, defaultConfig, defineConfig } from "@chakra-ui/react";
 
 import { defaultFontSizes } from "../../utils";
 import colors from "./colors";
 import fonts from "./fonts";
 import { buildGradientTokens } from "./gradients";
+import { recipes, slotRecipes } from "./recipes";
 
 // ---------------------------------------------------------------------------
 // Helper: recursively convert a nested colour object into Chakra v3 token
@@ -52,30 +53,35 @@ const paletteTokens = Object.fromEntries(
 );
 
 // ---------------------------------------------------------------------------
-// The six brand gradients (.spec.md §1.1): `gradient.<name>.full` /
-// `.button` (stop lists, angle stays at the call site) and
-// `colors.<name>.deep` / `.mid` (the 40%/62% stops as flat colours).
+// The six brand gradients (.spec.md §1.1): `<name>.deep` / `.mid` (the
+// 40%/62% stops as flat colours) and `<name>.gradient.full` / `.button`
+// (stop lists, angle stays at the call site). Nested under each ramp name
+// (rather than a separate top-level `gradient.*` namespace) so Chakra's
+// `colorPalette` prop can address them — a section wrapper sets
+// `colorPalette="figjam"` once and every descendant recipe referencing
+// `colorPalette.gradient.button` picks it up (.spec.md §4.1's per-section
+// primary fills).
 // ---------------------------------------------------------------------------
 const gradientTokenSets = buildGradientTokens();
 const rampColorTokens = Object.fromEntries(
-  Object.entries(gradientTokenSets).map(([name, { deep, mid }]) => [
+  Object.entries(gradientTokenSets).map(([name, { deep, mid, full, button, badgeGradient, criticalField }]) => [
     name,
-    { deep: { value: deep }, mid: { value: mid } },
+    {
+      deep: { value: deep },
+      mid: { value: mid },
+      badgeGradient: { value: badgeGradient },
+      gradient: {
+        full: { value: full },
+        button: { value: button },
+        critical: { value: criticalField },
+      },
+    },
   ]),
 );
-const gradientTokens = {
-  gradient: Object.fromEntries(
-    Object.entries(gradientTokenSets).map(([name, { full, button }]) => [
-      name,
-      { full: { value: full }, button: { value: button } },
-    ]),
-  ),
-};
 
 const colorTokens = {
   ...paletteTokens,
   ...rampColorTokens,
-  ...gradientTokens,
 
   // Scalar colours
   black: { value: colors.black as string },
@@ -186,51 +192,6 @@ export const Theme: Record<string, any> = {
 };
 
 // ---------------------------------------------------------------------------
-// Link recipe override
-// Chakra v3's default Link recipe forces color: "colorPalette.fg" on every
-// variant, which overrides the inherited text colour. We reset it to
-// "inherit" so a Link inside a coloured heading or button uses the same
-// colour as its parent without any extra prop needed.
-// ---------------------------------------------------------------------------
-const linkRecipe = defineRecipe({
-  // Put shared styles in base so they apply to all variants.
-  base: {
-    color: "inherit",
-    // Always-visible underline at low opacity; brightens to full on hover.
-    textDecoration: "underline",
-    textUnderlineOffset: "3px",
-    textDecorationColor: "currentColor/30",
-    _hover: {
-      textDecorationColor: "currentColor",
-    },
-  },
-  variants: {
-    variant: {
-      // Override every property the default recipe sets so nothing leaks through.
-      plain: {
-        color: "inherit",
-        textDecoration: "underline",
-        textUnderlineOffset: "3px",
-        textDecorationColor: "currentColor/30",
-        _hover: {
-          textDecoration: "underline",
-          textDecorationColor: "currentColor",
-        },
-      },
-      underline: {
-        color: "inherit",
-        textDecoration: "underline",
-        textUnderlineOffset: "3px",
-        textDecorationColor: "currentColor/30",
-        _hover: {
-          textDecorationColor: "currentColor",
-        },
-      },
-    },
-  },
-});
-
-// ---------------------------------------------------------------------------
 // Chakra v3 system
 // ---------------------------------------------------------------------------
 const config = defineConfig({
@@ -270,9 +231,8 @@ const config = defineConfig({
       colors: semanticColorTokens,
     },
 
-    recipes: {
-      link: linkRecipe,
-    },
+    recipes,
+    slotRecipes,
   },
 
   // ---------------------------------------------------------------------------

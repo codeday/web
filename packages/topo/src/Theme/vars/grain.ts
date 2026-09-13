@@ -1,4 +1,5 @@
 import { create as createRandom } from "random-seed";
+import { useEffect, useState } from "react";
 
 // ---------------------------------------------------------------------------
 // Grain (.spec.md §5) — a noise overlay used in `mix-blend-mode: overlay`.
@@ -65,6 +66,22 @@ export function generateGrainDataUri(tileSize: number, seed = "codeday-topo-grai
 
   const uri = canvas.toDataURL("image/png");
   cache.set(cacheKey, uri);
+  return uri;
+}
+
+/**
+ * React hook form of `generateGrainDataUri`. Returns `undefined` on the
+ * server and on the client's first render (so SSR and initial hydration
+ * markup match exactly, avoiding a hydration-mismatch warning), then flips
+ * to the real generated tile once mounted — the grain fades in as a normal
+ * post-hydration update rather than a mismatch.
+ */
+export function useGrainDataUri(tileSize: number, seed?: string): string | undefined {
+  const [uri, setUri] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    setUri(generateGrainDataUri(tileSize, seed));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tileSize, seed]);
   return uri;
 }
 

@@ -2,6 +2,7 @@ import {
   GRADIENT_BUTTON_POSITIONS,
   STOP_POSITIONS,
   type GradientName,
+  badgeGradientStops,
   gradientButtonStops,
   gradientStops,
 } from "./colors";
@@ -135,6 +136,10 @@ export interface GradientTokenSet {
   button: string;
   deep: string;
   mid: string;
+  badgeGradient: string;
+  /** Full ramp capped at 6.36 ("content sitting inside a field", §1.2) —
+   * for full-field white-text-throughout uses like Alert's `critical`. */
+  criticalField: string;
 }
 
 /** Build the full token set (.spec.md §1.1) for every named ramp. */
@@ -143,6 +148,7 @@ export function buildGradientTokens(): Record<GradientName, GradientTokenSet> {
   return Object.fromEntries(
     names.map((name) => {
       const stops = gradientStops[name];
+      const capped = capRamp(stops, 6.36);
       return [
         name,
         {
@@ -150,6 +156,8 @@ export function buildGradientTokens(): Record<GradientName, GradientTokenSet> {
           button: stopList(gradientButtonStops[name], GRADIENT_BUTTON_POSITIONS),
           deep: stops[2], // 40% stop
           mid: stops[3], // 62% stop
+          badgeGradient: badgeGradientStops[name].join(", "),
+          criticalField: capped.map(([color, position]) => `${color} ${position}%`).join(","),
         },
       ];
     }),
