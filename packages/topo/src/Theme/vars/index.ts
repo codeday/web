@@ -64,19 +64,22 @@ const paletteTokens = Object.fromEntries(
 // ---------------------------------------------------------------------------
 const gradientTokenSets = buildGradientTokens();
 const rampColorTokens = Object.fromEntries(
-  Object.entries(gradientTokenSets).map(([name, { deep, mid, full, button, badgeGradient, criticalField }]) => [
-    name,
-    {
-      deep: { value: deep },
-      mid: { value: mid },
-      badgeGradient: { value: badgeGradient },
-      gradient: {
-        full: { value: full },
-        button: { value: button },
-        critical: { value: criticalField },
+  Object.entries(gradientTokenSets).map(
+    ([name, { deep, mid, full, button, badgeGradient, criticalField, emptyState }]) => [
+      name,
+      {
+        deep: { value: deep },
+        mid: { value: mid },
+        badgeGradient: { value: badgeGradient },
+        gradient: {
+          full: { value: full },
+          button: { value: button },
+          critical: { value: criticalField },
+          emptyState: { value: emptyState },
+        },
       },
-    },
-  ]),
+    ],
+  ),
 );
 
 const colorTokens = {

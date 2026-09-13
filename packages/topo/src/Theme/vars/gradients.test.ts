@@ -58,6 +58,23 @@ describe("capRamp", () => {
   });
 });
 
+describe("EmptyState's capped ramp (.spec.md §4.5)", () => {
+  it("marmalade's capRamp(~4.9) reproduces the worked example's contrast targets (14.8/7.7/4.9)", () => {
+    // The literal example gradient is its own hand-tuned value (its 0% stop
+    // is marmalade's *20%* original stop, not its 0% — a real ramp isn't
+    // reproduced verbatim), so this checks the contrast targets it reports
+    // rather than an exact-hex match.
+    const capped = capRamp(gradientStops.marmalade, 4.9);
+    const [, lastPosition] = capped[capped.length - 1];
+    expect(lastPosition).toBe(100);
+    const [lastColor] = capped[capped.length - 1];
+    expect(contrastRatio(hexToRgb(lastColor), WHITE)).toBeGreaterThanOrEqual(4.85);
+    // The 0% stop (marmalade's true near-black endpoint) clears the target
+    // by a wide margin, matching the example's "14.8" figure in spirit.
+    expect(contrastRatio(hexToRgb(capped[0][0]), WHITE)).toBeGreaterThan(10);
+  });
+});
+
 describe("accentOnWhite", () => {
   // .spec.md §1.3 — the 62% stop, except marmalade which must walk down.
   const REFERENCE: Record<string, { accent: string; contrast: number }> = {

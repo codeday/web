@@ -3,6 +3,7 @@ import { alertSlotRecipe } from "./alert";
 import { badgeRecipe } from "./badge";
 import { buttonRecipe } from "./button";
 import { cardSlotRecipe } from "./card";
+import { chipSlotRecipe } from "./chip";
 import { dialogSlotRecipe } from "./dialog";
 import {
   checkboxSlotRecipe,
@@ -11,6 +12,16 @@ import {
   radioGroupSlotRecipe,
   textareaRecipe,
 } from "./forms";
+import {
+  avatarSlotRecipe,
+  breadcrumbSlotRecipe,
+  emptyStateSlotRecipe,
+  fileUploadSlotRecipe,
+  paginationSlotRecipe,
+  progressSlotRecipe,
+  tableSlotRecipe,
+  tabsSlotRecipe,
+} from "./misc";
 import { tooltipSlotRecipe } from "./tooltip";
 
 // .spec.md §0 — recipes live here (split into per-component files once this
@@ -32,4 +43,13 @@ export const slotRecipes = {
   checkbox: checkboxSlotRecipe,
   radioGroup: radioGroupSlotRecipe,
   nativeSelect: nativeSelectSlotRecipe,
+  chip: chipSlotRecipe,
+  tabs: tabsSlotRecipe,
+  breadcrumb: breadcrumbSlotRecipe,
+  pagination: paginationSlotRecipe,
+  avatar: avatarSlotRecipe,
+  emptyState: emptyStateSlotRecipe,
+  fileUpload: fileUploadSlotRecipe,
+  table: tableSlotRecipe,
+  progress: progressSlotRecipe,
 };

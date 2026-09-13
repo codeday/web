@@ -36,7 +36,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <STRICT_MODE_OR_FRAGMENT>
       <RegionProvider value={region}>
-        <ThemeProvider brandColor="red" useSystemColorMode cookies={pageProps.cookies}>
+        <ThemeProvider brandColor="hibiscus" useSystemColorMode cookies={pageProps.cookies}>
           <MarketingProvider>
             <FundraiseProvider>
               <PageDataProvider value={pageProps?.query || {}}>

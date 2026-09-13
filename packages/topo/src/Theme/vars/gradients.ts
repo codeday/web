@@ -140,6 +140,9 @@ export interface GradientTokenSet {
   /** Full ramp capped at 6.36 ("content sitting inside a field", §1.2) —
    * for full-field white-text-throughout uses like Alert's `critical`. */
   criticalField: string;
+  /** Capped at ~4.9 — matches the worked EmptyState example (§4.5), whose
+   * marmalade contrasts (14.8/7.7/4.9) land at that floor. */
+  emptyState: string;
 }
 
 /** Build the full token set (.spec.md §1.1) for every named ramp. */
@@ -148,7 +151,8 @@ export function buildGradientTokens(): Record<GradientName, GradientTokenSet> {
   return Object.fromEntries(
     names.map((name) => {
       const stops = gradientStops[name];
-      const capped = capRamp(stops, 6.36);
+      const criticalCapped = capRamp(stops, 6.36);
+      const emptyStateCapped = capRamp(stops, 4.9);
       return [
         name,
         {
@@ -157,7 +161,8 @@ export function buildGradientTokens(): Record<GradientName, GradientTokenSet> {
           deep: stops[2], // 40% stop
           mid: stops[3], // 62% stop
           badgeGradient: badgeGradientStops[name].join(", "),
-          criticalField: capped.map(([color, position]) => `${color} ${position}%`).join(","),
+          criticalField: criticalCapped.map(([color, position]) => `${color} ${position}%`).join(","),
+          emptyState: emptyStateCapped.map(([color, position]) => `${color} ${position}%`).join(","),
         },
       ];
     }),
