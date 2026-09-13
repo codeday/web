@@ -1,0 +1,6 @@
+{
+  "extends": "@codeday/tsconfig/nextjs.json",
+  "compilerOptions": {},
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", "tests"]
+}

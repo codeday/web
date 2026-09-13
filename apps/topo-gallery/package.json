@@ -1,0 +1,29 @@
+{
+  "name": "@codeday/topo-gallery",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Component gallery for @codeday/topo (.spec.md §6.2/§7 commit 8) — one route per component group, screenshotted by Playwright.",
+  "scripts": {
+    "dev": "next dev -p 3100",
+    "build": "next build",
+    "start": "next start -p 3100",
+    "clean": "rm -rf .next",
+    "check-types": "tsc --noEmit",
+    "test": "playwright test"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "catalog:",
+    "@codeday/topo": "workspace:*",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@codeday/tsconfig": "workspace:*",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:"
+  }
+}

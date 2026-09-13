@@ -1,7 +1,14 @@
 import { Button as ChakraButton, type ButtonProps as ChakraButtonProps, CloseButton, Spinner } from "@chakra-ui/react";
 import React from "react";
 
-export type ButtonProps = ChakraButtonProps;
+// .spec.md §4.1 — the custom variant set the `button` recipe defines
+// (`../../Theme/vars/recipes/button.ts`), which Chakra's own generated
+// `ButtonProps` type doesn't know about.
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "dangerSolid" | "icon";
+
+export interface ButtonProps extends Omit<ChakraButtonProps, "variant"> {
+  variant?: ButtonVariant;
+}
 
 // .spec.md §4.1 loading state: label swaps for a spinner, but the gradient
 // itself never animates. The spinner is a distinct look from Chakra's
@@ -29,7 +36,7 @@ const loadingSpinner = (
 // wrapper can set a different `colorPalette` (e.g. "figjam") to switch the
 // primary/icon variants' gradient per the per-section primary fills table.
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => (
-  <ChakraButton colorPalette="hibiscus" spinner={loadingSpinner} ref={ref} {...props} />
+  <ChakraButton colorPalette="hibiscus" spinner={loadingSpinner} ref={ref} {...(props as any)} />
 ));
 Button.displayName = "Button";
 
