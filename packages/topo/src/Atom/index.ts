@@ -5,6 +5,7 @@ export * from "./Button";
 export * from "./Card";
 export * from "./Divider";
 export * from "./Form";
+export * from "./GradientField";
 export * from "./Image";
 export * from "./Input";
 export * from "./List";
