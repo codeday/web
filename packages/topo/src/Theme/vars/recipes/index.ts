@@ -10,6 +10,7 @@ import {
   inputRecipe,
   nativeSelectSlotRecipe,
   radioGroupSlotRecipe,
+  switchSlotRecipe,
   textareaRecipe,
 } from "./forms";
 import {
@@ -52,4 +53,5 @@ export const slotRecipes = {
   fileUpload: fileUploadSlotRecipe,
   table: tableSlotRecipe,
   progress: progressSlotRecipe,
+  switch: switchSlotRecipe,
 };

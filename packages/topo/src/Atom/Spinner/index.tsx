@@ -1,20 +1,24 @@
+import { Spinner as ChakraSpinner, type SpinnerProps as ChakraSpinnerProps } from "@chakra-ui/react";
 import * as m from "@codeday/i18n/messages";
 import React from "react";
 
-const smilSupport = () =>
-  typeof window === "undefined"
-    ? true
-    : // eslint-disable-next-line no-undef,no-base-to-string
-      window.document
-        .createElementNS("http://www.w3.org/2000/svg", "animate")
-        .toString()
-        .indexOf("SVG") > -1;
+export interface SpinnerProps extends ChakraSpinnerProps {
+  colorPalette?: string;
+}
 
-export const Spinner = ({ ref }: { ref?: React.Ref<HTMLImageElement> } = {}) => (
-  <img
-    ref={ref as React.MutableRefObject<any>}
-    src={`https://f1.codeday.org/topo/loading.${smilSupport() ? "svg" : "gif"}`}
-    alt={m.topo_spinner_loading()}
-    style={{ display: "inline-block" }}
-  />
+// .spec.md §4.6 — "Single colour — the section midpoint. Never
+// multi-stop." Previously an external <img> pointing at a hosted SVG/GIF
+// asset; now a plain CSS spinner colored from the active ramp, matching
+// the rest of the system rather than a shipped asset.
+export const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
+  ({ colorPalette = "hibiscus", ...props }, ref) => (
+    <ChakraSpinner
+      ref={ref}
+      colorPalette={colorPalette}
+      color="colorPalette.mid"
+      aria-label={m.topo_spinner_loading()}
+      {...props}
+    />
+  ),
 );
+Spinner.displayName = "Spinner";

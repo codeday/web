@@ -1,4 +1,6 @@
 import { ThemeProvider, PageDataProvider } from "@codeday/topo/Theme";
+import { Toaster } from "@codeday/topo/Atom";
+import { _toaster } from "@codeday/topo/utils";
 import { overwriteGetLocale, baseLocale, type Locale } from "@codeday/i18n/runtime";
 
 import "react-responsive-modal/styles.css";
@@ -41,6 +43,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <FundraiseProvider>
               <PageDataProvider value={pageProps?.query || {}}>
                 <Component {...pageProps} />
+                <Toaster toaster={_toaster} />
               </PageDataProvider>
             </FundraiseProvider>
           </MarketingProvider>

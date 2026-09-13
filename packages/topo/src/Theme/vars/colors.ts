@@ -217,11 +217,10 @@ colors.grad = {
     sm: grad180(whiteAlpha[300], "rgba(255, 255, 255, 0)"),
     lg: grad180(whiteAlpha[700], "rgba(255, 255, 255, 0)"),
   },
-  // Interim: gray.800 no longer exists in the new six-stop scale. Repointed
-  // to gray.700 for now — Skelly's neutrals get a full retune in a later
-  // commit (.spec.md §7 commit 5b).
-  skelly: `linear-gradient(270deg, ${colors.gray[300]} 0, ${colors.gray[100]} 50%, ${colors.gray[300]} 100%)`,
-  darkSkelly: `linear-gradient(270deg, ${colors.gray[700]} 0, ${colors.gray[600]} 50%, ${colors.gray[700]} 100%)`,
+  // .spec.md §4.6 — Skelly retuned to the new neutrals, 90deg (paired with
+  // the component's own background-size/animation-duration retune).
+  skelly: `linear-gradient(90deg, ${colors.gray[300]} 0, ${colors.gray[100]} 50%, ${colors.gray[300]} 100%)`,
+  darkSkelly: `linear-gradient(90deg, ${colors.gray[700]} 0, ${colors.gray[600]} 50%, ${colors.gray[700]} 100%)`,
 };
 colors.modes = {
   light: {

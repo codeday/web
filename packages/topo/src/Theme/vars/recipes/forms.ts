@@ -92,3 +92,41 @@ export const radioGroupSlotRecipe = defineSlotRecipe({
     },
   },
 });
+
+// .spec.md §4.4 — Switch (restyled in place; `Atom/Input/Switch.tsx`'s
+// v2/v3-compat wrapper is unchanged). 38x22px track, off gray.300, on the
+// 62% stop. Thumb 17px white, inset 2.5px (22-17)/2. Overriding under the
+// same "solid" variant path Chakra's own switch recipe uses, since
+// `colorPalette.solid`/`.contrast` are undefined for our ramps.
+export const switchSlotRecipe = defineSlotRecipe({
+  slots: ["root", "label", "control", "indicator", "thumb"],
+  base: {
+    root: {
+      "--switch-width": "38px",
+      "--switch-height": "22px",
+    },
+  },
+  variants: {
+    variant: {
+      solid: {
+        control: {
+          bg: "gray.300",
+          _checked: {
+            bg: "{colors.colorPalette.mid}",
+          },
+        },
+        thumb: {
+          width: "17px",
+          height: "17px",
+          insetInlineStart: "2.5px",
+          bg: "white",
+          transitionProperty: "translate",
+          transitionDuration: "0.15s",
+          _checked: {
+            bg: "white",
+          },
+        },
+      },
+    },
+  },
+});

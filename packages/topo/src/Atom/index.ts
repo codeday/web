@@ -27,6 +27,7 @@ export * from "./StatusDot";
 export * from "./Table";
 export * from "./Tabs";
 export * from "./Text";
+export * from "./Toast";
 export * from "./Tooltip";
 export * from "./Kbd";
 export * from "./Highlight";
