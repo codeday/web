@@ -25,12 +25,47 @@ const whiteAlpha: Record<string, string> = {
   900: "rgba(255, 255, 255, 0.92)",
 };
 
-const linearGrad = (from: string, to: string, deg: number) =>
-  `linear-gradient(${deg}deg, ${from} 0%, ${to} 100%)`;
-const linearGrads = (from: string, to: string) =>
-  [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 240, 270, 300, 330]
-    .map((deg) => ({ [deg]: linearGrad(from, to, deg) }))
-    .reduce((accum, obj) => ({ ...accum, ...obj }), {});
+// Only ever consumed at 180deg (Organism/Header's mobile-nav overlay), so this
+// is a plain two-color helper rather than the old all-angles `linearGrads`.
+const grad180 = (from: string, to: string) => `linear-gradient(180deg, ${from} 0%, ${to} 100%)`;
+
+// ---------------------------------------------------------------------------
+// The six brand gradients (.spec.md §1). Each ramp is six stops between a
+// shared near-black `#120510` and a shared sand `#F7DEC9` — the shared
+// endpoints are what make them read as one family.
+//
+// Stop roles: 62% is the ramp's midpoint and doubles as the solid accent
+// colour (focus rings, tab markers, checked states); 40% is the deep. 82%
+// and 100% are decorative-only — white text never sits over them (see
+// `capRamp` in `./gradients.ts`).
+// ---------------------------------------------------------------------------
+export const gradientStops = {
+  hibiscus: ["#120510", "#38102A", "#701C46", "#A83A5C", "#D97C56", "#F7DEC9"],
+  hotsauce: ["#120510", "#3E1206", "#7E2608", "#BC4A1A", "#E28C3C", "#F7DEC9"],
+  chilioil: ["#120510", "#380A10", "#6E1620", "#A82A2E", "#D9603E", "#F7DEC9"],
+  blackberry: ["#120510", "#2C1638", "#5E2A52", "#9B4A4E", "#D08A4A", "#F7DEC9"],
+  figjam: ["#120510", "#241242", "#4A2270", "#8A3A78", "#C87264", "#F7DEC9"],
+  marmalade: ["#120510", "#33260A", "#6B4E10", "#A8801C", "#DCB43C", "#F7DEC9"],
+} as const;
+
+export const STOP_POSITIONS = [0, 20, 40, 62, 82, 100] as const;
+
+export type GradientName = keyof typeof gradientStops;
+
+// Per-section primary button fills (.spec.md §4.1) — each ramp compressed as
+// far as it can travel while still holding white text at AA, plus a
+// hand-tuned lightened tail. These are fixed values from the approved build,
+// not derived.
+export const gradientButtonStops = {
+  hibiscus: ["#38102A", "#A83A5C", "#BC545A"],
+  hotsauce: ["#3E1206", "#BC4A1A", "#CE5E22"],
+  chilioil: ["#380A10", "#A82A2E", "#B93A34"],
+  blackberry: ["#2C1638", "#9B4A4E", "#AD5A51"],
+  figjam: ["#241242", "#8A3A78", "#9D4A79"],
+  marmalade: ["#33260A", "#8C6C15", "#9C7A18"],
+} as const;
+
+export const GRADIENT_BUTTON_POSITIONS = [0, 62, 100] as const;
 
 const colors: Record<string, any> = {
   blackAlpha,
@@ -203,17 +238,16 @@ colors.failure = {
   text: colors.red[900],
 };
 colors.grad = {
-  twilight: linearGrads(colors.red[500], colors.indigo[500]),
-  lemonlime: linearGrads(colors.cyan[500], colors.green[500]),
-  peachy: linearGrads(colors.red[500], colors.orange[500]),
-  taffy: linearGrads(colors.yellow[500], colors.pink[500]),
+  // Only ever consumed at 180deg (Header's mobile-nav overlay via the `Box`
+  // `grad` prop), so this is a flat sm/lg pair rather than the old
+  // all-angles table `linearGrads` used to produce.
   darken: {
-    sm: linearGrads(blackAlpha[300], "rgba(0,0,0,0)"),
-    lg: linearGrads(blackAlpha[700], "rgba(0,0,0,0)"),
+    sm: grad180(blackAlpha[300], "rgba(0,0,0,0)"),
+    lg: grad180(blackAlpha[700], "rgba(0,0,0,0)"),
   },
   lighten: {
-    sm: linearGrads(whiteAlpha[300], "rgba(255, 255, 255 ,0)"),
-    lg: linearGrads(whiteAlpha[700], "rgba(255, 255, 255 ,0)"),
+    sm: grad180(whiteAlpha[300], "rgba(255, 255, 255, 0)"),
+    lg: grad180(whiteAlpha[700], "rgba(255, 255, 255, 0)"),
   },
   skelly: `linear-gradient(270deg, ${colors.gray[300]} 0, ${colors.gray[100]} 50%, ${colors.gray[300]} 100%)`,
   darkSkelly: `linear-gradient(270deg, ${colors.gray[800]} 0, ${colors.gray[700]} 50%, ${colors.gray[800]} 100%)`,

@@ -3,6 +3,7 @@ import { createSystem, defaultConfig, defineConfig, defineRecipe } from "@chakra
 import { defaultFontSizes } from "../../utils";
 import colors from "./colors";
 import fonts from "./fonts";
+import { buildGradientTokens } from "./gradients";
 
 // ---------------------------------------------------------------------------
 // Helper: recursively convert a nested colour object into Chakra v3 token
@@ -50,8 +51,31 @@ const paletteTokens = Object.fromEntries(
   PALETTE_KEYS.map((key) => [key, toColorScale(colors[key] as Record<string | number, unknown>)]),
 );
 
+// ---------------------------------------------------------------------------
+// The six brand gradients (.spec.md §1.1): `gradient.<name>.full` /
+// `.button` (stop lists, angle stays at the call site) and
+// `colors.<name>.deep` / `.mid` (the 40%/62% stops as flat colours).
+// ---------------------------------------------------------------------------
+const gradientTokenSets = buildGradientTokens();
+const rampColorTokens = Object.fromEntries(
+  Object.entries(gradientTokenSets).map(([name, { deep, mid }]) => [
+    name,
+    { deep: { value: deep }, mid: { value: mid } },
+  ]),
+);
+const gradientTokens = {
+  gradient: Object.fromEntries(
+    Object.entries(gradientTokenSets).map(([name, { full, button }]) => [
+      name,
+      { full: { value: full }, button: { value: button } },
+    ]),
+  ),
+};
+
 const colorTokens = {
   ...paletteTokens,
+  ...rampColorTokens,
+  ...gradientTokens,
 
   // Scalar colours
   black: { value: colors.black as string },
