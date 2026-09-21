@@ -47,7 +47,7 @@ export function CalendlyEmbed({ slug, meeting, calendlyURLParams, ...props }: Ca
     }
   }, [windowCalendly, hasCalendlyLoaded, holder, slug, meeting]);
 
-  return <Box w="100%" h="50em" border="none" {...props} ref={holder} />;
+  return <Box w="full" h="3xl" border="none" {...props} ref={holder} />;
 }
 
 export type { CalendlyEmbedProps };

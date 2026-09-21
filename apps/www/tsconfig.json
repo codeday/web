@@ -1,7 +1,11 @@
 {
   "extends": "@codeday/tsconfig/nextjs.json",
   "compilerOptions": {
-    "typeRoots": ["./src/@types"]
+    "typeRoots": ["./src/@types"],
+    "paths": {
+      "@/gql": ["./src/gql"],
+      "@/gql/*": ["./src/gql/*"]
+    }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

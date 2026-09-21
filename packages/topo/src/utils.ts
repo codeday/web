@@ -1,7 +1,19 @@
 import { createToaster } from "@chakra-ui/react";
+import type { LocalizedString } from "@codeday/i18n/runtime";
+import type { DocumentNode } from "graphql";
 import { GraphQLClient } from "graphql-request";
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import useSwr, { SWRConfiguration } from "swr";
+
+/**
+ * Paraglide's branded string type — what every `m.xxx()` message function
+ * returns. Aliased here so design-system components can require localized
+ * copy in their props (`label: Message`) without every file importing
+ * straight from `@codeday/i18n`. A raw string literal is not assignable to
+ * this type, which is the point: it's how "no string literals outside the
+ * message catalogue" gets enforced at compile time instead of by convention.
+ */
+export type Message = LocalizedString;
 
 // ---------------------------------------------------------------------------
 // ThemeData context (inlined here so next.config.js require() works without
@@ -298,14 +310,13 @@ export function subscribeQuerySelectorAll(
 
 /**
  * Creates a Next.js getStaticProps that fetches a GraphQL query and returns
- * the result as `props.query` for use with PageDataProvider / usePageData.
+ * the result as `props.query`.
  *
  * @example
- * import { print } from "graphql";
- * export const getStaticProps = createStaticProps(print(MyQuery), { someVar: "value" });
+ * export const getStaticProps = createStaticProps(MyQuery, { someVar: "value" });
  */
 export function createStaticProps(
-  query: string,
+  query: string | DocumentNode,
   variables?: Record<string, any> | (() => Record<string, any>),
   options?: {
     revalidate?: number | false;

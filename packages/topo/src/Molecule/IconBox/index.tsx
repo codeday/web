@@ -20,7 +20,7 @@ const IconBox: ComponentWithAs<"div", BoxProps> = pureRef<BoxProps, "div">(
     const body = childrenOfType(children, IconBoxBody);
     const boxProps: any = {
       borderWidth: 1,
-      borderRadius: 3,
+      borderRadius: "sm",
       padding: 4,
       ref,
       ...props,

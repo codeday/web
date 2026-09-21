@@ -3,24 +3,40 @@ import { Content } from "@codeday/topo/Molecule";
 import shuffle from "knuth-shuffle-seeded";
 import React, { useState } from "react";
 
-import { usePageData } from "@codeday/topo/Theme";
-import Photo from "./Photo";
+import { graphql } from "@/gql";
+import { FragmentType, useFragment } from "@/gql/fragment-masking";
+
+import Photo, { PhotoFragment } from "./Photo";
 import PhotoTagPicker from "./PhotoTagPicker";
 
+export const PhotoGalleryFragment = graphql(`
+  fragment PressPhotoGalleryComponent on Query {
+    cms {
+      pressPhotos {
+        items {
+          tags
+          ...PressPhotoComponent
+        }
+      }
+    }
+  }
+`);
+
 interface PhotoGalleryProps {
+  data: FragmentType<typeof PhotoGalleryFragment>;
   seed?: any;
   [key: string]: any;
 }
 
-export default function PhotoGallery({ seed, ...props }: PhotoGalleryProps) {
+export default function PhotoGallery({ data, seed, ...props }: PhotoGalleryProps) {
   const [filter, setFilter] = useState<string | null>(null);
   const {
     cms: { pressPhotos },
-  } = usePageData();
-  const photos = shuffle(
-    (pressPhotos?.items || []).map((m: any) => m),
-    seed,
-  );
+  } = useFragment(PhotoGalleryFragment, data);
+  // `tags` is selected directly here (in addition to spreading `Photo`'s
+  // own fragment) so filtering doesn't need to unmask `Photo`'s data —
+  // each item passed to `<Photo>` stays exactly the fragment ref it needs.
+  const photos = shuffle(pressPhotos?.items || [], seed);
 
   return (
     <Content wide {...props}>
@@ -30,9 +46,9 @@ export default function PhotoGallery({ seed, ...props }: PhotoGalleryProps) {
         gap={4}
       >
         {photos
-          .filter((photo: any) => !filter || photo.tags?.includes(filter))
-          .map((photo: any) => (
-            <Photo key={photo.id} rounded={2} height={40} photo={photo} />
+          .filter((photo) => !filter || photo.tags?.includes(filter))
+          .map((photo, i) => (
+            <Photo key={i} rounded={2} height={40} photo={photo} />
           ))}
       </Grid>
     </Content>

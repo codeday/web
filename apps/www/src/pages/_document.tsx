@@ -1,4 +1,4 @@
-import { ColorModeScript } from "@codeday/topo/Theme";
+import { ColorModeScript, gradientStops } from "@codeday/topo/Theme";
 import Document, {
   Html,
   Head,
@@ -8,6 +8,11 @@ import Document, {
   DocumentInitialProps,
 } from "next/document";
 import React from "react";
+
+// This document renders outside Chakra's tree (no `colors.x` token
+// resolution here), so the brand color is read directly off the shared
+// ramp rather than duplicated as a literal.
+const BRAND = gradientStops.hibiscus[3];
 
 export default class CustomDocument extends Document {
   static async getInitialProps(ctx: DocumentContext): Promise<DocumentInitialProps> {
@@ -24,8 +29,8 @@ export default class CustomDocument extends Document {
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
           <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
           <link rel="manifest" href="/site.webmanifest" />
-          <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#ff686b" />
-          <meta name="msapplication-TileColor" content="#ff686b" />
+          <link rel="mask-icon" href="/safari-pinned-tab.svg" color={BRAND} />
+          <meta name="msapplication-TileColor" content={BRAND} />
           <meta name="theme-color" content="#ffffff" />
         </Head>
         <body>

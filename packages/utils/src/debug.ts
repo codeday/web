@@ -1,15 +1,14 @@
 import debugFactory from "debug";
 
 function hasDebugConfig() {
-  return typeof window !== "undefined" ? !!window.localStorage?.debug : !!process.env.DEBUG;
+  if (typeof window !== "undefined") return !!window.localStorage?.debug;
+  return typeof process !== "undefined" && !!process.env.DEBUG;
 }
 
 function defaultEnableDebug() {
-  if (
-    !hasDebugConfig() &&
-    process.env.NODE_ENV !== "production" &&
-    process.env.NEXT_PUBLIC_ENV !== "production"
-  ) {
+  const env =
+    typeof process !== "undefined" ? process.env : ({} as Record<string, string | undefined>);
+  if (!hasDebugConfig() && env.NODE_ENV !== "production" && env.NEXT_PUBLIC_ENV !== "production") {
     debugFactory.enable("codeday:*");
   }
 }

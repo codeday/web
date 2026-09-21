@@ -26,7 +26,10 @@ function hexToRgb(hex: string): Rgb {
 }
 
 function rgbToHex([r, g, b]: Rgb): string {
-  const c = (n: number) => Math.round(Math.min(255, Math.max(0, n))).toString(16).padStart(2, "0");
+  const c = (n: number) =>
+    Math.round(Math.min(255, Math.max(0, n)))
+      .toString(16)
+      .padStart(2, "0");
   return `#${c(r)}${c(g)}${c(b)}`.toUpperCase();
 }
 
@@ -37,7 +40,9 @@ function srgbChannelToLinear(c: number): number {
 
 function relativeLuminance([r, g, b]: Rgb): number {
   return (
-    0.2126 * srgbChannelToLinear(r) + 0.7152 * srgbChannelToLinear(g) + 0.0722 * srgbChannelToLinear(b)
+    0.2126 * srgbChannelToLinear(r) +
+    0.7152 * srgbChannelToLinear(g) +
+    0.0722 * srgbChannelToLinear(b)
   );
 }
 
@@ -68,7 +73,11 @@ function rampAt(stops: readonly string[], u: number): Rgb {
       const t = p1 === p0 ? 0 : (pos - p0) / (p1 - p0);
       const c0 = hexToRgb(stops[i]);
       const c1 = hexToRgb(stops[i + 1]);
-      return [c0[0] + (c1[0] - c0[0]) * t, c0[1] + (c1[1] - c0[1]) * t, c0[2] + (c1[2] - c0[2]) * t];
+      return [
+        c0[0] + (c1[0] - c0[0]) * t,
+        c0[1] + (c1[1] - c0[1]) * t,
+        c0[2] + (c1[2] - c0[2]) * t,
+      ];
     }
   }
   return hexToRgb(stops[stops.length - 1]);
@@ -79,7 +88,6 @@ const SEARCH_ITERATIONS = 60; // far more precision than a hex channel needs
 /**
  * Truncate a ramp at the last point where white text still clears
  * `minContrast`, then rescale the surviving stops back across 0-100%.
- * (.spec.md §1.2)
  */
 export function capRamp(stops: readonly string[], minContrast: number): Array<[string, number]> {
   let lo = 0;
@@ -107,7 +115,6 @@ export function capRamp(stops: readonly string[], minContrast: number): Array<[s
 /**
  * The 62% stop, unless it fails `minContrast` on white, in which case walk
  * back down the ramp (continuously, not stop-to-stop) until it passes.
- * (.spec.md §1.3)
  */
 export function accentOnWhite(stops: readonly string[], minContrast = 4.5): string {
   const MID = 0.62;
@@ -134,18 +141,25 @@ function stopList(stops: readonly string[], positions: readonly number[]): strin
 export interface GradientTokenSet {
   full: string;
   button: string;
-  deep: string;
-  mid: string;
   badgeGradient: string;
-  /** Full ramp capped at 6.36 ("content sitting inside a field", §1.2) —
+  /** Full ramp capped at 6.36 ("content sitting inside a field") —
    * for full-field white-text-throughout uses like Alert's `critical`. */
   criticalField: string;
-  /** Capped at ~4.9 — matches the worked EmptyState example (§4.5), whose
+  /** Capped at ~4.9 — matches the worked EmptyState example, whose
    * marmalade contrasts (14.8/7.7/4.9) land at that floor. */
   emptyState: string;
+  /** The ramp's own 0/20/40/62% stops, rescaled to fill 0-100% — Alert
+   * `rail`'s "gradient rail... stopping at the 62% stop, it never reaches
+   * sand", a positional truncation rather than a contrast-based one. */
+  rail: string;
+  /** Just the 20% and 62% stops (skipping 40% entirely), rescaled to 0-100%
+   * — Modal's short heading-only field. Uncapped: a field this short
+   * never travels far enough toward sand to need `criticalField`'s contrast
+   * floor, so the plain two-stop compression is fine as-is. */
+  modal: string;
 }
 
-/** Build the full token set (.spec.md §1.1) for every named ramp. */
+/** Build the full token set for every named ramp. */
 export function buildGradientTokens(): Record<GradientName, GradientTokenSet> {
   const names = Object.keys(gradientStops) as GradientName[];
   return Object.fromEntries(
@@ -158,11 +172,18 @@ export function buildGradientTokens(): Record<GradientName, GradientTokenSet> {
         {
           full: stopList(stops, STOP_POSITIONS),
           button: stopList(gradientButtonStops[name], GRADIENT_BUTTON_POSITIONS),
-          deep: stops[2], // 40% stop
-          mid: stops[3], // 62% stop
           badgeGradient: badgeGradientStops[name].join(", "),
-          criticalField: criticalCapped.map(([color, position]) => `${color} ${position}%`).join(","),
-          emptyState: emptyStateCapped.map(([color, position]) => `${color} ${position}%`).join(","),
+          criticalField: criticalCapped
+            .map(([color, position]) => `${color} ${position}%`)
+            .join(","),
+          emptyState: emptyStateCapped
+            .map(([color, position]) => `${color} ${position}%`)
+            .join(","),
+          rail: stops
+            .slice(0, 4) // 0%, 20%, 40%, 62% — the ramp up to its midpoint
+            .map((color, i) => `${color} ${(STOP_POSITIONS[i] / STOP_POSITIONS[3]) * 100}%`)
+            .join(","),
+          modal: `${stops[1]} 0%,${stops[3]} 100%`, // 20% -> 62%, the 40% stop skipped entirely
         },
       ];
     }),
@@ -171,10 +192,9 @@ export function buildGradientTokens(): Record<GradientName, GradientTokenSet> {
 
 export function buildAccentsOnWhite(minContrast = 4.5): Record<GradientName, string> {
   const names = Object.keys(gradientStops) as GradientName[];
-  return Object.fromEntries(names.map((name) => [name, accentOnWhite(gradientStops[name], minContrast)])) as Record<
-    GradientName,
-    string
-  >;
+  return Object.fromEntries(
+    names.map((name) => [name, accentOnWhite(gradientStops[name], minContrast)]),
+  ) as Record<GradientName, string>;
 }
 
 export { contrastWithWhite };

@@ -1,8 +1,7 @@
+import * as m from "@codeday/i18n/messages";
 import { Box, type BoxProps, Button, Grid, Text } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import { useColorMode } from "@codeday/topo/Theme";
 import { useTheme, apiFetch, useLocalStorage } from "@codeday/topo/utils";
-import * as m from "@codeday/i18n/messages";
 import { UiX as X } from "@codeday/topocons";
 import React, { useEffect, useReducer } from "react";
 import useSwr from "swr";
@@ -54,7 +53,6 @@ interface AnnouncementProps extends BoxProps {
 }
 
 function Announcement({ box, ...props }: AnnouncementProps) {
-  const { colorMode } = useColorMode();
   const { visibility, programWebname } = useTheme();
   const [date, updateDate] = useReducer(getDate, getDate());
   const { data } = useSwr(query(date, visibility), apiFetch, {
@@ -66,8 +64,6 @@ function Announcement({ box, ...props }: AnnouncementProps) {
     "topoDismissedAnnouncements",
     [],
   );
-
-  const dark = colorMode === "dark";
 
   const items = data?.cms?.announcements?.items;
   const sortedItems =
@@ -109,9 +105,9 @@ function Announcement({ box, ...props }: AnnouncementProps) {
   if (box) {
     return (
       <Box
-        bg={`${baseColor}.${dark ? 900 : 50}`}
-        color={`${baseColor}.${dark ? 600 : 800}`}
-        borderRadius={4}
+        bg={`${baseColor}.100`}
+        color={`${baseColor}.700`}
+        borderRadius="sm"
         p={4}
         m={0}
         display="block"
@@ -137,7 +133,7 @@ function Announcement({ box, ...props }: AnnouncementProps) {
     <Box
       display="inline"
       position="relative"
-      top="-2px"
+      top="-0.5"
       paddingRight={2}
       onClick={(e: any) => {
         setDismissedMessages([...dismissedMessages, item.sys.id]);
@@ -152,8 +148,8 @@ function Announcement({ box, ...props }: AnnouncementProps) {
 
   return (
     <Box
-      bg={`${baseColor}.${dark ? 900 : 50}`}
-      color={`${baseColor}.${dark ? 600 : 800}`}
+      bg={`${baseColor}.100`}
+      color={`${baseColor}.700`}
       p={2}
       m={0}
       display="block"

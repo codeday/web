@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "turbo dev",
+    "dev:www": "turbo run dev --filter=@codeday/www",
+    "dev:topo-gallery": "turbo run dev --filter=@codeday/topo-gallery",
     "build": "turbo build",
     "start": "turbo start",
     "lint": "oxlint .",

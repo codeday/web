@@ -1,18 +1,46 @@
+import * as m from "@codeday/i18n/messages";
 import { Text, Link, Heading, Skelly, Spinner, Box, List, ListItem } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import * as m from "@codeday/i18n/messages";
 import { apiFetch } from "@codeday/topo/utils";
-import { print } from "graphql";
+import { ResultOf } from "@graphql-typed-document-node/core";
 import { DateTime } from "luxon";
 import { GetStaticProps } from "next";
 
-import Page from "../components/Page";
-import { usePageData } from "@codeday/topo/Theme";
-import Error404 from "./404";
-import { DataListPublicationsQuery } from "./data.gql";
+import { graphql } from "@/gql";
+import { useFragment } from "@/gql/fragment-masking";
 
-export default function Home() {
-  const { cms } = usePageData();
+import Page from "../components/Page";
+import Error404 from "./404";
+
+export const DataFragment = graphql(`
+  fragment DataComponent on Query {
+    cms {
+      publications(where: { type: "dataset" }) {
+        items {
+          title
+          doiSuffix
+          publicationDate
+          contributors {
+            name
+          }
+        }
+      }
+    }
+  }
+`);
+
+const DataListPublicationsQuery = graphql(`
+  query DataListPublicationsQuery {
+    ...DataComponent
+  }
+`);
+
+interface HomeProps {
+  query: ResultOf<typeof DataListPublicationsQuery>;
+}
+
+export default function Home({ query }: HomeProps) {
+  const { cms } = useFragment(DataFragment, query);
 
   if (!cms) {
     return (
@@ -72,7 +100,7 @@ export default function Home() {
 export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
-      query: await apiFetch(print(DataListPublicationsQuery), {}, {}),
+      query: await apiFetch(DataListPublicationsQuery, {}, {}),
     },
     revalidate: 300,
   };

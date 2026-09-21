@@ -4,10 +4,20 @@ import { useTheme } from "@codeday/topo/utils";
 import styled from "@emotion/styled";
 import React from "react";
 
+import darkColors from "../../Theme/vars/darkColors";
+
 function Html({ children, ...props }: BoxProps) {
   const t = useTheme();
-  const bgColor = useColorModeValue(t.colors.gray[50], t.colors.gray[800]);
-  const borderColor = useColorModeValue(t.colors.gray[100], t.colors.gray[900]);
+  // `code`'s bg/border is the same "wash" role Atom/Text/Code.tsx uses —
+  // this component needs a literal string for its styled-components
+  // template rather than a Chakra token prop, so it can't pick up
+  // `gray.100`'s `_dark` condition automatically and still needs the
+  // explicit light/dark switch; `t.colors.gray[100]` only ever holds the
+  // light value (the legacy `Theme.colors` snapshot isn't mode-aware),
+  // so the dark side comes from `darkColors` instead. (Previously this read
+  // `gray[50]`/`gray[800]`/`gray[900]` — none of which exist in the current
+  // six-stop scale, so it was already broken.)
+  const codeChipColor = useColorModeValue(t.colors.gray[100], darkColors.gray[100]);
   const StyledBox = styled.div`
     h1,
     h2,
@@ -46,21 +56,21 @@ function Html({ children, ...props }: BoxProps) {
     ul,
     ol,
     blockquote {
-      margin-bottom: 1em;
+      margin-bottom: ${t.space[4]};
       font-family: ${t.fonts.body};
     }
     ul,
     ol {
-      margin-left: 1em;
+      margin-left: ${t.space[4]};
     }
     code {
       font-family: ${t.fonts.mono};
     }
     *:not(pre) > code {
       padding: ${t.space[1]} ${t.space[2]};
-      border-radius: 2px;
-      background-color: ${bgColor};
-      border-color: ${borderColor};
+      border-radius: ${t.radii.xs};
+      background-color: ${codeChipColor};
+      border-color: ${codeChipColor};
       border-width: 1px;
       font-size: 0.9em;
       margin-top: -0.2em;
@@ -69,14 +79,14 @@ function Html({ children, ...props }: BoxProps) {
     }
     pre > code {
       padding: ${t.space[1]} ${t.space[2]};
-      border-radius: 2px;
-      background-color: ${bgColor};
-      border-color: ${borderColor};
+      border-radius: ${t.radii.xs};
+      background-color: ${codeChipColor};
+      border-color: ${codeChipColor};
       border-width: 1px;
       display: block;
     }
     figure {
-      margin-bottom: 1em;
+      margin-bottom: ${t.space[4]};
       text-align: center;
     }
     figure > * {

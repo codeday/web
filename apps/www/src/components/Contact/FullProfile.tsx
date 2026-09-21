@@ -1,6 +1,6 @@
+import * as m from "@codeday/i18n/messages";
 import { Box, Grid, Text, Image } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import * as m from "@codeday/i18n/messages";
 import React from "react";
 
 interface FullProfileProps {
@@ -23,8 +23,8 @@ export default function FullProfile({ entries, ...props }: FullProfileProps) {
                 float="left"
                 mr={4}
                 rounded="full"
-                w="64px"
-                h="64px"
+                w="16"
+                h="16"
                 alt=""
               />
               <Text mb={0} pt={2} fontWeight="bold">
@@ -34,7 +34,7 @@ export default function FullProfile({ entries, ...props }: FullProfileProps) {
                 {m.www_contact_board_member()}
               </Text>
             </Box>
-            <Box mt={4} ml="64px" pl={4}>
+            <Box mt={4} ml="16" pl={4}>
               <Text>
                 {director.bio || `${director.givenName} is a member of the CodeDay board.`}
               </Text>

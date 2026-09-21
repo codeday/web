@@ -4,6 +4,8 @@ import { checkBotId } from "botid/server";
 import { NextApiRequest, NextApiResponse } from "next";
 import { ServerClient } from "postmark";
 
+import { graphql } from "@/gql";
+
 import {
   renderBannedVolunteer,
   renderCodeDayExistingRegion,
@@ -12,7 +14,26 @@ import {
   renderEmailRMToStudent,
   renderUnknown,
 } from "../../utils/volunteerOnboardingEmails";
-import { ApplyAsVolunteerQuery } from "./applyAsVolunteer.gql";
+
+const ApplyAsVolunteerQuery = graphql(`
+  query ApplyAsVolunteerQuery($webname: String!) {
+    clear {
+      findFirstEvent(
+        where: { contentfulWebname: { equals: $webname } }
+        orderBy: { startDate: desc }
+      ) {
+        managers
+      }
+    }
+    cms {
+      regions(where: { webname: $webname }) {
+        items {
+          newVolunteerPipeline
+        }
+      }
+    }
+  }
+`);
 
 const postmark = new ServerClient(process.env.POSTMARK_SERVER_TOKEN!);
 const base = new Airtable({ apiKey: process.env.AIRTABLE_TOKEN }).base(process.env.AIRTABLE_BASE!);

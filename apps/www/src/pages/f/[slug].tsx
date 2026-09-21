@@ -1,18 +1,87 @@
 import { Heading, Image, Skelly, Spinner, Box, Grid } from "@codeday/topo/Atom";
 import { Content, CognitoForm, ContentfulRichText } from "@codeday/topo/Molecule";
 import { apiFetch } from "@codeday/topo/utils";
-import { print } from "graphql";
+import { ResultOf } from "@graphql-typed-document-node/core";
 import { GetStaticProps, GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 import React from "react";
 
-import Page from "../../components/Page";
-import { usePageData } from "@codeday/topo/Theme";
-import Error404 from "../404";
-import { FormQuery, ListFormsQuery } from "./form.gql";
+import { graphql } from "@/gql";
+import { useFragment } from "@/gql/fragment-masking";
 
-export default function Home() {
-  const { cms } = usePageData();
+import Page from "../../components/Page";
+import Error404 from "../404";
+
+const ListFormsQuery = graphql(`
+  query ListFormsQuery {
+    cms {
+      forms {
+        items {
+          slug
+        }
+      }
+    }
+  }
+`);
+
+export const FormFragment = graphql(`
+  fragment FormComponent on Query {
+    cms {
+      forms(where: { slug: $slug }, limit: 1) {
+        items {
+          title
+          cognitoForm
+          slug
+          prefill
+          image {
+            url(transform: { width: 1000, height: 300, resizeStrategy: CROP })
+          }
+          details {
+            json
+            links {
+              assets {
+                block {
+                  sys {
+                    id
+                  }
+                  contentType
+                  url
+                }
+              }
+            }
+          }
+          sidebar {
+            json
+            links {
+              assets {
+                block {
+                  sys {
+                    id
+                  }
+                  contentType
+                  url
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
+const FormQuery = graphql(`
+  query FormQuery($slug: String) {
+    ...FormComponent
+  }
+`);
+
+interface HomeProps {
+  pageQuery: ResultOf<typeof FormQuery>;
+}
+
+export default function Home({ pageQuery }: HomeProps) {
+  const { cms } = useFragment(FormFragment, pageQuery) || {};
   const { query } = useRouter();
 
   if (!cms) {
@@ -64,11 +133,11 @@ export default function Home() {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const query = await apiFetch(print(ListFormsQuery), {}, {});
+  const listQuery = await apiFetch(ListFormsQuery, {}, {});
 
   return {
     paths:
-      query?.cms?.forms?.items?.map((i: any) => ({
+      listQuery?.cms?.forms?.items?.map((i: any) => ({
         params: {
           slug: i.slug,
         },
@@ -81,7 +150,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string;
   return {
     props: {
-      query: await apiFetch(print(FormQuery), { slug }, {}),
+      pageQuery: await apiFetch(FormQuery, { slug }, {}),
     },
     revalidate: 300,
   };

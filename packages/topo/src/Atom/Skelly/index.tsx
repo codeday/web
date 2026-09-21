@@ -3,7 +3,7 @@ import { useColorModeValue } from "@codeday/topo/Theme";
 import React from "react";
 export { Skeleton, SkeletonCircle, SkeletonText } from "@chakra-ui/react";
 
-// .spec.md §4.6 — retuned to the new neutrals (colors.ts), 200% 100%
+// Retuned to the new neutrals (colors.ts), 200% 100%
 // background-size, 1.4s linear (was 800% 100% / 8s ease-in-out).
 export const Skelly = (props: BoxProps) => (
   <Box

@@ -10,13 +10,13 @@ interface ContentProps extends BoxProps {
 const Content: ComponentWithAs<"div", ContentProps> = pureRef<ContentProps, "div">(
   ({ wide, full, ref, ...props }: any) => {
     const boxProps: any = {
-      paddingLeft: 3,
-      paddingRight: 3,
+      paddingLeft: 0,
+      paddingRight: 0,
       marginLeft: "auto",
       marginRight: "auto",
       marginBottom: 6,
       maxW: full ? "none" : wide ? "container.xl" : "container.lg",
-      width: "100%",
+      width: "full",
       ref,
       ...props,
     };

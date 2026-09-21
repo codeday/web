@@ -1,11 +1,19 @@
-import { Box, Button, TextInput as Input } from "@codeday/topo/Atom";
 import * as m from "@codeday/i18n/messages";
+import { Box, Button, TextInput as Input } from "@codeday/topo/Atom";
 import { useToasts, apiFetch } from "@codeday/topo/utils";
+import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { stringify as urlencode } from "urlencode";
-import { DateTime } from "luxon";
 
-import { SubscribeToEvent } from "./EventInfo.gql";
+import { graphql } from "@/gql";
+
+const SubscribeToEvent = graphql(`
+  mutation SubscribeToEvent($calendarId: String!, $id: String!, $destination: String!) {
+    calendar {
+      subscribe(calendarId: $calendarId, eventId: $id, destination: $destination)
+    }
+  }
+`);
 
 export default function SubscribeBox({ event, ...rest }: { event: any; [key: string]: any }) {
   const { success, error } = useToasts();

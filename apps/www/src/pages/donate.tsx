@@ -1,28 +1,47 @@
 import * as m from "@codeday/i18n/messages";
 import { Box, Grid, Heading, Image, Link, Skeleton, Text } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import { usePageData } from "@codeday/topo/Theme";
 import { apiFetch } from "@codeday/topo/utils";
-import { print } from "graphql";
+import { ResultOf } from "@graphql-typed-document-node/core";
 import { GetStaticProps } from "next";
+
+import { graphql } from "@/gql";
+import { useFragment } from "@/gql/fragment-masking";
 
 import EmploymentChart from "../components/Donate/EmploymentChart";
 import StoryList from "../components/Donate/StoryList";
 import Page from "../components/Page";
 import { useFundraise } from "../providers";
-import { DonateQuery } from "./donate.gql";
+
+export const DonateFragment = graphql(`
+  fragment DonateComponent on Query {
+    cms {
+      mission: strings(where: { key: "common.mission" }) {
+        items {
+          value
+        }
+      }
+    }
+  }
+`);
+
+const DonateQuery = graphql(`
+  query DonateQuery {
+    ...DonateComponent
+  }
+`);
 
 function DonateBox(props: any) {
   const { isFundraiseLoaded } = useFundraise();
 
   return (
     <Grid templateColumns={{ base: "1fr", sm: "2fr 1fr" }} gap={6} alignItems="center" {...props}>
-      <Skeleton loading={!isFundraiseLoaded} minH="460px" borderRadius="md">
+      <Skeleton loading={!isFundraiseLoaded} minH="md" borderRadius="md">
         <a href="#XKKVUQAL"></a>
       </Skeleton>
 
       <Box>
-        <Grid templateColumns="repeat(2, 1fr)" gap={2} maxW="200px" mb={3}>
+        <Grid templateColumns="repeat(2, 1fr)" gap={2} maxW="52" mb={3}>
           <Link
             href="https://www.guidestar.org/profile/shared/88ca3b85-4294-40a3-a922-415c75f0b9e5"
             target="_blank"
@@ -33,7 +52,7 @@ function DonateBox(props: any) {
             <Image src="/charity-navigator.png" maxHeight={32} />
           </Link>
         </Grid>
-        <Text fontSize="xs" color="current.textLight" maxW="200px">
+        <Text fontSize="xs" color="current.textLight" maxW="52">
           {m.www_donate_disclaimer()}
         </Text>
       </Box>
@@ -41,10 +60,14 @@ function DonateBox(props: any) {
   );
 }
 
-export default function Donate() {
+interface DonateProps {
+  query: ResultOf<typeof DonateQuery>;
+}
+
+export default function Donate({ query }: DonateProps) {
   const {
     cms: { mission },
-  } = usePageData();
+  } = useFragment(DonateFragment, query);
 
   return (
     <Page title="Donate" slug="/donate">
@@ -97,7 +120,7 @@ export default function Donate() {
 export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
-      query: await apiFetch(print(DonateQuery), {}, {}),
+      query: await apiFetch(DonateQuery, {}, {}),
     },
     revalidate: 300,
   };

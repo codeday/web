@@ -14,8 +14,9 @@ export {
   type RegionMap,
 } from "./config";
 
-import { createContext, useContext } from "react";
 import type { GetServerSidePropsContext, GetStaticPropsContext } from "next";
+import { createContext, useContext } from "react";
+
 import { DEFAULT_REGION, REGION_HEADER, getRegionFromHostname, type RegionMap } from "./config";
 
 // ---------------------------------------------------------------------------

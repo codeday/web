@@ -1,7 +1,15 @@
 import { debug } from "@codeday/utils";
 import Head from "next/head";
 import Script from "next/script";
-import { createContext, useContext, useState, useEffect, useReducer, useRef, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useReducer,
+  useRef,
+  ReactNode,
+} from "react";
 
 const DEBUG = debug(["topo", "Theme", "providers", "Cmp"]);
 
@@ -37,7 +45,13 @@ type AwaitingConsentAction =
   | { type: "remove"; provider: string }
   | { type: "clear" };
 
-export function CmpProvider({ children, usercentricsSettingsId }: { children: ReactNode; usercentricsSettingsId?: string }) {
+export function CmpProvider({
+  children,
+  usercentricsSettingsId,
+}: {
+  children: ReactNode;
+  usercentricsSettingsId?: string;
+}) {
   const [isCmpLoaded, setIsCmpLoaded] = useState(false);
   const [isCmpBlocked, setIsCmpBlocked] = useState(false);
   const [isConsentRequired, setIsConsentRequired] = useState(true);
@@ -125,7 +139,9 @@ export function CmpProvider({ children, usercentricsSettingsId }: { children: Re
   useEffect(() => {
     if (isCmpBlocked) {
       DEBUG("CMP blocked, executing all awaiting callbacks assuming consent:", awaitingConsent);
-      Object.values(awaitingConsent).forEach((callbacks) => callbacks.forEach((callback) => callback()));
+      Object.values(awaitingConsent).forEach((callbacks) =>
+        callbacks.forEach((callback) => callback()),
+      );
       setAwaitingConsent({ type: "clear" });
     }
   }, [isCmpBlocked]);
@@ -143,7 +159,9 @@ export function CmpProvider({ children, usercentricsSettingsId }: { children: Re
   };
 
   return (
-    <CmpContext.Provider value={{ isCmpLoaded, isCmpBlocked, isConsentRequired, withConsent, uc, ucUi }}>
+    <CmpContext.Provider
+      value={{ isCmpLoaded, isCmpBlocked, isConsentRequired, withConsent, uc, ucUi }}
+    >
       <Head>
         <link rel="preconnect" href="https://privacy-proxy.usercentrics.eu" />
         <link

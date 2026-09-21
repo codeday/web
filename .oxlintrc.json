@@ -6,10 +6,12 @@
     "maxWarnings": 10
   },
   "plugins": ["typescript", "unicorn", "oxc"],
+  "jsPlugins": ["./.oxlint/no-section-lead-in-component.mjs"],
   "categories": {
     "correctness": "error"
   },
   "rules": {
+    "codeday/no-section-lead-in-component": "error",
     "no-redundant-type-constituents": "off",
     "restrict-template-expressions": "off",
     "no-for-in-array": "off",

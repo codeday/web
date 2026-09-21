@@ -1,12 +1,40 @@
 import { Box, Text } from "@codeday/topo/Atom";
 import React from "react";
 
+import { graphql } from "@/gql";
+import { FragmentType, useFragment } from "@/gql/fragment-masking";
+
+export const PhotoFragment = graphql(`
+  fragment PressPhotoComponent on CmsPressPhoto {
+    tags
+    photo {
+      title
+      description
+      original: contentfulBaseUrl
+      preview: url(transform: { width: 400, height: 250, resizeStrategy: FILL })
+    }
+    event {
+      startsAt
+      program {
+        name
+      }
+    }
+    subProgram {
+      name
+    }
+    region {
+      name
+    }
+  }
+`);
+
 interface PhotoProps {
-  photo: any;
+  photo: FragmentType<typeof PhotoFragment>;
   [key: string]: any;
 }
 
-export default function Photo({ photo, ...props }: PhotoProps) {
+export default function Photo({ photo: photoRef, ...props }: PhotoProps) {
+  const photo = useFragment(PhotoFragment, photoRef);
   return (
     <Box
       as="a"
@@ -25,8 +53,8 @@ export default function Photo({ photo, ...props }: PhotoProps) {
         opacity={0}
         _hover={{ opacity: 1 }}
         transition="opacity 0.5s"
-        bg="rgba(0, 0, 0, 0.7)"
-        color="white"
+        bg="blackAlpha.700"
+        color="trueWhite"
         position="absolute"
         top="0"
         right="0"

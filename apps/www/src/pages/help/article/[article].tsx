@@ -2,13 +2,68 @@ import { Text, Heading, Link, Box, List, ListItem } from "@codeday/topo/Atom";
 import { Content, ContentfulRichText } from "@codeday/topo/Molecule";
 import { apiFetch } from "@codeday/topo/utils";
 import { UiArrowRight } from "@codeday/topocons";
-import { print } from "graphql";
 import { DateTime } from "luxon";
 import { GetStaticProps, GetStaticPaths } from "next";
 import React from "react";
 
+import { graphql } from "@/gql";
+
 import Page from "../../../components/Page";
-import { HelpArticleQuery, HelpArticlePathsQuery } from "./article.gql";
+
+const HelpArticleQuery = graphql(`
+  query HelpArticleQuery($article: String!) {
+    cms {
+      faq(id: $article) {
+        sys {
+          id
+          publishedAt
+        }
+        title
+        program {
+          name
+          webname
+        }
+        audience
+        answer {
+          json
+          links {
+            assets {
+              block {
+                sys {
+                  id
+                }
+                contentType
+                url
+              }
+            }
+          }
+        }
+        relatedAnswers {
+          items {
+            sys {
+              id
+            }
+            title
+          }
+        }
+      }
+    }
+  }
+`);
+
+const HelpArticlePathsQuery = graphql(`
+  query HelpArticlePathsQuery {
+    cms {
+      faqs(limit: 1000) {
+        items {
+          sys {
+            id
+          }
+        }
+      }
+    }
+  }
+`);
 
 interface ArticleProps {
   faq: any;
@@ -60,7 +115,7 @@ export default function Article({ faq }: ArticleProps) {
 export const getStaticPaths: GetStaticPaths = async () => {
   const {
     cms: { faqs },
-  } = await apiFetch(print(HelpArticlePathsQuery), {}, {});
+  } = await apiFetch(HelpArticlePathsQuery, {}, {});
   return {
     paths: faqs?.items?.map((faq: any) => ({ params: { article: faq.sys.id } })),
     fallback: true,
@@ -71,7 +126,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const article = params?.article as string;
   const {
     cms: { faq },
-  } = await apiFetch(print(HelpArticleQuery), { article }, {});
+  } = await apiFetch(HelpArticleQuery, { article }, {});
   return {
     props: {
       faq,

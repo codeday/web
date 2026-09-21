@@ -29,18 +29,18 @@ export const REGION_HEADER = "x-codeday-region";
  * `overrides` map to {@link getRegionFromHostname}.
  */
 export const TLD_REGION_MAP: RegionMap = {
-  "org": "us",
-  "us": "us",
-  "ca": "canada",
+  org: "us",
+  us: "us",
+  ca: "canada",
   "co.uk": "uk",
-  "in": "india",
-  "ee": "estonia",
-  "se": "estonia",
-  "it": "estonia",
-  "fr": "estonia",
-  "es": "estonia",
-  "ch": "estonia",
-  "be": "estonia",
+  in: "india",
+  ee: "estonia",
+  se: "estonia",
+  it: "estonia",
+  fr: "estonia",
+  es: "estonia",
+  ch: "estonia",
+  be: "estonia",
 };
 
 // ---------------------------------------------------------------------------

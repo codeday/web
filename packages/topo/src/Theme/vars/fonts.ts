@@ -1,4 +1,4 @@
-// .spec.md §4.9 — Gosha Sans ("accent") is dropped from the system; Sofia
+// Gosha Sans ("accent") is dropped from the system; Sofia
 // Pro at normal tracking (not Gosha at tight tracking) is the fix for the
 // old look's coldness.
 export default {

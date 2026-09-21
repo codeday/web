@@ -7,21 +7,28 @@ export interface SectionRuleProps extends BoxProps {
   index?: React.ReactNode;
 }
 
-// .spec.md §4.9/§4.10 — Rule + margin index, the primary sectioning device
-// (the quietest of the four in §4.10's order).
+// Rule + margin index, the primary sectioning device (the quietest of
+// the four, in order).
 export const SectionRule = React.forwardRef<HTMLDivElement, SectionRuleProps>(
   ({ index, children, ...props }, ref) => (
     <Box
       ref={ref}
       display="flex"
-      gap="14px"
+      gap="3.5"
       alignItems="baseline"
-      paddingTop="9px"
-      borderTop="1px solid"
-      borderTopColor="current.text"
+      paddingTop="2.5"
+      borderTop="sm"
+      borderTopColor="black"
       {...props}
     >
-      <Box as="span" flexShrink={0} width="34px" fontFamily="mono" fontSize="11px" color="current.textLight">
+      <Box
+        as="span"
+        flexShrink={0}
+        width="9"
+        fontFamily="mono"
+        fontSize="xs"
+        color="current.textLight"
+      >
         {index}
       </Box>
       <Box flex="1">{children}</Box>

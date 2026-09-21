@@ -1,6 +1,8 @@
 import { defineRecipe } from "@chakra-ui/react";
 
-// .spec.md §4.1 — Button. `variant="primary"`/`"icon"` render the active
+import { SQUIRCLE_CORNER_SHAPE } from "../cornerShape";
+
+// Button. `variant="primary"`/`"icon"` render the active
 // `colorPalette`'s gradient (default Hibiscus; a section wrapper sets
 // `colorPalette="figjam"` etc. to switch, per the per-section primary fills
 // table — see `colors.<ramp>.gradient.button` in `../index.ts`).
@@ -9,17 +11,30 @@ export const buttonRecipe = defineRecipe({
     fontWeight: "600",
     fontSize: "14.5px",
     lineHeight: "1",
-    borderRadius: "9px",
+    borderRadius: "lg",
+    cornerShape: SQUIRCLE_CORNER_SHAPE,
     paddingInline: "17px",
-    paddingBlock: "11px",
-    gap: "8px",
+    paddingBlock: "3",
+    gap: "2",
     letterSpacing: "0",
     transitionProperty: "filter",
-    transitionDuration: "0.15s",
+    transitionDuration: "fast",
     _hover: {
       filter: "brightness(.94)",
     },
+    // Chakra's own default recipe sets `_disabled: { layerStyle: "disabled" }`,
+    // which dims unconditionally — cancel it here so only our own,
+    // loading-aware rule below controls disabled opacity.
     _disabled: {
+      opacity: 1,
+    },
+    // Chakra's Button sets the native `disabled` attribute for BOTH the
+    // loading and the truly-disabled state (`disabled: loading ||
+    // rest.disabled`), so `_disabled` alone would dim both identically.
+    // `data-loading` is set as `data-loading=""` (presence, not "true") only
+    // for the loading state — excluding it keeps opacity .42 on disabled
+    // alone (loading holds the ramp still, only disabled fades).
+    "&:disabled:not([data-loading])": {
       opacity: 0.42,
       _hover: {
         filter: "none",
@@ -27,48 +42,74 @@ export const buttonRecipe = defineRecipe({
     },
   },
   variants: {
+    // Chakra's own default button recipe sets `h`/`minW`/`textStyle`/`px`/`gap`
+    // under these same `variants.size.*` keys. Panda applies variant-level
+    // styles after base regardless of which recipe object contributed them,
+    // so leaving any of those untouched here lets the default's value win
+    // over a base-level override of the same underlying property (this is
+    // why every one of these needed restating here, not just in `base`).
     size: {
       sm: {
-        fontSize: "13px",
-        paddingInline: "13px",
-        paddingBlock: "8px",
-        borderRadius: "7px",
+        fontSize: "sm",
+        lineHeight: "1",
+        paddingInline: "3.5",
+        paddingBlock: "2",
+        borderRadius: "lg",
+        height: "auto",
+        minWidth: "unset",
+        textStyle: "unset",
       },
-      md: {},
+      md: {
+        fontSize: "14.5px",
+        lineHeight: "1",
+        paddingInline: "17px",
+        paddingBlock: "3",
+        height: "auto",
+        minWidth: "unset",
+        textStyle: "unset",
+      },
       lg: {
-        fontSize: "16px",
-        paddingInline: "22px",
-        paddingBlock: "14px",
-        borderRadius: "11px",
+        fontSize: "md",
+        lineHeight: "1",
+        paddingInline: "6",
+        paddingBlock: "3.5",
+        borderRadius: "xl",
+        height: "auto",
+        minWidth: "unset",
+        textStyle: "unset",
       },
     },
     variant: {
       primary: {
-        color: "white",
+        color: "trueWhite",
         border: "none",
         backgroundImage: "linear-gradient(110deg, {colors.colorPalette.gradient.button})",
+        position: "relative",
+        overflow: "hidden",
       },
-      // The square, gradient-filled icon-only form (.spec.md §4.1).
+      // The square, gradient-filled icon-only form.
       icon: {
-        color: "white",
+        color: "trueWhite",
         border: "none",
         backgroundImage: "linear-gradient(110deg, {colors.colorPalette.gradient.button})",
-        borderRadius: "26%",
-        width: "40px",
-        height: "40px",
+        borderRadius: "md",
+        width: "10",
+        height: "10",
         padding: "0",
         minWidth: "unset",
+        position: "relative",
+        overflow: "hidden",
       },
       secondary: {
         bg: "transparent",
-        color: "{colors.colorPalette.mid}",
-        boxShadow: "inset 0 0 0 1.5px {colors.colorPalette.mid}",
+        color: "{colors.colorPalette.600}",
+        boxShadow: "inset 0 0 0 1.5px {colors.colorPalette.600}",
       },
       ghost: {
         bg: "transparent",
-        color: "current.text",
+        color: "black",
         _hover: {
-          bg: "{colors.colorPalette.mid/9}",
+          bg: "colorPalette.200",
           filter: "none",
         },
       },
@@ -91,6 +132,29 @@ export const buttonRecipe = defineRecipe({
         bg: "red.600",
         color: "white",
         border: "none",
+      },
+      // For an action sitting on a coloured ground (a `solid`/`critical`
+      // Alert, the nav header's deep-field mode) — a gradient button
+      // disappears against a flat or field background of the same family,
+      // so these invert instead: solid white ground, label colour supplied
+      // by the caller (e.g. `color="colorPalette.900"` or
+      // `color="colorPalette.800"`, whichever token the ground itself
+      // uses) since it varies by which palette/ramp the ground is drawn
+      // from.
+      onColor: {
+        bg: "trueWhite",
+        border: "none",
+      },
+      // The paired secondary/dismiss action beside `onColor` — always a
+      // fixed white-on-white treatment, never colour-palette-dependent.
+      onColorOutline: {
+        bg: "transparent",
+        color: "trueWhite",
+        boxShadow: "inset 0 0 0 1.5px rgba(255,255,255,.45)",
+        _hover: {
+          bg: "whiteAlpha.200",
+          filter: "none",
+        },
       },
     },
   },

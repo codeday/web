@@ -1,17 +1,42 @@
+import * as m from "@codeday/i18n/messages";
 import { Heading } from "@codeday/topo/Atom";
 import { Content, ContentfulRichText } from "@codeday/topo/Molecule";
-import * as m from "@codeday/i18n/messages";
 import { apiFetch } from "@codeday/topo/utils";
-import { print } from "graphql";
+import { ResultOf } from "@graphql-typed-document-node/core";
 import { GetStaticProps } from "next";
 import React from "react";
 
-import Page from "../components/Page";
-import { usePageData } from "@codeday/topo/Theme";
-import { EcoQuery } from "./eco.gql";
+import { graphql } from "@/gql";
+import { useFragment } from "@/gql/fragment-masking";
 
-export default function Eco() {
-  const { details } = usePageData().cms;
+import Page from "../components/Page";
+
+export const EcoFragment = graphql(`
+  fragment EcoComponent on Query {
+    cms {
+      details: strings(where: { key: "eco.details" }, limit: 1) {
+        items {
+          richValue {
+            json
+          }
+        }
+      }
+    }
+  }
+`);
+
+const EcoQuery = graphql(`
+  query EcoQuery {
+    ...EcoComponent
+  }
+`);
+
+interface EcoProps {
+  query: ResultOf<typeof EcoQuery>;
+}
+
+export default function Eco({ query }: EcoProps) {
+  const { details } = useFragment(EcoFragment, query).cms;
 
   return (
     <Page title="Ecological Footprint" slug="/eco">
@@ -28,7 +53,7 @@ export default function Eco() {
 export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
-      query: await apiFetch(print(EcoQuery), {}, {}),
+      query: await apiFetch(EcoQuery, {}, {}),
     },
     revalidate: 300,
   };

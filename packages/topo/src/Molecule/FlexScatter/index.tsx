@@ -31,15 +31,16 @@ export function FlexScatter({
     );
   });
 
-  const gaps = new Array(children.length + 1).fill(undefined).map((_, i) => (
-    <Box
-      flexBasis={`${rand.intBetween(gapMin, gapMax)}px`}
-      flexGrow={rand.intBetween(1, 8)}
-      flexShrink={rand.intBetween(1, 8)}
-      // eslint-disable-next-line react/no-array-index-key
-      key={`flex-gap-${i}`}
-    />
-  ));
+  const gaps = new Array(children.length + 1)
+    .fill(undefined)
+    .map((_, i) => (
+      <Box
+        flexBasis={`${rand.intBetween(gapMin, gapMax)}px`}
+        flexGrow={rand.intBetween(1, 8)}
+        flexShrink={rand.intBetween(1, 8)}
+        key={`flex-gap-${i}`}
+      />
+    ));
   const zipper = new Array(children.length * 2)
     .fill(undefined)
     .map((_, i) => (i % 2 === 0 ? gaps : offsetChildren)[Math.floor(i / 2)]);

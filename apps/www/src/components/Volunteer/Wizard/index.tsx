@@ -1,5 +1,5 @@
-import { Box, Button } from "@codeday/topo/Atom";
 import * as m from "@codeday/i18n/messages";
+import { Box, Button } from "@codeday/topo/Atom";
 import { useToasts } from "@codeday/topo/utils";
 import { debug } from "@codeday/utils";
 import { usePostHog } from "@posthog/react";
@@ -109,11 +109,7 @@ export default function Wizard({
   // 'last' should really be 'penultimate' but 'last' is shorter
   const [page, navigate] = useReducer(
     (prev: number, action: string) =>
-      Math.max(
-        0,
-        action === "next" ? prev + 1 : prev - 1,
-        action === "last" ? PAGE_COUNT - 2 : 0,
-      ),
+      Math.max(0, action === "next" ? prev + 1 : prev - 1, action === "last" ? PAGE_COUNT - 2 : 0),
     resolvedStartPage,
   );
   const isFinalPage = page === PAGE_COUNT - 1;
@@ -243,7 +239,8 @@ export default function Wizard({
       {!isFinalPage && page !== 0 && (
         <Box textAlign={{ base: "center", md: "right" }} mt={8}>
           <Button
-            colorPalette="green"
+            variant="secondary"
+            colorPalette="marmalade"
             loading={isSubmitting}
             onClick={onClickNext}
             disabled={!hasSelection || isSubmitting}

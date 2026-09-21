@@ -1,9 +1,7 @@
-import { paraglideWebpackPlugin } from "@inlang/paraglide-js";
-import { apiFetch } from "@codeday/topo/utils";
 import { locales } from "@codeday/i18n/locales";
+import { apiFetch } from "@codeday/topo/utils";
 import { withBotId } from "botid/next/config";
 import { NextConfig } from "next";
-import { NextJsWebpackConfig } from "next/dist/server/config-shared";
 import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 
 const nextConfig: NextConfig = {
@@ -14,14 +12,7 @@ const nextConfig: NextConfig = {
     defaultLocale: "_default",
     localeDetection: false,
   },
-  turbopack: {
-    rules: {
-      "*.gql": {
-        loaders: ["./gql-loader.js"],
-        as: "*.js",
-      },
-    },
-  },
+  turbopack: {},
   webpack: (config: any, { isServer }: any) => {
     const originalEntry = config.entry;
     config.entry = async () => {
@@ -33,20 +24,6 @@ const nextConfig: NextConfig = {
 
       return entries;
     };
-
-    config.module.rules.push({
-      test: /\.gql$/,
-      exclude: /node_modules/,
-      use: [require.resolve("./gql-loader.js")],
-    });
-
-    config.plugins.push(
-      paraglideWebpackPlugin({
-        outdir: "./src/paraglide",
-        project: "../../packages/i18n/project.inlang",
-        strategy: ["baseLocale"],
-      }),
-    );
 
     if (process.env.ANALYZE) {
       config.plugins.push(
@@ -72,6 +49,11 @@ const nextConfig: NextConfig = {
       (r: any) => [r.webname, ...(r.aliases || [])],
     );
     const staticRedirects = [
+      {
+        source: "/publications",
+        destination: "/research",
+        permanent: false,
+      },
       {
         source: "/privacy/controls",
         destination: "/f/data-controls",

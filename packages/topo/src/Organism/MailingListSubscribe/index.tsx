@@ -1,6 +1,6 @@
+import * as m from "@codeday/i18n/messages";
 import { Box, type BoxProps, Button, Grid, TextInput } from "@codeday/topo/Atom";
 import { apiFetch, useToasts } from "@codeday/topo/utils";
-import * as m from "@codeday/i18n/messages";
 import React, { useState } from "react";
 
 interface MailingListSubscribeProps extends BoxProps {

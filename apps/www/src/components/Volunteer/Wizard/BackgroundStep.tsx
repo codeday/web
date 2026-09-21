@@ -1,5 +1,5 @@
-import { Box, Button, Heading, HStack } from "@codeday/topo/Atom";
 import * as m from "@codeday/i18n/messages";
+import { Box, Button, Heading, HStack } from "@codeday/topo/Atom";
 import React from "react";
 
 interface BackgroundStepProps {
@@ -21,6 +21,8 @@ export default function BackgroundStep({
       <HStack>
         <Button
           size="lg"
+          variant="secondary"
+          colorPalette="marmalade"
           mr={4}
           onClick={onSelectStudent}
           data-active={background === "student" ? "" : undefined}
@@ -29,6 +31,8 @@ export default function BackgroundStep({
         </Button>
         <Button
           size="lg"
+          variant="secondary"
+          colorPalette="marmalade"
           onClick={onSelectIndustry}
           data-active={background === "industry" ? "" : undefined}
         >

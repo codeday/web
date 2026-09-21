@@ -2,7 +2,36 @@ import { Text, Box, Grid, Image, Link } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
 import React from "react";
 
-import { usePageData } from "@codeday/topo/Theme";
+import { graphql } from "@/gql";
+import { FragmentType, useFragment } from "@/gql/fragment-masking";
+
+export const EmployeesFragment = graphql(`
+  fragment ContactEmployeesComponent on Query {
+    account {
+      employees: roleUsers(roleId: "rol_llN0357VXrEoIxoj") {
+        username
+        givenName
+        familyName
+        title
+        picture
+      }
+      otherTeam: roleUsers(roleId: "rol_6t902YZpsOynmWDt") {
+        username
+        givenName
+        familyName
+        title
+        picture
+      }
+      contractors: roleUsers(roleId: "rol_kQxfFcpISf1SyqPw") {
+        username
+        givenName
+        familyName
+        title
+        picture
+      }
+    }
+  }
+`);
 
 const titleContents = ["CEO", "President", "VP", "Chief", "Director", "Head", "Manager", "Lead"];
 const titlePrecedence = (title: string) =>
@@ -26,10 +55,15 @@ function dedupeByKey(key: string, arr: any[]) {
   return Object.entries(Object.fromEntries(arr.map((e: any) => [e[key], e]))).map(([_, e]) => e);
 }
 
-export default function Employees(props: any) {
+interface EmployeesProps {
+  data: FragmentType<typeof EmployeesFragment>;
+  [key: string]: any;
+}
+
+export default function Employees({ data, ...props }: EmployeesProps) {
   const {
     account: { employees, otherTeam, contractors },
-  } = usePageData();
+  } = useFragment(EmployeesFragment, data);
 
   const sortedEmployees = dedupeByKey("username", [
     ...employees,
@@ -52,8 +86,8 @@ export default function Employees(props: any) {
                   float="left"
                   mr={4}
                   rounded="full"
-                  w="64px"
-                  h="64px"
+                  w="16"
+                  h="16"
                   alt=""
                 />
                 <Box position="relative" top={-1}>

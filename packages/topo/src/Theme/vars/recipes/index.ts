@@ -1,4 +1,3 @@
-import { linkRecipe } from "./link";
 import { alertSlotRecipe } from "./alert";
 import { badgeRecipe } from "./badge";
 import { buttonRecipe } from "./button";
@@ -14,6 +13,8 @@ import {
   switchSlotRecipe,
   textareaRecipe,
 } from "./forms";
+import { linkRecipe } from "./link";
+import { separatorRecipe } from "./separator";
 import {
   avatarSlotRecipe,
   breadcrumbSlotRecipe,
@@ -27,7 +28,7 @@ import {
 import { tooltipSlotRecipe } from "./tooltip";
 import { headingRecipe } from "./typography";
 
-// .spec.md §0 — recipes live here (split into per-component files once this
+// Recipes live here (split into per-component files once this
 // got long), not in `vars/components.ts` (which stays the empty stub the
 // v3 migration left it as).
 export const recipes = {
@@ -37,6 +38,7 @@ export const recipes = {
   input: inputRecipe,
   textarea: textareaRecipe,
   heading: headingRecipe,
+  separator: separatorRecipe,
 };
 
 export const slotRecipes = {

@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 /*export default (...args: any[]) =>
   `@import url(https://f1.srnd.org/topo/fonts/all.css);${[
     require("./buttons"),
@@ -90,13 +89,13 @@ export default ({ theme, showTitle, colorMode, formId }: any): string => `
     --negative: ${theme.colors.red[800]};
     --negative-reverse: ${theme.colors.red[50]};
 
-    --gutter: 30px;
+    --gutter: ${theme.space[8]};
     --icon-weight: .3;
     --speed: 2s;
     --button-primary__border-radius: ${theme.radii.md};
     --button-secondary__border-radius: ${theme.radii.md};
-    --input__padding-v: 12px;
-    --input__padding-h: 15px;
-    --toggle__border-radius: 40px;
+    --input__padding-v: ${theme.space[3]};
+    --input__padding-h: ${theme.space[4]};
+    --toggle__border-radius: ${theme.radii.full};
   }
 `;

@@ -1,6 +1,6 @@
+import * as m from "@codeday/i18n/messages";
 import { Box, Text, Heading } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import * as m from "@codeday/i18n/messages";
 import React from "react";
 
 interface DisclaimerFooterProps {

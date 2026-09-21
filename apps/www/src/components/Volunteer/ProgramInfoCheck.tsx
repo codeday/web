@@ -1,8 +1,8 @@
 import { Box, Text, Image, List, ListItem, Checkbox } from "@codeday/topo/Atom";
+import { ContentfulRichText } from "@codeday/topo/Molecule";
 import React, { useState } from "react";
 
 import { formatInterval } from "../../utils/time";
-import { ContentfulRichText } from "@codeday/topo/Molecule";
 
 interface ProgramInfoCheckProps {
   program: any;

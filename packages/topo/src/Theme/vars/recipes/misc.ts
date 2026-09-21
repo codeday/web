@@ -1,6 +1,8 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 
-// .spec.md §4.3 — Tabs. Active marker is a 2.5px bar in the 62% stop, inset
+import { SQUIRCLE_CORNER_SHAPE } from "../cornerShape";
+
+// Tabs. Active marker is a 2.5px bar in the 62% stop, inset
 // 8px from each edge of the tab, sitting on the 1px bottom rule.
 export const tabsSlotRecipe = defineSlotRecipe({
   slots: ["root", "trigger", "list", "content", "contentGroup", "indicator"],
@@ -12,39 +14,88 @@ export const tabsSlotRecipe = defineSlotRecipe({
     trigger: {
       color: "current.textLight",
       _selected: {
-        color: "current.text",
+        color: "black",
       },
     },
     indicator: {
+      // Zag's inline style only sets `left`/`top` (the axis it slides along)
+      // — it never sets `bottom`, so without an explicit value here the
+      // indicator's own CSS `top: auto` falls back to its in-flow static
+      // position, which (given the indicator's default height spans the
+      // full trigger) pins our short 2.5px bar to the TOP of that box
+      // instead of the bottom rule it's meant to sit on.
+      top: "auto",
+      bottom: 0,
       height: "2.5px",
-      insetInline: "8px",
-      bg: "{colors.colorPalette.mid}",
+      insetInline: "2",
+      bg: "{colors.colorPalette.600}",
+    },
+  },
+  variants: {
+    // Chakra's own default "line" variant (the recipe's own default,
+    // unset here means it's still active) puts a SECOND underline on the
+    // selected trigger — a `::before` pseudo-element via
+    // `layerStyle: "indicator.bottom"`, defaulting to a neutral/black
+    // colour — entirely separate from our own `indicator` slot (the real
+    // `Tabs.Indicator` element, the coloured 2.5px sliding bar above).
+    // Left alone, both render at once. Cancel the pseudo-element one so
+    // only the coloured indicator remains.
+    //
+    // Chakra sets that `layerStyle` nested under `_selected._horizontal`
+    // (and `_selected._vertical`) — NOT directly on `_selected` — so a
+    // bare `_selected: { layerStyle: "unset" }` here is a sibling key that
+    // never touches the real one and silently no-ops. Has to match the
+    // exact nesting to actually cancel it.
+    variant: {
+      line: {
+        trigger: {
+          _selected: {
+            _horizontal: {
+              layerStyle: "unset",
+            },
+            _vertical: {
+              layerStyle: "unset",
+            },
+          },
+        },
+      },
     },
   },
 });
 
-// .spec.md §4.3 — Breadcrumb. Muted links, last crumb in ink.
+// Breadcrumb. Muted links, last crumb in ink.
 export const breadcrumbSlotRecipe = defineSlotRecipe({
   slots: ["link", "currentLink", "item", "list", "root", "ellipsis", "separator"],
   base: {
     list: {
-      fontSize: "13.5px",
+      fontSize: "sm",
     },
     link: {
       color: "current.textLight",
     },
     currentLink: {
-      color: "current.text",
+      color: "black",
+    },
+  },
+  // Chakra's own default sets `textStyle` on `list` under `variants.size.*`
+  // (default "md"), which wins over a base-level fontSize the same way it
+  // did for Input/Alert/Table — neutralize it and restate at the same stage.
+  variants: {
+    size: {
+      sm: { list: { textStyle: "none", fontSize: "sm" } },
+      md: { list: { textStyle: "none", fontSize: "sm" } },
+      lg: { list: { textStyle: "none", fontSize: "sm" } },
     },
   },
 });
 
-// .spec.md §4.3 — Pagination. Ships with zero default Chakra styling, so
+// Pagination. Ships with zero default Chakra styling, so
 // this recipe is authored from scratch.
 const paginationItemBase = {
-  minWidth: "33px",
-  height: "33px",
-  borderRadius: "8px",
+  minWidth: "8",
+  height: "8",
+  borderRadius: "lg",
+  cornerShape: SQUIRCLE_CORNER_SHAPE,
   borderWidth: "1px",
   borderColor: "current.border",
   display: "inline-flex",
@@ -63,7 +114,7 @@ export const paginationSlotRecipe = defineSlotRecipe({
       ...paginationItemBase,
       // Current page.
       '&[aria-current="page"]': {
-        bg: "{colors.colorPalette.mid}",
+        bg: "{colors.colorPalette.600}",
         color: "white",
         borderColor: "transparent",
       },
@@ -73,7 +124,7 @@ export const paginationSlotRecipe = defineSlotRecipe({
   },
 });
 
-// .spec.md §4.6 — Avatar. Squircle at small sizes.
+// Avatar. Squircle at small sizes.
 export const avatarSlotRecipe = defineSlotRecipe({
   slots: ["root", "image", "fallback"],
   base: {
@@ -86,32 +137,48 @@ export const avatarSlotRecipe = defineSlotRecipe({
     size: {
       sm: {
         root: {
-          "--avatar-size": "34px",
-          "--avatar-radius": "11px",
+          "--avatar-size": "{sizes.9}",
+          "--avatar-radius": "{radii.xl}",
+          cornerShape: SQUIRCLE_CORNER_SHAPE,
         },
+        image: { cornerShape: SQUIRCLE_CORNER_SHAPE },
+        fallback: { cornerShape: SQUIRCLE_CORNER_SHAPE },
       },
     },
   },
 });
 
-// .spec.md §4.5 — EmptyState. Left-aligned, not centred, capped ramp field.
+// EmptyState. Left-aligned, not centred, capped ramp field.
+const emptyStatePadding = { paddingInline: "6", paddingBlock: "7" };
 export const emptyStateSlotRecipe = defineSlotRecipe({
   slots: ["root", "content", "indicator", "title", "description"],
   base: {
     root: {
-      padding: "26px 22px",
-      borderRadius: "12px",
+      paddingInline: "6",
+      paddingBlock: "7",
+      borderRadius: "xl",
+      cornerShape: SQUIRCLE_CORNER_SHAPE,
       backgroundImage: "linear-gradient(110deg, {colors.colorPalette.gradient.emptyState})",
-      color: "white",
+      color: "trueWhite",
+      position: "relative",
     },
     content: {
       alignItems: "flex-start",
       textAlign: "start",
     },
   },
+  // Chakra's own default sets `px`/`py` on `root` under `variants.size.*`
+  // (default "md") — same fix as elsewhere.
+  variants: {
+    size: {
+      sm: { root: emptyStatePadding },
+      md: { root: emptyStatePadding },
+      lg: { root: emptyStatePadding },
+    },
+  },
 });
 
-// .spec.md §4.3 — new to Topo, re-export + recipe (no bespoke restyle called
+// New to Topo, re-export + recipe (no bespoke restyle called
 // for beyond Chakra's sensible defaults).
 export const fileUploadSlotRecipe = defineSlotRecipe({
   slots: [
@@ -138,39 +205,66 @@ export const fileUploadSlotRecipe = defineSlotRecipe({
   },
 });
 
-// .spec.md §4.6 — Table. No fields, runs on the semantic palette alone.
+// Table. No fields, runs on the semantic palette alone.
+const tableCellPadding = {
+  paddingBlock: "2.5",
+  paddingInlineEnd: "2.5",
+  paddingInlineStart: "0",
+};
 export const tableSlotRecipe = defineSlotRecipe({
   slots: ["root", "header", "body", "row", "columnHeader", "cell", "footer", "caption"],
   base: {
     columnHeader: {
-      fontSize: "10.5px",
+      fontSize: "2xs",
       textTransform: "uppercase",
-      letterSpacing: "0.1em",
+      letterSpacing: "widest",
       fontWeight: "600",
       color: "current.textLight",
       borderBottomWidth: "1px",
       borderColor: "current.border",
     },
     cell: {
-      fontSize: "13.5px",
+      fontSize: "sm",
       borderBottomWidth: "1px",
       borderColor: "current.border",
     },
   },
+  // Chakra's own default table recipe sets `px`/`py` on `cell`/`columnHeader`
+  // under `variants.size.*` (default "md") — restated here (see forms.ts /
+  // alert.ts for why this needs to be at the same "size" stage with
+  // matching longhand names, not a base-level override).
+  variants: {
+    size: {
+      sm: { columnHeader: tableCellPadding, cell: tableCellPadding },
+      md: { columnHeader: tableCellPadding, cell: tableCellPadding },
+      lg: { columnHeader: tableCellPadding, cell: tableCellPadding },
+    },
+  },
 });
 
-// .spec.md §4.6 — Progress. The fill is the one small element that earns a
+// Progress. The fill is the one small element that earns a
 // ramp: `linear-gradient(90deg, <deep>, <mid>)`.
 export const progressSlotRecipe = defineSlotRecipe({
-  slots: ["root", "label", "track", "range", "valueText", "view", "circle", "circleTrack", "circleRange"],
+  slots: [
+    "root",
+    "label",
+    "track",
+    "range",
+    "valueText",
+    "view",
+    "circle",
+    "circleTrack",
+    "circleRange",
+  ],
   base: {
     track: {
-      height: "9px",
-      borderRadius: "99px",
+      height: "2.5",
+      borderRadius: "full",
       bg: "gray.300",
     },
     range: {
-      backgroundImage: "linear-gradient(90deg, {colors.colorPalette.deep}, {colors.colorPalette.mid})",
+      backgroundImage:
+        "linear-gradient(90deg, {colors.colorPalette.800}, {colors.colorPalette.600})",
     },
   },
 });

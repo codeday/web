@@ -1,9 +1,38 @@
 import { Box, Grid, Text, Image } from "@codeday/topo/Atom";
 
-import { usePageData } from "@codeday/topo/Theme";
+import { graphql } from "@/gql";
+import { FragmentType, useFragment } from "@/gql/fragment-masking";
 
-export default function PhotoGallery(props: any) {
-  const { cms } = usePageData();
+export const VolunteerPhotoGalleryFragment = graphql(`
+  fragment VolunteerPhotoGallery on Query {
+    cms {
+      volunteerPhotoGallery: pressPhotos(where: { tags_contains_some: ["volunteer"] }) {
+        items {
+          photo {
+            url(transform: { width: 600, height: 400, resizeStrategy: FILL })
+          }
+          region {
+            name
+          }
+          event {
+            title
+            program {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
+interface PhotoGalleryProps {
+  data: FragmentType<typeof VolunteerPhotoGalleryFragment>;
+  [key: string]: any;
+}
+
+export default function PhotoGallery({ data, ...props }: PhotoGalleryProps) {
+  const { cms } = useFragment(VolunteerPhotoGalleryFragment, data);
   const volunteerPhotoGallery = cms?.volunteerPhotoGallery?.items || [];
 
   return (

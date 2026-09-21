@@ -1,28 +1,93 @@
 import { Box, Grid, Image, Text, Heading } from "@codeday/topo/Atom";
 import { Content, ContentfulRichText } from "@codeday/topo/Molecule";
-import { useColorMode, usePageData } from "@codeday/topo/Theme";
 import { apiFetch } from "@codeday/topo/utils";
 import { UiX } from "@codeday/topocons";
-import { print } from "graphql";
+import { ResultOf } from "@graphql-typed-document-node/core";
 import { GetStaticProps, GetStaticPaths } from "next";
 import React, { useState } from "react";
 
+import { graphql } from "@/gql";
+import { useFragment } from "@/gql/fragment-masking";
+
 import Page from "../../../components/Page";
 
-import { HelpProgramAudienceQuery, HelpProgramAudiencePathsQuery } from "./audience.gql";
+export const HelpProgramAudienceFragment = graphql(`
+  fragment HelpProgramAudienceComponent on Query {
+    cms {
+      programs(where: { webname: $programWebname }, limit: 1) {
+        items {
+          name
+        }
+      }
+      events(where: { program: { webname: $programWebname } }, limit: 15) {
+        items {
+          linkedFrom {
+            pressPhotos(limit: 1) {
+              items {
+                photo {
+                  url(transform: { width: 1024, height: 250, resizeStrategy: FILL, quality: 80 })
+                }
+              }
+            }
+          }
+        }
+      }
+      faqs(
+        where: { program: { webname: $programWebname }, audience_contains_all: [$audience] }
+        order: [featured_DESC]
+      ) {
+        items {
+          title
+          tags
+          answer {
+            json
+          }
+          sys {
+            id
+          }
+        }
+      }
+    }
+  }
+`);
+
+const HelpProgramAudienceQuery = graphql(`
+  query HelpProgramAudienceQuery($programWebname: String!, $audience: String!) {
+    ...HelpProgramAudienceComponent
+  }
+`);
+
+const HelpProgramAudiencePathsQuery = graphql(`
+  query HelpProgramAudiencePathsQuery {
+    cms {
+      programs(limit: 100) {
+        items {
+          webname
+          linkedFrom {
+            faqs {
+              items {
+                audience
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`);
 
 interface AudienceProps {
+  query: ResultOf<typeof HelpProgramAudienceQuery>;
   programWebname: string;
   audience: string;
 }
 
-export default function Audience({ programWebname, audience }: AudienceProps) {
-  const { colorMode } = useColorMode();
+export default function Audience({ query, programWebname, audience }: AudienceProps) {
   const [tag, setTag] = useState<string | null>(null);
 
   if (!programWebname || !audience) return <></>;
 
-  const { programs, faqs, events } = usePageData().cms || {};
+  const { programs, faqs, events } = useFragment(HelpProgramAudienceFragment, query)?.cms || {};
   const program = programs?.items[0] || null;
 
   const photos =
@@ -46,7 +111,7 @@ export default function Audience({ programWebname, audience }: AudienceProps) {
       title={`${audience} ~ ${program.name} ~ Help`}
     >
       <Content mt={-8}>
-        {photo && <Image src={photo} alt="" w="100%" mb={8} rounded="sm" />}
+        {photo && <Image src={photo} alt="" w="full" mb={8} rounded="sm" />}
         <Heading as="h2" fontSize="5xl" mb={4}>
           {program.name} {audience} Helpdesk
         </Heading>
@@ -69,7 +134,7 @@ export default function Audience({ programWebname, audience }: AudienceProps) {
                 pl={2}
                 pr={2}
                 cursor="pointer"
-                color={t === tag ? "current.text" : "current.textLight"}
+                color={t === tag ? "black" : "current.textLight"}
               >
                 {t}
                 {t === tag && (
@@ -107,11 +172,7 @@ export default function Audience({ programWebname, audience }: AudienceProps) {
               <Box
                 position="absolute"
                 height={24}
-                background={
-                  colorMode === "light"
-                    ? "linear-gradient(0deg, rgba(255,255,255,1) 25%, rgba(255,255,255,0) 100%)"
-                    : "linear-gradient(0deg, rgba(41,41,41,1) 25%, rgba(41,41,41,0) 100%)"
-                }
+                background="linear-gradient(0deg, {colors.current.bg} 25%, {colors.current.bg/0} 100%)"
                 bottom={0}
                 left={0}
                 right={0}
@@ -139,7 +200,7 @@ export default function Audience({ programWebname, audience }: AudienceProps) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const query = await apiFetch(print(HelpProgramAudiencePathsQuery), {}, {});
+  const query = await apiFetch(HelpProgramAudiencePathsQuery, {}, {});
 
   return {
     paths: query.cms.programs?.items
@@ -168,7 +229,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const audience = params?.audience as string;
   const audienceName = audience.charAt(0).toUpperCase() + audience.slice(1);
   const query = await apiFetch(
-    print(HelpProgramAudienceQuery),
+    HelpProgramAudienceQuery,
     { programWebname: program, audience: audienceName },
     {},
   );

@@ -5,7 +5,7 @@ import React from "react";
 
 // Federal Reserve Bank of New York, "Labor Market for Recent College Graduates."
 const CS_UNEMPLOYMENT_BY_YEAR = [
-  { year: "2024", value: 3.9},
+  { year: "2024", value: 3.9 },
   { year: "2025", value: 6.1 },
   { year: "2026", value: 7.0 },
 ];
@@ -20,7 +20,7 @@ function Bar({ value, emphasize }: { value: number; emphasize?: boolean }) {
   const { colorMode } = useColorMode();
   return (
     <Box
-      w="100%"
+      w="full"
       roundedTop="md"
       height={`${(value / MAX_VALUE) * CHART_HEIGHT}px`}
       bg={emphasize ? "current.primary" : colorMode === "light" ? "gray.300" : "gray.700"}
@@ -30,8 +30,7 @@ function Bar({ value, emphasize }: { value: number; emphasize?: boolean }) {
 
 export default function EmploymentChart(props: any) {
   const mostRecentYear = CS_UNEMPLOYMENT_BY_YEAR[CS_UNEMPLOYMENT_BY_YEAR.length - 1].year;
-  const referenceTop =
-    CHART_HEIGHT - (ALL_MAJORS_REFERENCE.value / MAX_VALUE) * CHART_HEIGHT;
+  const referenceTop = CHART_HEIGHT - (ALL_MAJORS_REFERENCE.value / MAX_VALUE) * CHART_HEIGHT;
 
   return (
     <Box {...props}>
@@ -40,11 +39,7 @@ export default function EmploymentChart(props: any) {
       </Text>
 
       <Box>
-        <Grid
-          templateColumns={`repeat(${CS_UNEMPLOYMENT_BY_YEAR.length}, 1fr)`}
-          gap={4}
-          pb={1}
-        >
+        <Grid templateColumns={`repeat(${CS_UNEMPLOYMENT_BY_YEAR.length}, 1fr)`} gap={4} pb={1}>
           {CS_UNEMPLOYMENT_BY_YEAR.map((d) => (
             <Text key={d.year} mb={0} fontSize="sm" fontWeight="bold" textAlign="center">
               {d.value}%
@@ -61,7 +56,7 @@ export default function EmploymentChart(props: any) {
           <Grid
             templateColumns={`repeat(${CS_UNEMPLOYMENT_BY_YEAR.length}, 1fr)`}
             gap={4}
-            h="100%"
+            h="full"
             alignItems="end"
           >
             {CS_UNEMPLOYMENT_BY_YEAR.map((d) => (
@@ -76,7 +71,7 @@ export default function EmploymentChart(props: any) {
             top={`${referenceTop}px`}
             borderTopWidth={2}
             borderStyle="dashed"
-            borderColor="current.text"
+            borderColor="black"
           >
             <Text
               position="absolute"
@@ -85,7 +80,7 @@ export default function EmploymentChart(props: any) {
               mb={0}
               fontSize="xs"
               fontWeight="bold"
-              color="current.text"
+              color="black"
               whiteSpace="nowrap"
             >
               {ALL_MAJORS_REFERENCE.label}: {ALL_MAJORS_REFERENCE.value}%
@@ -93,11 +88,7 @@ export default function EmploymentChart(props: any) {
           </Box>
         </Box>
 
-        <Grid
-          templateColumns={`repeat(${CS_UNEMPLOYMENT_BY_YEAR.length}, 1fr)`}
-          gap={4}
-          pt={1}
-        >
+        <Grid templateColumns={`repeat(${CS_UNEMPLOYMENT_BY_YEAR.length}, 1fr)`} gap={4} pt={1}>
           {CS_UNEMPLOYMENT_BY_YEAR.map((d) => (
             <Text
               key={d.year}

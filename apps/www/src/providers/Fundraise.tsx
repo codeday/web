@@ -22,10 +22,24 @@ const FUNDRAISE_UP_IFRAME_SELECTOR = `
   iframe[title="Donation Reminder"]
 `;
 
+// Makes the "Donate Button" iframe invisible but still interactive — a
+// real click on it still reaches FundraiseUp's actual code. Our own
+// visible button is stacked on top of wherever this iframe lands in
+// normal document flow (see Page/index.tsx); this is only `opacity`, not
+// also `position`/`width`/`height`, because FundraiseUp sets those inline
+// with its own `!important` (confirmed by inspection), and inline
+// `!important` beats a stylesheet rule at the same priority — those
+// properties simply can't be overridden from here, so Page.tsx works
+// around that instead of fighting it.
 const FUNDRAISE_UP_STYLE = `
   ${FUNDRAISE_UP_IFRAME_SELECTOR} {
     color-scheme: normal !important;
     background-color: transparent !important;
+  }
+
+  iframe[title="Donate Button"] {
+    opacity: 0 !important;
+    cursor: pointer;
   }
 `;
 
@@ -48,7 +62,11 @@ export function FundraiseProvider({ children }: { children: ReactNode }) {
     <FundraiseContext.Provider value={{ isFundraiseLoaded }}>
       <Head>
         <link rel="preconnect" href="https://cdn.fundraiseup.com" />
-        <link rel="preload" href={`https://cdn.fundraiseup.com/widget/${FUNDRAISE_UP_ID}`} as="script" />
+        <link
+          rel="preload"
+          href={`https://cdn.fundraiseup.com/widget/${FUNDRAISE_UP_ID}`}
+          as="script"
+        />
         <style dangerouslySetInnerHTML={{ __html: FUNDRAISE_UP_STYLE }}></style>
       </Head>
       <Script

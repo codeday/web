@@ -47,7 +47,8 @@ export default function RemindMe(props: any) {
           mr={2}
         />
         <Button
-          colorPalette="green"
+          variant="secondary"
+          colorPalette="marmalade"
           disabled={email.indexOf("@") < 0}
           loading={submitting}
           onClick={async () => {

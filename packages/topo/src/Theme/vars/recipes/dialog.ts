@@ -1,31 +1,53 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 
-// .spec.md §4.5 — Modal doesn't exist yet in Topo (the app uses
+import { SQUIRCLE_CORNER_SHAPE } from "../cornerShape";
+
+// Modal doesn't exist yet in Topo (the app uses
 // react-responsive-modal directly); built here on Chakra v3's Dialog
 // (v3's renamed Modal), following the same "heading in the field" rule as
 // Card.
 export const dialogSlotRecipe = defineSlotRecipe({
-  slots: ["backdrop", "positioner", "content", "header", "body", "footer", "title", "description", "closeTrigger"],
+  slots: [
+    "backdrop",
+    "positioner",
+    "content",
+    "header",
+    "body",
+    "footer",
+    "title",
+    "description",
+    "closeTrigger",
+  ],
   base: {
     content: {
-      borderRadius: "14px",
+      borderRadius: "2xl",
+      cornerShape: SQUIRCLE_CORNER_SHAPE,
       overflow: "hidden",
     },
     header: {
-      minHeight: "76px",
-      padding: "18px 16px",
+      minHeight: "20",
+      height: "auto",
+      padding: "{spacing.4.5} {spacing.4}",
       display: "flex",
       alignItems: "flex-end",
       position: "relative",
-      backgroundImage: "linear-gradient(110deg, {colors.colorPalette.gradient.full})",
+      // The heading-only field is short — never travels far enough toward
+      // sand to need `gradient.critical`'s contrast cap, so the plain
+      // 20%->62% two-stop compression (`gradient.modal`) is fine uncapped.
+      backgroundImage: "linear-gradient(110deg, {colors.colorPalette.gradient.modal})",
     },
     title: {
-      color: "white",
-      fontSize: "15.5px",
+      color: "trueWhite",
+      fontSize: "md",
       fontWeight: "800",
-      letterSpacing: "-0.015em",
+      letterSpacing: "tight",
       position: "relative",
       zIndex: "1",
+    },
+    body: {
+      padding: "{spacing.3.5} {spacing.4}",
+      fontSize: "sm",
+      color: "current.textLight",
     },
   },
 });

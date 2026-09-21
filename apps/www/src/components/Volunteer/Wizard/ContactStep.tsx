@@ -1,6 +1,6 @@
+import * as m from "@codeday/i18n/messages";
 import { Box, Heading, VStack, TextInput } from "@codeday/topo/Atom";
 import { DataCollection } from "@codeday/topo/Molecule";
-import * as m from "@codeday/i18n/messages";
 import React from "react";
 
 interface ContactStepProps {

@@ -1,5 +1,5 @@
-import { Box } from "@codeday/topo/Atom";
 import { ChakraProvider } from "@chakra-ui/react";
+import { Box } from "@codeday/topo/Atom";
 import { ThemeDataProvider, defaultFontSizes, type ThemeData } from "@codeday/topo/utils";
 import { ThemeProvider as NextThemesProvider } from "@wrksz/themes";
 import React from "react";
@@ -41,15 +41,17 @@ const Provider = ({
   apiEndpoint,
 }: ProviderProps) => {
   // Handle brandColor (mutates theme object — same behaviour as v2).
-  // .spec.md §2.1: `brand` is now a ramp's accent-on-white, not a semantic
-  // hue's `.600` stop — `brandColor="red"` (the old default, back when
+  // `brand` is now a ramp's accent-on-white, not a semantic hue's `.600`
+  // stop — `brandColor="red"` (the old default, back when
   // brand was literally `red.600`) would otherwise silently re-clobber the
   // Hibiscus default set in colors.ts. Ramp names take priority; a
   // semantic-hue name is still accepted for any caller that hasn't moved
   // off the old convention.
   const brandRamp = brandColor && brandColor in gradientStops ? brandColor : "hibiscus";
   if (brandColor && brandColor in gradientStops) {
-    codedayTheme.colors.brand = accentOnWhite(gradientStops[brandColor as keyof typeof gradientStops]);
+    codedayTheme.colors.brand = accentOnWhite(
+      gradientStops[brandColor as keyof typeof gradientStops],
+    );
   } else if (brandColor && brandColor in codedayTheme.colors) {
     codedayTheme.colors.brand = codedayTheme.colors[brandColor][600];
   }
@@ -90,9 +92,9 @@ const Provider = ({
         <ThemeDataProvider value={themeData}>
           <FontStyles />
           <script src="https://www.cognitoforms.com/f/seamless.js" defer />
-          {/* App-wide default `colorPalette` (.spec.md §4.1's per-section
+          {/* App-wide default `colorPalette` (the per-section
               ramp switching needs *some* default so recipes referencing
-              `colorPalette.mid`/`.deep`/etc. don't silently fail when a
+              `colorPalette.600`/`.800`/etc. don't silently fail when a
               descendant doesn't set one itself; any section can still
               override by setting its own `colorPalette`). */}
           <Box colorPalette={brandRamp} display="contents">

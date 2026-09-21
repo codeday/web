@@ -4,14 +4,14 @@ Monorepo for CodeDay's web applications and shared packages.
 
 ## Structure
 
-| Path | Description |
-|---|---|
-| `apps/www` | Main CodeDay website (Next.js Pages Router) |
-| `packages/topo` | Shared design system (Chakra UI components, theme, region detection) |
-| `packages/i18n` | Shared internationalization (Paraglide JS messages + runtime) |
-| `packages/utils` | Shared utilities (GraphQL fetch, debug, etc.) |
-| `packages/topocons` | Icon library |
-| `packages/tsconfig` | Shared TypeScript configuration |
+| Path                | Description                                                          |
+| ------------------- | -------------------------------------------------------------------- |
+| `apps/www`          | Main CodeDay website (Next.js Pages Router)                          |
+| `packages/topo`     | Shared design system (Chakra UI components, theme, region detection) |
+| `packages/i18n`     | Shared internationalization (Paraglide JS messages + runtime)        |
+| `packages/utils`    | Shared utilities (GraphQL fetch, debug, etc.)                        |
+| `packages/topocons` | Icon library                                                         |
+| `packages/tsconfig` | Shared TypeScript configuration                                      |
 
 ## Getting started
 
@@ -25,10 +25,10 @@ pnpm run build
 The monorepo has two independent localization layers. Both are provided by
 shared packages so any app in the monorepo can use them.
 
-| Layer | Purpose | Provided by | Example values |
-|---|---|---|---|
-| **Locale** (language) | UI string translations | `packages/i18n` | `en`, `es` |
-| **Region** | Domain-specific data (phone numbers, emails, legal) | `packages/topo` (Region) | `us`, `eu`, `uk`, `ca`, `in` |
+| Layer                 | Purpose                                             | Provided by              | Example values               |
+| --------------------- | --------------------------------------------------- | ------------------------ | ---------------------------- |
+| **Locale** (language) | UI string translations                              | `packages/i18n`          | `en`, `es`                   |
+| **Region**            | Domain-specific data (phone numbers, emails, legal) | `packages/topo` (Region) | `us`, `eu`, `uk`, `ca`, `in` |
 
 ---
 
@@ -93,11 +93,11 @@ export const getStaticProps = withLocaleStaticProps(async (ctx) => {
 
 #### i18n package exports
 
-| Import path | Contents |
-|---|---|
-| `@codeday/i18n/messages` | Type-safe message functions (`m.key()`) |
-| `@codeday/i18n/runtime` | `getLocale()`, `setLocale()`, `overwriteGetLocale()`, `baseLocale`, `locales`, `Locale` type |
-| `@codeday/i18n/next-pages` | `getLocaleFromContext()`, `withLocaleStaticProps()`, `withLocaleServerSideProps()` |
+| Import path                | Contents                                                                                     |
+| -------------------------- | -------------------------------------------------------------------------------------------- |
+| `@codeday/i18n/messages`   | Type-safe message functions (`m.key()`)                                                      |
+| `@codeday/i18n/runtime`    | `getLocale()`, `setLocale()`, `overwriteGetLocale()`, `baseLocale`, `locales`, `Locale` type |
+| `@codeday/i18n/next-pages` | `getLocaleFromContext()`, `withLocaleStaticProps()`, `withLocaleServerSideProps()`           |
 
 ---
 
@@ -109,15 +109,15 @@ but can still view the site in English.
 
 `@codeday/topo/Region` ships a built-in `TLD_REGION_MAP`:
 
-| TLD | Region | | TLD | Region |
-|---|---|---|---|---|
-| `.org` | `us` | | `.ee` | `eu` |
-| `.us` | `us` | | `.se` | `eu` |
-| `.ca` | `ca` | | `.it` | `eu` |
-| `.co.uk` | `uk` | | `.fr` | `eu` |
-| `.in` | `in` | | `.es` | `eu` |
-| | | | `.ch` | `eu` |
-| | | | `.be` | `eu` |
+| TLD      | Region |     | TLD   | Region |
+| -------- | ------ | --- | ----- | ------ |
+| `.org`   | `us`   |     | `.ee` | `eu`   |
+| `.us`    | `us`   |     | `.se` | `eu`   |
+| `.ca`    | `ca`   |     | `.it` | `eu`   |
+| `.co.uk` | `uk`   |     | `.fr` | `eu`   |
+| `.in`    | `in`   |     | `.es` | `eu`   |
+|          |        |     | `.ch` | `eu`   |
+|          |        |     | `.be` | `eu`   |
 
 Apps can pass an optional `overrides` map to add new TLDs or override
 specific full domain names.
@@ -155,7 +155,7 @@ Pass an `overrides` map to `getRegionFromHostname`. Full-domain keys take
 priority, then override TLD keys, then the built-in `TLD_REGION_MAP`.
 
 ```ts
-const overrides = { "staging.codeday.org": "eu", "dev": "us" };
+const overrides = { "staging.codeday.org": "eu", dev: "us" };
 const region = getRegionFromHostname("staging.codeday.org", overrides); // "eu"
 ```
 
@@ -191,10 +191,10 @@ No other files need to change.
 
 #### Region package exports
 
-| Import path | Contents |
-|---|---|
+| Import path                   | Contents                                                                                                               |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `@codeday/topo/Region/config` | `getRegionFromHostname()`, `TLD_REGION_MAP`, `DEFAULT_REGION`, `REGION_HEADER`, `RegionMap` type — Edge-safe, no React |
-| `@codeday/topo/Region` | Everything from config + `RegionProvider`, `useRegion()`, `getRegionFromContext()` |
+| `@codeday/topo/Region`        | Everything from config + `RegionProvider`, `useRegion()`, `getRegionFromContext()`                                     |
 
 ---
 

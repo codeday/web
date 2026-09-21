@@ -1,5 +1,5 @@
-import { Box, Text, Heading, Link } from "@codeday/topo/Atom";
 import * as m from "@codeday/i18n/messages";
+import { Box, Text, Heading, Link } from "@codeday/topo/Atom";
 import React from "react";
 
 interface ConfirmationStepProps {

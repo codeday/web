@@ -13,13 +13,71 @@ import {
   BuildingOffice as PartnerIcon,
   IdCard as VolunteerIcon,
 } from "@codeday/topocons";
-import { print } from "graphql";
+import { ResultOf } from "@graphql-typed-document-node/core";
 import { GetStaticProps, GetStaticPaths } from "next";
 import React from "react";
 
+import { graphql } from "@/gql";
+import { useFragment } from "@/gql/fragment-masking";
+
 import Page from "../../../components/Page";
-import { usePageData } from "@codeday/topo/Theme";
-import { HelpProgramIndexQuery, HelpProgramIndexPathsQuery } from "./index.gql";
+
+export const HelpProgramIndexFragment = graphql(`
+  fragment HelpProgramIndexComponent on Query {
+    cms {
+      programs(where: { webname: $programWebname }, limit: 1) {
+        items {
+          name
+        }
+      }
+      events(where: { program: { webname: $programWebname } }, limit: 15) {
+        items {
+          linkedFrom {
+            pressPhotos(limit: 1) {
+              items {
+                photo {
+                  url(transform: { width: 1024, height: 250, resizeStrategy: FILL, quality: 80 })
+                }
+              }
+            }
+          }
+        }
+      }
+      faqs(where: { program: { webname: $programWebname } }, limit: 1000) {
+        items {
+          audience
+        }
+      }
+    }
+  }
+`);
+
+const HelpProgramIndexQuery = graphql(`
+  query HelpProgramIndexQuery($programWebname: String!) {
+    ...HelpProgramIndexComponent
+  }
+`);
+
+const HelpProgramIndexPathsQuery = graphql(`
+  query HelpProgramIndexPathsQuery {
+    cms {
+      programs {
+        items {
+          webname
+          linkedFrom {
+            faqs(limit: 1) {
+              items {
+                sys {
+                  id
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`);
 
 const icons: Record<string, React.ReactElement> = {
   Student: <StudentIcon />,
@@ -30,11 +88,12 @@ const icons: Record<string, React.ReactElement> = {
 };
 
 interface ProgramProps {
+  query: ResultOf<typeof HelpProgramIndexQuery>;
   programWebname: string;
 }
 
-export default function Program({ programWebname }: ProgramProps) {
-  const { programs, faqs, events } = usePageData().cms || {};
+export default function Program({ query, programWebname }: ProgramProps) {
+  const { programs, faqs, events } = useFragment(HelpProgramIndexFragment, query)?.cms || {};
 
   if (!programWebname) return <></>;
 
@@ -57,7 +116,7 @@ export default function Program({ programWebname }: ProgramProps) {
   return (
     <Page slug={`/help/${programWebname}`} title={`${program.name} ~ Help`}>
       <Content mt={-8}>
-        {photo && <Image src={photo} alt="" w="100%" mb={8} rounded="sm" />}
+        {photo && <Image src={photo} alt="" w="full" mb={8} rounded="sm" />}
         <Heading as="h2" fontSize="5xl">
           {program.name} Helpdesk
         </Heading>
@@ -92,7 +151,7 @@ export default function Program({ programWebname }: ProgramProps) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const query = await apiFetch(print(HelpProgramIndexPathsQuery), {}, {});
+  const query = await apiFetch(HelpProgramIndexPathsQuery, {}, {});
 
   return {
     paths: query.cms.programs?.items
@@ -104,7 +163,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const program = params?.program as string;
-  const query = await apiFetch(print(HelpProgramIndexQuery), { programWebname: program }, {});
+  const query = await apiFetch(HelpProgramIndexQuery, { programWebname: program }, {});
 
   return {
     props: {

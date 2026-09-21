@@ -1,7 +1,7 @@
 import { Button, Textarea, Skelly, Spinner } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
 import { apiFetch } from "@codeday/topo/utils";
-import { print } from "graphql";
+import { ResultOf } from "@graphql-typed-document-node/core";
 import { sign } from "jsonwebtoken";
 import { DateTime } from "luxon";
 import { GetStaticProps, GetStaticPaths } from "next";
@@ -9,9 +9,36 @@ import { useRouter } from "next/router";
 import { useMemo } from "react";
 import xmlbuilder from "xmlbuilder";
 
+import { graphql } from "@/gql";
+import { useFragment } from "@/gql/fragment-masking";
+
 import Page from "../../../../components/Page";
-import { usePageData } from "@codeday/topo/Theme";
-import { PublicationQuery, ListPublicationsQuery } from "../../[...doi]/index.gql";
+import { PublicationQuery, ListPublicationsQuery } from "../../[...doi]/index";
+
+export const DoiCrossrefFragment = graphql(`
+  fragment DoiCrossrefComponent on Query {
+    cms {
+      publications(where: { doiSuffix: $doiSuffix }, limit: 1) {
+        items {
+          type
+          title
+          contributors {
+            givenName
+            familyName
+            orcid
+            affiliation
+          }
+          doiSuffix
+          description
+          publicationDate
+          license
+          funderName
+          funderIdentifier
+        }
+      }
+    }
+  }
+`);
 
 function licenseToLink(license: string): string | undefined {
   if (license.startsWith("CC")) {
@@ -205,8 +232,12 @@ function getCrossrefXml(publication: any, id: string): string {
   return root.end({ pretty: true });
 }
 
-export default function Crossref() {
-  const { cms } = usePageData();
+interface CrossrefProps {
+  query: ResultOf<typeof PublicationQuery>;
+}
+
+export default function Crossref({ query: pageQuery }: CrossrefProps) {
+  const { cms } = useFragment(DoiCrossrefFragment, pageQuery) || {};
   const { query } = useRouter();
 
   const id = useMemo(() => `codeday-${Math.random().toString(36).substring(2, 8)}`, []);
@@ -227,19 +258,12 @@ export default function Crossref() {
   }
 
   const item = cms.publications.items[0];
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const content = useMemo(() => getCrossrefXml(item, id), [item, id]);
 
   return (
     <Page slug={`/doi/crossref/${query.doi}`}>
       <Content>
-        <Textarea
-          fontFamily="monospace"
-          fontSize="2xs"
-          width="100%"
-          height="64em"
-          value={content}
-        />
+        <Textarea fontFamily="monospace" fontSize="2xs" width="full" height="5xl" value={content} />
         <Button
           onClick={() => {
             const link = document.createElement("a");
@@ -258,7 +282,7 @@ export default function Crossref() {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const query = await apiFetch(print(ListPublicationsQuery), {}, {});
+  const query = await apiFetch(ListPublicationsQuery, {}, {});
 
   return {
     paths:
@@ -277,7 +301,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return {
     props: {
       query: await apiFetch(
-        print(PublicationQuery),
+        PublicationQuery,
         { doiSuffix: doi.slice(1).join("/") },
         {
           Authorization: `Bearer ${token}`,

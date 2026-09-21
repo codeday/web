@@ -1,7 +1,7 @@
+import * as m from "@codeday/i18n/messages";
 import { Box, Grid, Link } from "@codeday/topo/Atom";
 import { useTheme } from "@codeday/topo/utils";
 import { Promise, Secure, UiInfo } from "@codeday/topocons";
-import * as m from "@codeday/i18n/messages";
 import React from "react";
 
 const MessageIcons = {
@@ -13,9 +13,8 @@ interface DataCollectionProps {
 }
 function DataCollection({ message }: DataCollectionProps) {
   const { fontSizes } = useTheme();
-  const renderedText = message === "pii"
-    ? m.topo_datacollection_pii_notice()
-    : m.topo_datacollection_payment_notice();
+  const renderedText =
+    message === "pii" ? m.topo_datacollection_pii_notice() : m.topo_datacollection_payment_notice();
   const moreInfo = m.topo_datacollection_more_info();
 
   const MessageIcon = MessageIcons[message] || UiInfo;

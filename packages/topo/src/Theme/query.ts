@@ -9,10 +9,3 @@ export function useQuery<T = any>(key?: string, def?: T): T | undefined {
   if (!key) return obj as unknown as T;
   return get(obj, key, def || undefined);
 }
-
-const PageDataContext = createContext<any>({});
-
-export const PageDataProvider = PageDataContext.Provider;
-export function usePageData<T = any>(): T {
-  return useContext(PageDataContext) as T;
-}

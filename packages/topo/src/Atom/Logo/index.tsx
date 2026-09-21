@@ -1,7 +1,6 @@
 import { pureRef, type ComponentWithAs } from "@codeday/topo/_utils";
 import { Box, type BoxProps } from "@codeday/topo/Atom";
 import { Text } from "@codeday/topo/Atom";
-import { useColorModeValue } from "@codeday/topo/Theme";
 import React from "react";
 import { withProps } from "recompose";
 
@@ -42,11 +41,7 @@ const Lockup = ({ logo, text, textColor, color, ...props }: LockupProps) => (
     <Box color="brand" height="1.1em" display="inline">
       {logo}
     </Box>
-    <Box
-      color={textColor || color || useColorModeValue("black", "white")}
-      height="1em"
-      display="inline"
-    >
+    <Box color={textColor || color || "black"} height="1em" display="inline">
       {text}
     </Box>
   </Box>
@@ -179,3 +174,10 @@ export const Community = withProps<any, LogoProps>({
   program: "community",
   "aria-label": "Community",
 })(StaticLogo);
+
+export {
+  SquircleLogo,
+  SquircleLogoColor,
+  SquircleLogoWhite,
+  type SquircleLogoProps,
+} from "./SquircleLogo";

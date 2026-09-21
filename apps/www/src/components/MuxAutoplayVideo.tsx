@@ -47,7 +47,6 @@ export default function MuxAutoplayVideo({
     }
   };
 
-  // eslint-disable-next-line no-secrets/no-secrets
   const bg = `https://image.mux.com/${videoId}/thumbnail.png?width=${thumbWidth}&height=${thumbHeight}&fit_mode=crop&time=${startAt}`;
 
   return (
@@ -68,14 +67,14 @@ export default function MuxAutoplayVideo({
           <Box
             position="absolute"
             bottom={2}
-            width="100%"
-            color="white"
+            width="full"
+            color="trueWhite"
             textAlign="center"
             fontSize="3xl"
             style={{ pointerEvents: "none" }}
             display={muted ? undefined : "none"}
           >
-            <Box p={1} pl={2} pr={2} rounded="sm" bg="rgba(0,0,0,0.6)" display="inline-block">
+            <Box p={1} pl={2} pr={2} rounded="sm" bg="blackAlpha.700" display="inline-block">
               <UiVolume />
               <Box as="span" fontSize="xl" pl={4}>
                 Unmute

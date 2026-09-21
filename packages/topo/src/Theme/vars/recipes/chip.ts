@@ -1,6 +1,6 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 
-// .spec.md §4.2 — Chip (removable). Named Chip, not Tag — and namespaced
+// Chip (removable). Named Chip, not Tag — and namespaced
 // (`topo-chip`, not a bare `.tag`) per the spec's own war story: a generic
 // `.tag` class name collided with unrelated page styling and the remove
 // button swallowed the label.
@@ -9,24 +9,24 @@ export const chipSlotRecipe = defineSlotRecipe({
   slots: ["root", "label", "closeTrigger"],
   base: {
     root: {
-      height: "28px",
-      paddingInlineStart: "11px",
-      paddingInlineEnd: "5px",
-      borderRadius: "999px",
+      height: "7",
+      paddingInlineStart: "3",
+      paddingInlineEnd: "1.5",
+      borderRadius: "full",
       bg: "transparent",
       boxShadow: "inset 0 0 0 1.5px {colors.current.border}",
-      fontSize: "12.5px",
+      fontSize: "xs",
       fontWeight: "600",
       lineHeight: "1",
       display: "inline-flex",
       alignItems: "center",
-      gap: "6px",
+      gap: "1.5",
     },
     closeTrigger: {
-      width: "19px",
-      height: "19px",
+      width: "5",
+      height: "5",
       borderRadius: "full",
-      fontSize: "10px",
+      fontSize: "2xs",
       display: "inline-flex",
       alignItems: "center",
       justifyContent: "center",

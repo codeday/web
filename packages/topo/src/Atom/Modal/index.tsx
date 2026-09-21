@@ -1,16 +1,24 @@
-import { CloseButton, Dialog as ChakraDialog, type DialogRootProps } from "@chakra-ui/react";
+import {
+  Box,
+  type BoxProps,
+  CloseButton,
+  Dialog as ChakraDialog,
+  type DialogRootProps,
+} from "@chakra-ui/react";
 import React from "react";
 
-import { useFieldGrain } from "../../Theme/vars/grain";
+import { useGrainOverlay } from "../../Theme/vars/grain";
 
-// .spec.md §4.5 — Modal, built on Chakra v3's Dialog (v3's renamed Modal;
+// Modal, built on Chakra v3's Dialog (v3's renamed Modal;
 // Topo didn't have one before — the app used react-responsive-modal
-// directly). Follows Card's "heading in the field" rule.
+// directly). Follows Card's "heading in the field" rule. Chili Oil,
+// specifically — like Button defaulting to Hibiscus, this is the modal's
+// own fixed choice, not something every caller is expected to override.
 export const Modal = React.forwardRef<HTMLDivElement, DialogRootProps>((props, ref) => (
   <ChakraDialog.Root {...props}>
     <ChakraDialog.Backdrop />
     <ChakraDialog.Positioner>
-      <ChakraDialog.Content ref={ref} colorPalette="hibiscus">
+      <ChakraDialog.Content ref={ref} colorPalette="chilioil">
         {props.children}
       </ChakraDialog.Content>
     </ChakraDialog.Positioner>
@@ -18,22 +26,26 @@ export const Modal = React.forwardRef<HTMLDivElement, DialogRootProps>((props, r
 ));
 Modal.displayName = "Modal";
 
-export const ModalHeader = React.forwardRef<HTMLDivElement, React.ComponentProps<typeof ChakraDialog.Header>>(
-  ({ css, ...props }, forwardedRef) => {
-    const { ref: grainRef, overlayCss } = useFieldGrain(0.07, 0.5, "modal-header");
-    return (
-      <ChakraDialog.Header
-        ref={(node: HTMLDivElement | null) => {
-          grainRef(node);
-          if (typeof forwardedRef === "function") forwardedRef(node);
-          else if (forwardedRef) (forwardedRef as React.RefObject<HTMLDivElement | null>).current = node;
-        }}
-        css={{ ...overlayCss, ...(css as object) }}
-        {...props}
-      />
-    );
-  },
-);
+export const ModalHeader = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof ChakraDialog.Header>
+>(({ children, ...props }, forwardedRef) => {
+  const { containerRef, canvas } = useGrainOverlay("modal-header");
+  return (
+    <ChakraDialog.Header
+      ref={(node: HTMLDivElement | null) => {
+        containerRef(node);
+        if (typeof forwardedRef === "function") forwardedRef(node);
+        else if (forwardedRef)
+          (forwardedRef as React.RefObject<HTMLDivElement | null>).current = node;
+      }}
+      {...props}
+    >
+      {children}
+      {canvas}
+    </ChakraDialog.Header>
+  );
+});
 ModalHeader.displayName = "ModalHeader";
 
 export const ModalTitle = ChakraDialog.Title;
@@ -46,3 +58,12 @@ export const ModalCloseButton = () => (
   </ChakraDialog.CloseTrigger>
 );
 export const ModalTrigger = ChakraDialog.Trigger;
+
+// Actions sit in the body, below the copy — not a separate dialog footer
+// bar (the same "actions inside the text column" rule Alert uses).
+// `ModalFooter` (`Dialog.Footer`) still exists for a caller that wants a
+// distinct bottom bar, but the worked example here doesn't.
+export const ModalActions = React.forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
+  <Box ref={ref} marginTop="3.5" display="flex" gap="2" {...props} />
+));
+ModalActions.displayName = "ModalActions";

@@ -1,0 +1,32 @@
+// Zed tasks for this monorepo. Each per-app task builds that app's
+// workspace-package dependencies (topo, topocons, utils, i18n) via
+// turbo's `^build` before starting the dev server (see turbo.json).
+[
+  {
+    "label": "Run: www",
+    "command": "pnpm",
+    "args": ["run", "dev:www"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "Run: topo-gallery",
+    "command": "pnpm",
+    "args": ["run", "dev:topo-gallery"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "Run: all apps",
+    "command": "pnpm",
+    "args": ["run", "dev"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  }
+]

@@ -1,9 +1,9 @@
 import { Spinner } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
+import { CalendlyEmbed as Calendly } from "@codeday/topo/Molecule";
 import { GetStaticProps, GetStaticPaths } from "next";
 import React from "react";
 
-import { CalendlyEmbed as Calendly } from "@codeday/topo/Molecule";
 import Page from "../../components/Page";
 
 interface CalendlyPageProps {

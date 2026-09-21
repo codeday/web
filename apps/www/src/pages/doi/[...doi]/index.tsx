@@ -12,7 +12,6 @@ import {
   Button,
 } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import { usePageData } from "@codeday/topo/Theme";
 import { apiFetch } from "@codeday/topo/utils";
 import {
   FileDb as FileDbIcon,
@@ -23,16 +22,71 @@ import {
   FileMusic as FileMusicIcon,
   FileVideo as FileVideoIcon,
 } from "@codeday/topocons";
-import { print } from "graphql";
+import { ResultOf } from "@graphql-typed-document-node/core";
 import { sign } from "jsonwebtoken";
 import { DateTime } from "luxon";
 import { GetStaticProps, GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 import Markdown from "react-markdown";
 
+import { graphql } from "@/gql";
+import { useFragment } from "@/gql/fragment-masking";
+
 import Page from "../../../components/Page";
 import Error404 from "../../404";
-import { PublicationQuery, ListPublicationsQuery } from "./index.gql";
+
+export const DoiFragment = graphql(`
+  fragment DoiComponent on Query {
+    cms {
+      publications(where: { doiSuffix: $doiSuffix }, limit: 1) {
+        items {
+          title
+          description
+          doiSuffix
+          type
+          publicationDate
+          license
+          venue
+          funderName
+          contributors {
+            username
+            name
+            orcid
+            affiliation
+            givenName
+            familyName
+          }
+          files {
+            items {
+              title
+              fileName
+              contentfulBaseUrl
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
+export const PublicationQuery = graphql(`
+  query PublicationQuery($doiSuffix: String) {
+    ...DoiComponent
+    ...DoiCrossrefComponent
+  }
+`);
+
+export const ListPublicationsQuery = graphql(`
+  query ListPublicationsQuery {
+    cms {
+      publications {
+        items {
+          doiSuffix
+        }
+      }
+    }
+  }
+`);
 
 function getCitation(publication: any): string | undefined {
   const citationAuthors = publication.contributors
@@ -95,8 +149,12 @@ function FileIcon({ file }: FileIconProps) {
   return <FileDocIcon />;
 }
 
-export default function Home() {
-  const { cms } = usePageData();
+interface HomeProps {
+  query: ResultOf<typeof PublicationQuery>;
+}
+
+export default function Home({ query: pageQuery }: HomeProps) {
+  const { cms } = useFragment(DoiFragment, pageQuery) || {};
   const { query } = useRouter();
 
   if (!cms) {
@@ -126,6 +184,9 @@ export default function Home() {
     license,
     funderName,
   } = cms.publications.items[0];
+  // `files` can be null (e.g. under the read:users auth scope used here) —
+  // treat that the same as "no files" rather than crashing.
+  const fileItems = files?.items || [];
 
   return (
     <Page slug={`/doi/${query.doi}`} title={title}>
@@ -176,7 +237,7 @@ export default function Home() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <Image src="/orcid.svg" h="16px" />
+                        <Image src="/orcid.svg" h="4" />
                       </Link>
                     )}
                   </Box>
@@ -196,7 +257,7 @@ export default function Home() {
               </Text>
             </Box>
 
-            {files.items.length === 1 ? (
+            {fileItems.length === 1 ? (
               <>
                 <Button
                   as="a"
@@ -204,13 +265,13 @@ export default function Home() {
                   colorPalette="blue"
                   size="lg"
                   height="16"
-                  {...({ href: files.items[0].contentfulBaseUrl } as any)}
+                  {...({ href: fileItems[0].contentfulBaseUrl } as any)}
                 >
                   <Text mb={0} mt={1.5}>
                     Download
                   </Text>
                   <Text fontSize="xs" mt={0} mb={0}>
-                    <FileIcon file={files.items[0]} /> {files.items[0].fileName}
+                    <FileIcon file={fileItems[0]} /> {fileItems[0].fileName}
                   </Text>
                 </Button>
               </>
@@ -222,13 +283,13 @@ export default function Home() {
                 <Grid
                   autoFlow="column"
                   templateRows={{
-                    base: `repeat(${files.items.length}, 1fr)`,
-                    md: `repeat(${Math.ceil(files.items.length / 2)}, 1fr)`,
+                    base: `repeat(${fileItems.length}, 1fr)`,
+                    md: `repeat(${Math.ceil(fileItems.length / 2)}, 1fr)`,
                   }}
                   templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
                   gap={2}
                 >
-                  {files.items.map((f: any) => (
+                  {fileItems.map((f: any) => (
                     <Box key={f.contentfulBaseUrl}>
                       <Box as="a" {...({ href: f.contentfulBaseUrl } as any)}>
                         <HStack>
@@ -318,7 +379,7 @@ export default function Home() {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const query = await apiFetch(print(ListPublicationsQuery), {}, {});
+  const query = await apiFetch(ListPublicationsQuery, {}, {});
 
   return {
     paths:
@@ -334,15 +395,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const doi = params?.doi as string[];
   const token = sign({ scopes: "read:users" }, process.env.ACCOUNT_SECRET!, { expiresIn: "3m" });
+  const query = await apiFetch(
+    PublicationQuery,
+    { doiSuffix: doi.slice(1).join("/") },
+    {
+      Authorization: `Bearer ${token}`,
+    },
+  );
   return {
     props: {
-      query: await apiFetch(
-        print(PublicationQuery),
-        { doiSuffix: doi.slice(1).join("/") },
-        {
-          Authorization: `Bearer ${token}`,
-        },
-      ),
+      query,
     },
     revalidate: 300,
   };

@@ -1,17 +1,29 @@
+import * as m from "@codeday/i18n/messages";
 import { Text, Heading, Link, Image, Box } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import * as m from "@codeday/i18n/messages";
 import { apiFetch } from "@codeday/topo/utils";
-import { print } from "graphql";
+import { ResultOf } from "@graphql-typed-document-node/core";
 import { GetStaticProps } from "next";
 import React from "react";
 
-import Page from "../components/Page";
-import { Error404Query } from "./404.gql";
+import { graphql } from "@/gql";
 
-export default function Home() {
+import Page from "../components/Page";
+
+const Error404Query = graphql(`
+  query Error404Query {
+    ...PageComponent
+  }
+`);
+
+interface HomeProps {
+  /** Undefined when rendered directly as an inline not-found fallback (see `data.tsx`, `doi/[...doi]/index.tsx`, `f/[slug].tsx`) rather than through this page's own `getStaticProps`. */
+  query?: ResultOf<typeof Error404Query>;
+}
+
+export default function Home({ query }: HomeProps) {
   return (
-    <Page title="404 File Not Found">
+    <Page data={query} title="404 File Not Found">
       <Content>
         <Image
           alt=""
@@ -37,7 +49,7 @@ export default function Home() {
 export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
-      query: await apiFetch(print(Error404Query), {}, {}),
+      query: await apiFetch(Error404Query, {}, {}),
     },
     revalidate: 300,
   };

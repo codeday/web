@@ -1,8 +1,7 @@
 import { Box, Grid, Text, Heading, Image, Button, Divider, Link } from "@codeday/topo/Atom";
+import { ContentfulRichText } from "@codeday/topo/Molecule";
 import { UiArrowDown, UiArrowUp, FilePdf } from "@codeday/topocons";
 import React, { useState } from "react";
-
-import { ContentfulRichText } from "@codeday/topo/Molecule";
 
 interface ProgramShareBlurbProps {
   program: any;
@@ -26,7 +25,7 @@ export default function ProgramShareBlurb({ program }: ProgramShareBlurbProps) {
         <Divider
           display={blurbVisible ? null : "none"}
           position="absolute"
-          top="50%"
+          top="1/2"
           transform="translateY(-0.5em)"
           left={0}
           right={0}

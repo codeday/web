@@ -7,16 +7,53 @@ import {
   IconBoxBody as BoxBody,
 } from "@codeday/topo/Molecule";
 import { apiFetch } from "@codeday/topo/utils";
-import { print } from "graphql";
+import { ResultOf } from "@graphql-typed-document-node/core";
 import { GetStaticProps } from "next";
 import React from "react";
 
-import Page from "../../components/Page";
-import { usePageData } from "@codeday/topo/Theme";
-import { HelpIndexQuery } from "./index.gql";
+import { graphql } from "@/gql";
+import { useFragment } from "@/gql/fragment-masking";
 
-export default function Help() {
-  const { programs } = usePageData().cms || {};
+import Page from "../../components/Page";
+
+export const HelpIndexFragment = graphql(`
+  fragment HelpIndexComponent on Query {
+    cms {
+      programs(where: { archived_not: true }) {
+        items {
+          name
+          webname
+          shortDescription
+          logo {
+            url(transform: { width: 300, height: 100 })
+          }
+          linkedFrom {
+            faqs(limit: 1) {
+              items {
+                sys {
+                  id
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
+const HelpIndexQuery = graphql(`
+  query HelpIndexQuery {
+    ...HelpIndexComponent
+  }
+`);
+
+interface HelpProps {
+  query: ResultOf<typeof HelpIndexQuery>;
+}
+
+export default function Help({ query }: HelpProps) {
+  const { programs } = useFragment(HelpIndexFragment, query).cms || {};
   const programsWithFaqs =
     programs?.items?.filter((p: any) => p.linkedFrom?.faqs?.items?.length > 0) || [];
 
@@ -48,7 +85,7 @@ export default function Help() {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const query = await apiFetch(print(HelpIndexQuery), {}, {});
+  const query = await apiFetch(HelpIndexQuery, {}, {});
 
   return {
     props: {

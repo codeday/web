@@ -1,9 +1,8 @@
 import { apiFetch } from "@codeday/topo/utils";
-import { print } from "graphql";
 import { DateTime } from "luxon";
 import { GetStaticProps, GetStaticPaths } from "next";
 
-import { VolunteerQuery } from "./volunteer.gql";
+import { VolunteerQuery } from "./index";
 
 export { default } from "./index";
 
@@ -16,11 +15,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const region = params?.region as string;
-  const query = await apiFetch(
-    print(VolunteerQuery),
-    { now: DateTime.now().minus({ months: 6 }) },
-    {},
-  );
+  const query = await apiFetch(VolunteerQuery, { now: DateTime.now().minus({ months: 6 }) }, {});
 
   return {
     props: {

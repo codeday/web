@@ -7,7 +7,7 @@ export interface ToasterProps {
   toaster: ReturnType<typeof createToaster>;
 }
 
-// .spec.md §7 commit 5b — restyles `useToasts`' toaster. `_toaster`/
+// Restyles `useToasts`' toaster. `_toaster`/
 // `useToasts` (utils.ts) already existed, but nothing ever mounted a
 // `<Toaster>` to render them — toasts silently never appeared. This
 // component is that missing render target; the consuming app mounts it

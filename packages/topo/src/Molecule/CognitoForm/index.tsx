@@ -1,10 +1,8 @@
+import * as m from "@codeday/i18n/messages";
 import { Box, Link, Spinner, Text } from "@codeday/topo/Atom";
 import { DataCollection } from "@codeday/topo/Molecule";
 import { useColorMode } from "@codeday/topo/Theme";
 import { useTheme } from "@codeday/topo/utils";
-import * as m from "@codeday/i18n/messages";
-/* eslint-disable no-secrets/no-secrets */
-/* eslint-disable no-undef */
 import React, { useEffect, useState } from "react";
 
 import Form from "./form";

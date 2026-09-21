@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getRegionFromHostname, REGION_HEADER } from "@codeday/topo/Region/config";
 import { locales, baseLocale as FALLBACK_LOCALE } from "@codeday/i18n/locales";
+import { getRegionFromHostname, REGION_HEADER } from "@codeday/topo/Region/config";
+import { NextRequest, NextResponse } from "next/server";
 
 // Widen the readonly literal tuple so we can test against arbitrary strings
 // from Accept-Language / cookies.
@@ -50,15 +50,10 @@ export function proxy(request: NextRequest) {
     const cookieLocale = request.cookies.get("NEXT_LOCALE")?.value;
 
     const locale =
-      cookieLocale && AVAILABLE_LOCALES.includes(cookieLocale)
-        ? cookieLocale
-        : browserLocale;
+      cookieLocale && AVAILABLE_LOCALES.includes(cookieLocale) ? cookieLocale : browserLocale;
 
     return NextResponse.redirect(
-      new URL(
-        `/${locale}${request.nextUrl.pathname}${request.nextUrl.search}`,
-        request.url,
-      ),
+      new URL(`/${locale}${request.nextUrl.pathname}${request.nextUrl.search}`, request.url),
     );
   }
 

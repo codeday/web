@@ -19,11 +19,10 @@ type RightJoinProps<SourceProps extends object = {}, OverrideProps extends objec
  * A polymorphic component type (replaces the Chakra v2 `ComponentWithAs`).
  * Exported so downstream files can import it from `@codeday/topo/_utils`.
  */
-export type ComponentWithAs<
-  C extends As,
-  Props extends object = {},
-> = {
-  (props: RightJoinProps<PropsOf<C>, Props> & { as?: As; ref?: React.Ref<any> }): React.ReactElement | null;
+export type ComponentWithAs<C extends As, Props extends object = {}> = {
+  (
+    props: RightJoinProps<PropsOf<C>, Props> & { as?: As; ref?: React.Ref<any> },
+  ): React.ReactElement | null;
   displayName?: string;
 };
 
@@ -104,7 +103,10 @@ export const wrapHtml = (nodes: React.ReactNode) =>
 // ---------------------------------------------------------------------------
 
 export const pureRef = <T extends object, P extends As>(
-  Component: (props: RightJoinProps<PropsOf<P>, T> & { as?: As; ref?: React.Ref<any> }, ref?: React.Ref<any>) => React.ReactElement | null,
+  Component: (
+    props: RightJoinProps<PropsOf<P>, T> & { as?: As; ref?: React.Ref<any> },
+    ref?: React.Ref<any>,
+  ) => React.ReactElement | null,
 ) => {
   const Wrapped = (props: RightJoinProps<PropsOf<P>, T> & { as?: As; ref?: React.Ref<any> }) =>
     Component(props as any, props.ref);
@@ -120,13 +122,11 @@ export const makePureBox = (
   defaultProps?: BoxProps,
   Component?: typeof React.Component,
 ): ComponentWithAs<"div", BoxProps> => {
-  const DerivedBox = pureRef<BoxProps, "div">(
-    ({ children, ref, ...props }: any) => (
-      <Box {...defaultProps} {...props} ref={ref}>
-        {Component ? <Component>{children}</Component> : children}
-      </Box>
-    ),
-  );
+  const DerivedBox = pureRef<BoxProps, "div">(({ children, ref, ...props }: any) => (
+    <Box {...defaultProps} {...props} ref={ref}>
+      {Component ? <Component>{children}</Component> : children}
+    </Box>
+  ));
 
   DerivedBox.displayName = name;
   return DerivedBox as ComponentWithAs<"div", BoxProps>;

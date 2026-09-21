@@ -1,3 +1,4 @@
+import * as m from "@codeday/i18n/messages";
 import {
   Box,
   Button,
@@ -9,7 +10,6 @@ import {
   Radio,
 } from "@codeday/topo/Atom";
 import { Collapse } from "@codeday/topo/Molecule";
-import * as m from "@codeday/i18n/messages";
 import React from "react";
 
 interface RegionStepProps {
@@ -73,6 +73,8 @@ export default function RegionStep({
       {/* Clear region state in case they clicked some other region button before this */}
       <Button
         mt={2}
+        variant="secondary"
+        colorPalette="marmalade"
         data-active={isOrganize ? "" : undefined}
         onClick={() => {
           setIsOrganize(true);
@@ -88,12 +90,8 @@ export default function RegionStep({
             {m.www_region_organizer_interest()}
           </Heading>
           <Text>{m.www_region_organizer_desc()}</Text>
-          <Text>
-            {m.www_region_organizer_manage()}
-          </Text>
-          <Text fontSize="sm">
-            {m.www_region_organizer_no_experience()}
-          </Text>
+          <Text>{m.www_region_organizer_manage()}</Text>
+          <Text fontSize="sm">{m.www_region_organizer_no_experience()}</Text>
           <Box m={6}>
             <Collapse in={commitmentLevel >= 0} animateOpacity>
               <Text>

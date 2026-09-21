@@ -1,7 +1,6 @@
 import { Box, Grid, Image, Text, VStack } from "@codeday/topo/Atom";
 import React from "react";
 
-
 export interface AlumniStory {
   name: string;
   photoUrl: string;
@@ -40,7 +39,6 @@ export const ALUMNI_STORIES: AlumniStory[] = [
   },
 ];
 
-
 export default function StoryList(props: any) {
   return (
     <VStack>
@@ -55,7 +53,7 @@ export default function StoryList(props: any) {
               backgroundColor="gray.100"
               flexShrink={0}
             >
-              <Image src={story.photoUrl} alt={story.name} w="100%" />
+              <Image src={story.photoUrl} alt={story.name} w="full" />
             </Box>
             <Box>
               <Text mb={0} fontWeight="bold">

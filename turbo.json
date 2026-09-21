@@ -20,11 +20,21 @@
       "outputs": [".next/**", "!.next/cache/**", "dist/**", "src/paraglide/**"]
     },
     "dev": {
-      "dependsOn": ["codegen"],
+      "dependsOn": ["^build", "codegen"],
+      "cache": false,
+      "persistent": true,
+      "with": ["@codeday/i18n#dev"]
+    },
+    "@codeday/i18n#dev": {
+      // The watcher and `build` both write src/paraglide. Without this edge,
+      // `with` starts the watcher at the same moment `^build` runs the one-shot
+      // compile, and the two race on rmdir (ENOTEMPTY).
+      "dependsOn": ["build"],
       "cache": false,
       "persistent": true
     },
     "start": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },

@@ -1,10 +1,55 @@
 import { Box, Grid, Text, Image, List, ListItem, Button } from "@codeday/topo/Atom";
+import { ContentfulRichText } from "@codeday/topo/Molecule";
 import React from "react";
 
+import { graphql } from "@/gql";
+
 import { formatInterval } from "../../utils/time";
-import { ContentfulRichText } from "@codeday/topo/Molecule";
 import ProgramShareBlurb from "./ProgramShareBlurb";
 import { VOLUNTEER_ROLES } from "./wizardConfig";
+
+export const ProgramInfoFragment = graphql(`
+  fragment VolunteerProgramInfoComponent on Query {
+    cms {
+      volunteerPrograms: programs(limit: 15, where: { archived_not: true }) {
+        items {
+          name
+          webname
+          shortDescription
+          logo {
+            url
+          }
+          virtual
+          volunteerUrl
+          volunteerDetails {
+            json
+          }
+          volunteerBlurb {
+            json
+          }
+          volunteerRecruitingResources(limit: 10) {
+            items {
+              title
+              contentType
+              url
+              preview: url(transform: { width: 100, height: 100, resizeStrategy: FILL })
+            }
+          }
+          type
+          volunteerPositions
+          linkedFrom {
+            events(limit: 100) {
+              items {
+                startsAt
+                endsAt
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`);
 
 const ROLE_COLORS: Record<string, string> = Object.keys(VOLUNTEER_ROLES).reduce(
   (accum, type) => ({ [type]: (VOLUNTEER_ROLES as any)[type].color, ...accum }),
@@ -67,7 +112,7 @@ export default function ProgramInfo({ program }: ProgramInfoProps) {
             {...({ href: `/volunteer/${program.webname}` } as any)}
             target="_blank"
             rel="noopener"
-            w="100%"
+            w="full"
             mb={4}
             position={{ base: null, md: "absolute" }}
             bottom={{ base: null, md: 0 }}

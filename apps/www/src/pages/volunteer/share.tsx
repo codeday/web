@@ -1,24 +1,58 @@
+import * as m from "@codeday/i18n/messages";
 import { Box, Grid, Text, Heading, Link } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import * as m from "@codeday/i18n/messages";
 import { apiFetch } from "@codeday/topo/utils";
-import { print } from "graphql";
+import { ResultOf } from "@graphql-typed-document-node/core";
 import { GetStaticProps } from "next";
 import React from "react";
 
+import { graphql } from "@/gql";
+import { useFragment } from "@/gql/fragment-masking";
+
 import Page from "../../components/Page";
 import VideoTestimonialThumbnail from "../../components/VideoTestimonialThumbnail";
-import ProgramInfo from "../../components/Volunteer/ProgramInfo";
-import { usePageData } from "@codeday/topo/Theme";
+import ProgramInfo, { ProgramInfoFragment } from "../../components/Volunteer/ProgramInfo";
 import { upcomingEvents } from "../../utils/time";
-import { VolunteerQuery } from "./volunteer.gql";
+
+export const VolunteerShareFragment = graphql(`
+  fragment VolunteerShareComponent on Query {
+    cms {
+      testimonials: testimonials(where: { featured: true, type_in: ["Volunteer", "Mentor"] }) {
+        items {
+          firstName
+          lastName
+          title
+          company
+          video {
+            url
+          }
+          ...VideoTestimonialThumbnailComponent
+        }
+      }
+    }
+  }
+`);
+
+const VolunteerShareQuery = graphql(`
+  query VolunteerShareQuery {
+    ...VolunteerShareComponent
+    ...VolunteerProgramInfoComponent
+  }
+`);
 
 const PROGRAM_WEIGHT = ["primary", "secondary", "minor"];
 
-export default function Volunteer() {
+interface VolunteerProps {
+  query: ResultOf<typeof VolunteerShareQuery>;
+}
+
+export default function Volunteer({ query }: VolunteerProps) {
   const {
-    cms: { volunteerPrograms, testimonials },
-  } = usePageData();
+    cms: { volunteerPrograms },
+  } = useFragment(ProgramInfoFragment, query);
+  const {
+    cms: { testimonials },
+  } = useFragment(VolunteerShareFragment, query);
   const programsWithUpcoming =
     volunteerPrograms?.items
       ?.map((program: any) => {
@@ -79,7 +113,7 @@ export default function Volunteer() {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const query = await apiFetch(print(VolunteerQuery), { now: new Date() }, {});
+  const query = await apiFetch(VolunteerShareQuery, {}, {});
   return {
     props: {
       query,
