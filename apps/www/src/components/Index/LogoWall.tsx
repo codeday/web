@@ -76,7 +76,17 @@ function deal<T>(pool: T[], slotCount: number): T[][] {
 // A consumer that swaps `src`/`name` over time (rotating through employers)
 // gets a fade instead of a hard cut: this fades the mark out, swaps its
 // content while invisible, then fades back in.
-function LogoMark({ name, src, color }: { name: string; src: string; color: string }) {
+function LogoMark({
+  name,
+  src,
+  color,
+  colorMode,
+}: {
+  name: string;
+  src: string;
+  color: string;
+  colorMode: "light" | "dark";
+}) {
   const [displayed, setDisplayed] = useState({ name, src });
   const [visible, setVisible] = useState(true);
   const pendingRef = useRef<{ name: string; src: string } | null>(null);
@@ -108,7 +118,18 @@ function LogoMark({ name, src, color }: { name: string; src: string; color: stri
       transition={`opacity ${FADE_MS}ms ease-in-out`}
     >
       <Image src={displayed.src} alt={displayed.name} height="8" width="auto" opacity={0} />
+      {/* Keyed on `colorMode` so the mask layer is torn down and recreated
+          when the mode flips. There is no pre-hydration theme script, so
+          the page is server-rendered (and first painted) light and only
+          picks up the `.dark` class after hydration. The only thing that
+          then changes for this box is the CSS variable behind its
+          `background-color`, and browsers have been seen to leave the
+          masked layer painted in the stale light-mode ink (near-invisible
+          on the dark page) until something else forces a repaint, e.g.
+          toggling the mode by hand. A brand-new element is always painted
+          with the current variable value. */}
       <Box
+        key={colorMode}
         aria-hidden="true"
         position="absolute"
         inset="0"
@@ -212,6 +233,7 @@ export default function LogoWall({ data, columns, ...props }: LogoWallProps) {
             name={logo.name}
             src={colorMode === "light" ? logo.light : logo.dark || logo.light}
             color={color}
+            colorMode={colorMode}
           />
         ))}
       </Grid>

@@ -88,8 +88,17 @@ export default function Quote({ data, seed, ...props }: QuoteProps) {
   const t = quotes[shownIndex];
 
   return (
+    // `minHeight` keeps the layout from jumping as quotes of different
+    // lengths cycle through. Because of it, this box is usually taller than
+    // the quote itself, so the flex centring below is what actually lines
+    // the quote up with the logo wall beside it on the index page — the
+    // parent grid's `alignItems="center"` only centres this box, not its
+    // content.
     <Box
       minHeight="300px"
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
       opacity={visible ? 1 : 0}
       transition={`opacity ${FADE_MS}ms ease-in-out`}
       {...props}
