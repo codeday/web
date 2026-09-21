@@ -3,7 +3,7 @@ import { Box, Button, Eyebrow, Text } from "@codeday/topo/Atom";
 import { MapNav } from "@codeday/topocons";
 import React from "react";
 
-import { City, formatDistance, statusDateLabel, statusLabel, STATUS_COLOR } from "./data";
+import { City, statusDateLabel, statusLabel, STATUS_COLOR } from "./data";
 import { ExternalLinkIcon } from "./icons";
 
 // Self-inverting — paired with a plain `white` card, so both flip together
@@ -15,8 +15,6 @@ const TINT = "colorPalette.200";
 
 export default function NearestCityCard({
   city,
-  distanceMeters,
-  viewerIsUs,
 }: {
   city: City;
   distanceMeters: number | null;
@@ -65,7 +63,6 @@ export default function NearestCityCard({
           />
           {m.www_events_hero_nearest_meta({
             status: statusLabel(city.status),
-            distance: distanceMeters != null ? formatDistance(distanceMeters, viewerIsUs) : "",
           })}
         </Box>
       </Box>
