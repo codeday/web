@@ -69,10 +69,7 @@ const TERMAGEDDON_POLICIES = ["tos", "privacy", "cookies", "disclaimer"];
 export const getStaticPaths: GetStaticPaths = async () => {
   const { notion } = await apiFetch(LegalPathsQuery, {}, {});
   return {
-    paths: [
-      ...notion.pages.map((p: any) => ({ params: { policy: p.slug } })),
-      ...TERMAGEDDON_POLICIES.map((p) => ({ params: { policy: p } })),
-    ],
+    paths: TERMAGEDDON_POLICIES.map((p) => ({ params: { policy: p } })),
     fallback: "blocking",
   };
 };

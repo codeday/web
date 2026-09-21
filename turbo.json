@@ -39,7 +39,7 @@
       "persistent": true
     },
     "codegen": {
-      "outputs": ["src/@types/**"]
+      "outputs": ["src/gql/**"]
     },
     "//#lint": {
       "dependsOn": ["^build"]
