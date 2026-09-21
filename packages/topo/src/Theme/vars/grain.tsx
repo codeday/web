@@ -175,19 +175,36 @@ export interface GrainOverlay {
   canvas: React.ReactNode;
 }
 
+/**
+ * Capped at 2x even on 3x-DPR devices (most iPhones): the grain is a
+ * subtle texture, not content, so it doesn't need to be pixel-perfect at
+ * 3x, and the cap alone cuts the backing-store pixel count — and so the
+ * cost of everything below that scales with it — by ~2.25x on those
+ * devices.
+ */
 function devicePixelRatio(): number {
-  return typeof window === "undefined" ? 1 : window.devicePixelRatio || 1;
+  return typeof window === "undefined" ? 1 : Math.min(2, window.devicePixelRatio || 1);
 }
 
 /**
  * The grain overlay for a web consumer (Wash, Card, StatTile,
  * Badge, EmptyState, Modal) — painted directly onto a `<canvas>` sized to
  * the consuming element's own box, not cropped from one big shared image.
- * Generating a field is cheap (typed-array math over however many pixels
- * the element actually has), so there's no asset to bake, cache, or load.
  * `seed` only needs to vary if two components of THE SAME size, right next
  * to each other, would otherwise show visibly identical noise — otherwise
  * leave it as a stable per-component-kind label.
+ *
+ * Unlike `generateGrainField` (used by the Node-safe test and the
+ * standalone `renderGrainFieldToCanvas` baking path), this does NOT run
+ * the hand-rolled JS bicubic upscale at full (DPR-scaled) resolution —
+ * on a busy page with many grain-bearing components, doing that upscale
+ * loop synchronously for each of them was the main source of the
+ * paint-blocking jank on iOS. Instead it paints the small Gaussian
+ * source onto a tiny offscreen canvas and lets the browser's own
+ * (GPU-accelerated) `drawImage` scaling produce the upscale, which keeps
+ * the expensive part off the main thread's JS budget entirely — the
+ * source generation that IS still JS-side stays cheap because it only
+ * ever runs over the small pre-upscale size.
  *
  * Regenerates on resize (ResizeObserver): the box's own current size is
  * always what gets rendered, never a stretched/squeezed asset. Renders
@@ -248,10 +265,25 @@ export function useGrainOverlay(seed: string, opacity: number = OVERLAY_OPACITY)
     const canvasEl = canvasRef.current;
     const ctx = canvasEl?.getContext("2d");
     if (!ctx) return;
-    const field = generateGrainField(deviceWidth, deviceHeight, seed);
-    const imageData = ctx.createImageData(deviceWidth, deviceHeight);
-    writeGrainFieldPixels(imageData.data, field, deviceWidth, deviceHeight);
-    ctx.putImageData(imageData, 0, 0);
+
+    const srcWidth = Math.max(1, Math.round(deviceWidth / DOWNSCALE));
+    const srcHeight = Math.max(1, Math.round(deviceHeight / DOWNSCALE));
+    const generator = createRandom(seed);
+    const source = generateSource(srcWidth, srcHeight, () => generator.random());
+
+    const srcCanvas = document.createElement("canvas");
+    srcCanvas.width = srcWidth;
+    srcCanvas.height = srcHeight;
+    const srcCtx = srcCanvas.getContext("2d");
+    if (!srcCtx) return;
+    const srcImageData = srcCtx.createImageData(srcWidth, srcHeight);
+    writeGrainFieldPixels(srcImageData.data, source, srcWidth, srcHeight);
+    srcCtx.putImageData(srcImageData, 0, 0);
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.clearRect(0, 0, deviceWidth, deviceHeight);
+    ctx.drawImage(srcCanvas, 0, 0, srcWidth, srcHeight, 0, 0, deviceWidth, deviceHeight);
   }, [deviceWidth, deviceHeight, seed]);
 
   if (!deviceWidth || !deviceHeight) return { containerRef, canvas: null };
