@@ -53,7 +53,7 @@ export const defaultFontSizes: Record<string, string> = {
   "9xl": "8rem",
 };
 
-const defaultSpace: Record<string | number, string> = {
+export const defaultSpace: Record<string | number, string> = {
   px: "1px",
   0: "0",
   0.5: "0.125rem",
@@ -89,7 +89,7 @@ const defaultSpace: Record<string | number, string> = {
   80: "20rem",
   96: "24rem",
 };
-const defaultRadii: Record<string, string> = {
+export const defaultRadii: Record<string, string> = {
   none: "0",
   sm: "0.125rem",
   base: "0.25rem",

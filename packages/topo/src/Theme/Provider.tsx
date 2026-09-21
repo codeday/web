@@ -1,6 +1,12 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { Box } from "@codeday/topo/Atom";
-import { ThemeDataProvider, defaultFontSizes, type ThemeData } from "@codeday/topo/utils";
+import {
+  ThemeDataProvider,
+  defaultFontSizes,
+  defaultRadii,
+  defaultSpace,
+  type ThemeData,
+} from "@codeday/topo/utils";
 import { ThemeProvider as NextThemesProvider } from "@wrksz/themes";
 import React from "react";
 
@@ -60,18 +66,8 @@ const Provider = ({
     colors: codedayTheme.colors,
     fonts: codedayTheme.fonts,
     fontSizes: defaultFontSizes,
-    space: codedayTheme.space || {},
-    radii: codedayTheme.radii || {
-      none: "0",
-      sm: "0.125rem",
-      base: "0.25rem",
-      md: "0.375rem",
-      lg: "0.5rem",
-      xl: "0.75rem",
-      "2xl": "1rem",
-      "3xl": "1.5rem",
-      full: "9999px",
-    },
+    space: codedayTheme.space || defaultSpace,
+    radii: codedayTheme.radii || defaultRadii,
     cognito: cognitoFormsId ? { id: cognitoFormsId } : codedayTheme.cognito,
     config: codedayTheme.config,
     visibility,

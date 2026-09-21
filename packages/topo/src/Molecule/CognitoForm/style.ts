@@ -53,7 +53,7 @@ export default ({ theme, showTitle, colorMode, formId }: any): string => `
     --button-secondary__color: white;
     --button-primary__background-color: ${theme.colors.green[600]};
     --button-primary__border-color: ${theme.colors.green[600]};
-    --button-secondary__background-color: ${colorMode === "dark" ? theme.colors.whiteAlpha[300] : theme.colors.gray[200]};
+    --button-secondary__background-color: ${colorMode === "dark" ? theme.colors.whiteAlpha[300] : theme.colors.gray[100]};
     --button-secondary__color: ${theme.colors.current.text};
     --button-secondary__border-color: ${theme.colors.current.text};
     --input__color: ${theme.colors.current.text};
@@ -86,8 +86,8 @@ export default ({ theme, showTitle, colorMode, formId }: any): string => `
     --input__border-width-left: 1px;
     --input__border-width-right: 1px;
 
-    --negative: ${theme.colors.red[800]};
-    --negative-reverse: ${theme.colors.red[50]};
+    --negative: ${theme.colors.red[700]};
+    --negative-reverse: ${theme.colors.red[100]};
 
     --gutter: ${theme.space[8]};
     --icon-weight: .3;

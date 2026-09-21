@@ -1,7 +1,14 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { Box, Toaster } from "@codeday/topo/Atom";
 import { codedayTheme, FontStyles, legacyThemeData } from "@codeday/topo/Theme";
-import { ThemeDataProvider, _toaster, defaultFontSizes, type ThemeData } from "@codeday/topo/utils";
+import {
+  ThemeDataProvider,
+  _toaster,
+  defaultFontSizes,
+  defaultRadii,
+  defaultSpace,
+  type ThemeData,
+} from "@codeday/topo/utils";
 import type { Preview } from "@storybook/react-vite";
 import { ThemeProvider as NextThemesProvider } from "@wrksz/themes";
 import React from "react";
@@ -16,18 +23,8 @@ const themeData: ThemeData = {
   colors: legacyThemeData.colors,
   fonts: legacyThemeData.fonts,
   fontSizes: defaultFontSizes,
-  space: legacyThemeData.space || {},
-  radii: legacyThemeData.radii || {
-    none: "0",
-    sm: "0.125rem",
-    base: "0.25rem",
-    md: "0.375rem",
-    lg: "0.5rem",
-    xl: "0.75rem",
-    "2xl": "1rem",
-    "3xl": "1.5rem",
-    full: "9999px",
-  },
+  space: legacyThemeData.space || defaultSpace,
+  radii: legacyThemeData.radii || defaultRadii,
   cognito: legacyThemeData.cognito,
   config: legacyThemeData.config,
   visibility: "Public",
