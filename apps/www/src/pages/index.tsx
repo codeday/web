@@ -180,7 +180,7 @@ export default function Home({ query, seed }: HomeProps) {
               </Text>
             </Box>
           </Box>
-          <Box paddingX={12} maxWidth="container.xl">
+          <Content paddingX={12} maxWidth="container.xl">
             <FormatCards
               ramp="blackberry"
               cards={[
@@ -241,7 +241,7 @@ export default function Home({ query, seed }: HomeProps) {
                 },
               ]}
             />
-          </Box>
+          </Content>
         </Box>
 
         <Wash ramp="hibiscus" shape="tint">

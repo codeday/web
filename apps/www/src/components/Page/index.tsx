@@ -184,21 +184,8 @@ export default function Page({
             background spans edge to edge on both mobile and desktop; the
             header's own `maxWidth`/`marginX="auto"` still centers its
             content the same way it always did. */}
-        <Box
-          position="sticky"
-          top="0"
-          zIndex="30"
-          paddingTop={{ base: "0", md: "8" }}
-          paddingBottom="4"
-          backgroundImage="linear-gradient(180deg, {colors.current.bg} 0%, {colors.current.bg} 80%, transparent 100%)"
-        >
-          <Header
-            onWash={onWash}
-            maxWidth="container.lg"
-            marginX="auto"
-            position="relative"
-            borderTopRadius={{ base: "0", md: "xl" }}
-          >
+        <Box position="sticky" top="0" zIndex="30" paddingTop={{ base: "0", md: "8" }}>
+          <Header onWash={onWash} maxWidth="container.lg" marginX="auto" position="relative">
             <HeaderBrand>
               <Box as="a" display="block" {...({ href: "/" } as any)}>
                 {/* Always the full-colour mark in the header — deliberately

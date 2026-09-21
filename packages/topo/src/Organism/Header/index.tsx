@@ -556,7 +556,9 @@ export const Header = React.forwardRef<HTMLElement, HeaderProps>(
             md: "4.5",
           }}
           width="full"
-          borderRadius="xl"
+          border={{ base: 0, md: "4px solid {colors.current.bg}" }}
+          borderRadius={{ base: "0", md: "xl" }}
+          boxSizing={{ base: "border-box", md: "content-box" }}
           position="sticky"
           top="0"
           zIndex="30"

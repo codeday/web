@@ -1,5 +1,5 @@
 import { Box, Grid, Image } from "@codeday/topo/Atom";
-import { useColorMode } from "@codeday/topo/Theme";
+import { darkColors, legacyThemeData, useColorMode } from "@codeday/topo/Theme";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
@@ -76,17 +76,7 @@ function deal<T>(pool: T[], slotCount: number): T[][] {
 // A consumer that swaps `src`/`name` over time (rotating through employers)
 // gets a fade instead of a hard cut: this fades the mark out, swaps its
 // content while invisible, then fades back in.
-function LogoMark({
-  name,
-  src,
-  color,
-  colorMode,
-}: {
-  name: string;
-  src: string;
-  color: string;
-  colorMode: "light" | "dark";
-}) {
+function LogoMark({ name, src, color }: { name: string; src: string; color: string }) {
   const [displayed, setDisplayed] = useState({ name, src });
   const [visible, setVisible] = useState(true);
   const pendingRef = useRef<{ name: string; src: string } | null>(null);
@@ -118,18 +108,7 @@ function LogoMark({
       transition={`opacity ${FADE_MS}ms ease-in-out`}
     >
       <Image src={displayed.src} alt={displayed.name} height="8" width="auto" opacity={0} />
-      {/* Keyed on `colorMode` so the mask layer is torn down and recreated
-          when the mode flips. There is no pre-hydration theme script, so
-          the page is server-rendered (and first painted) light and only
-          picks up the `.dark` class after hydration. The only thing that
-          then changes for this box is the CSS variable behind its
-          `background-color`, and browsers have been seen to leave the
-          masked layer painted in the stale light-mode ink (near-invisible
-          on the dark page) until something else forces a repaint, e.g.
-          toggling the mode by hand. A brand-new element is always painted
-          with the current variable value. */}
       <Box
-        key={colorMode}
         aria-hidden="true"
         position="absolute"
         inset="0"
@@ -149,21 +128,30 @@ function LogoMark({
   );
 }
 
-// Every logo renders as a single flat grayscale tone (`gray.700`) rather than
-// in each employer's own brand colors — this is a credibility wall ("alumni
-// work here"), not a sponsor showcase, so the marks read as one calm,
-// consistent row instead of competing for attention. `gray.700` is one of
-// Topo's two mode-aware palettes (see `Theme/vars/darkColors.ts`), so a
-// single reference already resolves to the right tone in both modes: a dark,
-// legible ink (`#524440`) on the light page, and a light, legible off-white
-// (`#daccc8`) on the dark page (`#292929`) — no manual `colorMode` branch
-// needed. `gray.300`'s dark-mode value is the opposite role (a wash tone
-// tuned to sit near the dark background), so branching to it there made the
-// logos nearly invisible instead of legible.
+// Every logo renders as a single flat grayscale tone (Topo's `gray.700`)
+// rather than in each employer's own brand colors — this is a credibility
+// wall ("alumni work here"), not a sponsor showcase, so the marks read as one
+// calm, consistent row instead of competing for attention. `gray.700` is
+// mode-aware — a dark, legible ink (`#524440`) on the light page, a light,
+// legible off-white (`#daccc8`) on the dark page — but it's resolved here to
+// a literal hex via `legacyThemeData`/`darkColors` and picked with a plain
+// `colorMode` branch, rather than passed through as the `"gray.700"` token
+// string. A token/`useToken` reference both resolve to the same
+// `var(--chakra-colors-gray-700)` — correct once read, but WebKit (including
+// iOS Safari) has been observed to leave a `mask-image` layer's
+// `background-color` painted in the *previous* mode's colour when only that
+// CSS variable's value changes underneath it, with nothing short of an
+// unrelated user-triggered repaint (e.g. toggling the mode by hand) fixing
+// it. A literal hex value sidesteps the CSS variable — and that whole class
+// of bug — entirely: a `colorMode` flip is then an ordinary inline
+// `background-color` change, which repaints reliably everywhere. `gray.300`
+// is the opposite role in dark mode (a wash tone tuned to sit near the dark
+// background) — resolving *that* stop this way would make the logos nearly
+// invisible instead of legible, so this only ever resolves `gray.700`.
 export default function LogoWall({ data, columns, ...props }: LogoWallProps) {
   const { colorMode } = useColorMode();
   const { cms } = useFragment(LogoWallFragment, data);
-  const color = "gray.700";
+  const color = colorMode === "dark" ? darkColors.gray[700] : legacyThemeData.colors.gray[700];
 
   const logos = useMemo(
     () =>
@@ -233,7 +221,6 @@ export default function LogoWall({ data, columns, ...props }: LogoWallProps) {
             name={logo.name}
             src={colorMode === "light" ? logo.light : logo.dark || logo.light}
             color={color}
-            colorMode={colorMode}
           />
         ))}
       </Grid>

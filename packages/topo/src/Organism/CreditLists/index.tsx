@@ -1,6 +1,7 @@
 import { Box, type BoxProps, Eyebrow, Image } from "@codeday/topo/Atom";
 import React from "react";
 
+import { darkColors, legacyThemeData, useColorMode } from "../../Theme";
 import type { Message } from "../../utils";
 
 export interface CreditListsEntry {
@@ -39,6 +40,17 @@ function LogoMark({ entry }: { entry: CreditListsEntry }) {
   // `url(${entry.logo})` becomes the literal, invalid CSS `url(undefined)`,
   // which the browser then tries to fetch as a real resource path.
   const mono = entry.mono && !!entry.logo;
+  // Resolved to a literal hex rather than passed as the `"gray.700"` token
+  // string — see `LogoWall`'s `LogoMark` (`Index/LogoWall.tsx` in `apps/www`)
+  // for why: a token (or `useToken`) resolves to
+  // `var(--chakra-colors-gray-700)`, and WebKit has been observed to leave
+  // this masked layer's `background-color` painted in the *previous* mode's
+  // colour when only that variable's value changes underneath it. Unlike
+  // `LogoWall`, this component never changes `entry.logo` at runtime, so
+  // there's no later re-render — no accidental toggle — to ever paint over
+  // a bad first paint here.
+  const { colorMode } = useColorMode();
+  const color = colorMode === "dark" ? darkColors.gray[700] : legacyThemeData.colors.gray[700];
   const mark = (
     <Box position="relative" display="inline-block" height="12">
       <Image src={entry.logo} alt={entry.name} height="12" width="auto" opacity={mono ? 0 : 1} />
@@ -47,7 +59,7 @@ function LogoMark({ entry }: { entry: CreditListsEntry }) {
           aria-hidden="true"
           position="absolute"
           inset="0"
-          backgroundColor="gray.700"
+          backgroundColor={color}
           css={{
             maskImage: `url(${entry.logo})`,
             WebkitMaskImage: `url(${entry.logo})`,
