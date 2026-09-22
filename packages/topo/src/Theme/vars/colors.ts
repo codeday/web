@@ -63,11 +63,11 @@ export const STOP_POSITIONS = [0, 20, 40, 62, 82, 100] as const;
 // anywhere it needs to read correctly in both modes, the same guarantee
 // `gray.300` already provides.
 //
-// `50` (hibiscus only, for now) is a new, even paler/lower-chroma wash for
-// background tints — `.100` turned out too saturated for that role once it
-// replaced a near-white alpha blend. Provisional: once its value is visually
-// confirmed, re-run the script (no args) to extend `.50` to every other ramp
-// and paste the rest in.
+// `50` is an even paler/lower-chroma wash for background tints — `.100`
+// turned out too saturated for that role once it replaced a near-white alpha
+// blend. Every ramp carries the full 50-900 range so a ramp is usable in
+// exactly the same ways as a semantic hue (`colorPalette.50` under
+// `colorPalette="figjam"` resolves just like it does under `"blue"`).
 //
 // Re-run the script and paste its output here whenever a ramp's `deep`/`mid`
 // stop above changes.
@@ -86,6 +86,7 @@ export const rampScaleStops: Record<keyof typeof gradientStops, Record<number, s
     900: "#420e28",
   },
   hotsauce: {
+    50: "#fcf7f6",
     100: "#fff2ee",
     200: "#fff1ec",
     300: "#ffe7df",
@@ -97,6 +98,7 @@ export const rampScaleStops: Record<keyof typeof gradientStops, Record<number, s
     900: "#531a09",
   },
   chilioil: {
+    50: "#f9f4f3",
     100: "#f9ddda",
     200: "#f9d3cf",
     300: "#f9c9c5",
@@ -108,6 +110,7 @@ export const rampScaleStops: Record<keyof typeof gradientStops, Record<number, s
     900: "#3f040b",
   },
   blackberry: {
+    50: "#fbf7f7",
     100: "#fbe7e7",
     200: "#fadede",
     300: "#f8d5d5",
@@ -119,6 +122,7 @@ export const rampScaleStops: Record<keyof typeof gradientStops, Record<number, s
     900: "#37172f",
   },
   figjam: {
+    50: "#f4f1f3",
     100: "#eedbe8",
     200: "#ecd2e4",
     300: "#e9c8df",
@@ -130,6 +134,7 @@ export const rampScaleStops: Record<keyof typeof gradientStops, Record<number, s
     900: "#241039",
   },
   marmalade: {
+    50: "#faf8f5",
     100: "#fcf4e4",
     200: "#fff4df",
     300: "#fdeed2",

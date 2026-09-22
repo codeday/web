@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import colors, { gradientStops, rampScaleStops } from "./colors";
 import darkColors from "./darkColors";
 import { contrastRatio } from "./gradients";
+import system from "./index";
 
 // The eleven semantic-palette hues; `gray` is included, per the
 // spec's own scale table, alongside the ten colour hues.
@@ -171,5 +172,99 @@ describe("brand alias", () => {
   it("is the Hibiscus accent, not red.600", () => {
     expect(colors.brand).toBe("#A83A5C");
     expect(colors.brand).not.toBe(colors.red[600]);
+  });
+});
+
+// "Usable in exactly the same ways": every family — the eleven semantic hues
+// and the six brand ramps — must expose the same set of token shapes (the
+// `50`-`900` stops, the fixed `true.*` duplicates, and the
+// `fg`/`solid`/`subtle`/... aliases Chakra's recipes key off). The one
+// intentional exception is the ramps' hand-authored gradient set, which the
+// hues deliberately don't have, so gradient shapes are excluded from the
+// comparison. Compared against the built system so a merge-time leak (e.g.
+// Chakra's own `950` stop) or a missed family is caught, not just a typo in
+// our own palette objects.
+describe("every color family exposes the same token shapes", () => {
+  const FAMILIES = [...HUES, ...Object.keys(rampScaleStops)];
+  const EXPECTED_STOPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
+  const isGradient = (prop: string) => /(^|\.)(gradient|badgeGradient)(\.|$)/.test(prop);
+  const shapeOf = (prop: string) => prop.replace(/^true\.\d+$/, "true.N").replace(/^\d+$/, "N");
+
+  const propsOf = (family: string) =>
+    system.tokens.allTokens
+      .filter((t) => t.name.startsWith(`colors.${family}.`) && !t.extensions.virtual)
+      .map((t) => t.name.slice(`colors.${family}.`.length));
+
+  const shapesOf = (family: string) =>
+    [
+      ...new Set(
+        propsOf(family)
+          .filter((p) => !isGradient(p))
+          .map(shapeOf),
+      ),
+    ].sort();
+
+  const reference = shapesOf("gray");
+
+  it("gray (the reference family) exposes the expected shapes", () => {
+    expect(reference).toEqual([
+      "N",
+      "border",
+      "contrast",
+      "emphasized",
+      "fg",
+      "focusRing",
+      "muted",
+      "solid",
+      "subtle",
+      "true.N",
+    ]);
+  });
+
+  it.each(FAMILIES)("%s exposes the same shapes as gray", (family) => {
+    expect(shapesOf(family)).toEqual(reference);
+  });
+
+  it.each(FAMILIES)("%s has exactly the 50-900 stops, nothing extra", (family) => {
+    const stops = [
+      ...new Set(
+        propsOf(family)
+          .filter((p) => /^\d+$/.test(p))
+          .map(Number),
+      ),
+    ].sort((a, b) => a - b);
+    expect(stops).toEqual(EXPECTED_STOPS);
+  });
+});
+
+// Guards the built Chakra system, not just the raw palette objects: Chakra
+// ships its own flat stock scale for ten of these hues, and `index.ts`
+// registers ours on top as mode-aware semantic tokens via several spreads
+// onto the same `gray`/`red`/... keys. A later spread replacing an earlier
+// one wholesale drops the numbered stops silently — nothing errors, the hue
+// just quietly renders Chakra's stock values in both modes.
+describe("built system emits every semantic-hue stop as a mode-aware token", () => {
+  const STOPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900] as const;
+  const cases = HUES.flatMap((hue) => STOPS.map((stop) => [hue, stop] as const));
+
+  it.each(cases)("%s.%s flips between the light and dark palettes", (hue, stop) => {
+    const token = system.tokens.getByName(`colors.${hue}.${stop}`);
+    expect(token?.extensions.conditions).toEqual({
+      base: colors[hue][stop],
+      _dark: darkColors[hue][stop],
+    });
+  });
+
+  const darkByName = darkColors as Record<string, Record<string, string>>;
+  const rampCases = Object.entries(rampScaleStops).flatMap(([ramp, stops]) =>
+    Object.entries(stops).map(([stop, light]) => [ramp, stop, light] as const),
+  );
+
+  it.each(rampCases)("%s.%s flips between the light and dark ramps", (ramp, stop, light) => {
+    const token = system.tokens.getByName(`colors.${ramp}.${stop}`);
+    expect(token?.extensions.conditions).toEqual({
+      base: light,
+      _dark: darkByName[ramp][stop],
+    });
   });
 });

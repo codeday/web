@@ -319,35 +319,42 @@ const semanticColorTokens = {
     info: { value: "{colors.blue.500}" },
   },
 
-  // Per-hue groups (`colorPalette.fg`/`.subtle`/etc, and the bare
+  // Per-family groups (`colorPalette.fg`/`.subtle`/etc, and the bare
   // `gray.fg`/`red.solid`/etc paths Chakra's own defaults use directly) —
-  // every hue Chakra ships a default group for (`indigo` isn't one of
-  // Chakra's stock hues, so it has no default to collide with and needs no
-  // override here). One consistent formula across all of them: `.600` is
-  // every hue's "dark fill / white text" stop (verified by
-  // `colors.test.ts` for all eleven hues, gray included) — it also
+  // for every family, the eleven semantic hues *and* the six brand ramps
+  // alike, so a `colorPalette` can be set to any of the seventeen and
+  // behave identically. (For the ten hues Chakra also ships, this doubles
+  // as the override of Chakra's own stock group, which references its own
+  // stop roles.) One consistent formula across all of them: `.600` is
+  // every family's "dark fill / white text" stop (verified by
+  // `colors.test.ts` for hues and ramps alike) — it also
   // role-inverts to a *light* fill in dark mode, so `contrast`'s text must
   // invert right along with it, which is exactly what our own
   // self-inverting `white` token already does (light mode: white; dark
   // mode: `#292929`, i.e. dark-ish — the correct polarity for text sitting
   // on a fill that just flipped from dark-under-white-text to
   // light-under-black-text).
+  //
+  // Spread *into* each hue's existing mode-aware `50`-`900` stops (registered
+  // via `darkModePaletteTokens` above) rather than as a fresh object: this is
+  // a top-level spread onto the same `gray`/`red`/... key, so a bare object
+  // literal here would replace the numbered stops wholesale, and those hues
+  // would silently fall back to Chakra's own flat stock scale in both modes.
   ...Object.fromEntries(
-    Object.keys(SEMANTIC_HUES)
-      .filter((hue) => hue !== "indigo")
-      .map((hue) => [
-        hue,
-        {
-          contrast: { value: "{colors.white}" },
-          fg: { value: `{colors.${hue}.700}` },
-          subtle: { value: `{colors.${hue}.100}` },
-          muted: { value: `{colors.${hue}.200}` },
-          emphasized: { value: `{colors.${hue}.300}` },
-          solid: { value: `{colors.${hue}.600}` },
-          focusRing: { value: `{colors.${hue}.500}` },
-          border: { value: `{colors.${hue}.500}` },
-        },
-      ]),
+    Object.keys(MODE_AWARE_PALETTES).map((hue) => [
+      hue,
+      {
+        ...darkModePaletteTokens[hue],
+        contrast: { value: "{colors.white}" },
+        fg: { value: `{colors.${hue}.700}` },
+        subtle: { value: `{colors.${hue}.100}` },
+        muted: { value: `{colors.${hue}.200}` },
+        emphasized: { value: `{colors.${hue}.300}` },
+        solid: { value: `{colors.${hue}.600}` },
+        focusRing: { value: `{colors.${hue}.500}` },
+        border: { value: `{colors.${hue}.500}` },
+      },
+    ]),
   ),
 };
 
@@ -441,4 +448,33 @@ const config = defineConfig({
   },
 });
 
-export default createSystem(defaultConfig, config);
+// ---------------------------------------------------------------------------
+// Chakra's stock hue scales carry an extra `950` stop. Our stop contract is
+// `50`-`900` for every family, and nothing of ours defines or references a
+// `950` — but a base token survives the config merge untouched, so without
+// this it leaks through as a flat, off-palette, non-mode-aware stop on
+// exactly the ten families Chakra happens to ship (and on none of the other
+// seven). Dropped here so every family exposes the same stops.
+// ---------------------------------------------------------------------------
+const stockColors = (defaultConfig.theme?.tokens?.colors ?? {}) as Record<string, unknown>;
+const stockColorsWithout950 = Object.fromEntries(
+  Object.entries(stockColors).map(([hue, scale]) => {
+    if (!(hue in SEMANTIC_HUES) || typeof scale !== "object" || scale === null) {
+      return [hue, scale];
+    }
+    const trimmed: Record<string, unknown> = { ...scale };
+    delete trimmed[950];
+    return [hue, trimmed];
+  }),
+) as typeof stockColors;
+
+export default createSystem(
+  {
+    ...defaultConfig,
+    theme: {
+      ...defaultConfig.theme,
+      tokens: { ...defaultConfig.theme?.tokens, colors: stockColorsWithout950 },
+    },
+  } as typeof defaultConfig,
+  config,
+);

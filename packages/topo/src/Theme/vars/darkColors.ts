@@ -161,8 +161,8 @@ const darkColors = {
   // dark fill built for white text becomes a light fill built for black text
   // (600, 800, 900) — `600`/`800` no longer match the (never-mode-aware) raw
   // `gradientStops` mid/deep hex in dark mode as a result; see the script's
-  // header comment. `50` (hibiscus only, provisional) is a bg-anchored wash
-  // like `100`/`200`/`300`/`400` — see `colors.ts`'s note.
+  // header comment. `50` is a bg-anchored wash like `100`/`200`/`300`/`400`
+  // — see `colors.ts`'s note.
   // ---------------------------------------------------------------------------
   hibiscus: {
     50: "#302d2d",
@@ -177,6 +177,7 @@ const darkColors = {
     900: "#fff9fc",
   },
   hotsauce: {
+    50: "#302d2c",
     100: "#362e2b",
     200: "#372e2b",
     300: "#41322c",
@@ -188,6 +189,7 @@ const darkColors = {
     900: "#ffece7",
   },
   chilioil: {
+    50: "#322f2e",
     100: "#483634",
     200: "#523936",
     300: "#5c3b39",
@@ -199,6 +201,7 @@ const darkColors = {
     900: "#fff9f9",
   },
   blackberry: {
+    50: "#2f2d2d",
     100: "#3f3232",
     200: "#473535",
     300: "#4f3838",
@@ -210,6 +213,7 @@ const darkColors = {
     900: "#fffafd",
   },
   figjam: {
+    50: "#333132",
     100: "#453841",
     200: "#4d3b48",
     300: "#553f4f",
@@ -221,6 +225,7 @@ const darkColors = {
     900: "#fdfaff",
   },
   marmalade: {
+    50: "#2f2d2b",
     100: "#342f24",
     200: "#352e20",
     300: "#3b311e",
