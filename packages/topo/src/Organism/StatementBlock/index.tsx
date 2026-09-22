@@ -26,7 +26,7 @@ interface SizeSpec {
 
 const SIZES: Record<StatementBlockSize, SizeSpec> = {
   hero: {
-    headingFontSize: "clamp({fontSizes.3xl}, 6.4vw, {fontSizes.6xl})",
+    headingFontSize: "clamp({fontSizes.5xl}, 6.4vw, {fontSizes.6xl})",
     headingMeasure: "20ch",
     bodyFontSize: "lg",
     bodyColor: "gray.700",

@@ -9,6 +9,11 @@ export const cardSlotRecipe = defineSlotRecipe({
   slots: ["root", "header", "body", "footer", "title", "description"],
   base: {
     root: {
+      // A `.50` wash rather than the flat page `background` — gives the
+      // card a surface subtly distinct from the page it sits on, in both
+      // modes (mode-aware via the palette's own `_dark` condition, not a
+      // fixed value).
+      bg: "gray.50",
       borderRadius: "2xl",
       cornerShape: SQUIRCLE_CORNER_SHAPE,
       borderWidth: "1px",

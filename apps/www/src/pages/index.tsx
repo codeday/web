@@ -160,8 +160,8 @@ export default function Home({ query, seed }: HomeProps) {
           </Content>
         </Section>
 
-        <Box id="formats" mb={24}>
-          <Box maxWidth="container.lg" marginX="auto">
+        <Section ramp="hibiscus" id="formats" paddingY={0}>
+          <Content maxWidth="container.lg" marginX="auto">
             <Box marginBottom="6" maxWidth="60ch">
               {/* Matches `StatementBlock size="section"` / `RowList` / `CreditLists`
                   — one of five section-opening headings on the page, all reading
@@ -179,7 +179,9 @@ export default function Home({ query, seed }: HomeProps) {
                 {m.www_home_formats_body()}
               </Text>
             </Box>
-          </Box>
+          </Content>
+        </Section>
+        <Box mb={24}>
           <Content paddingX={12} maxWidth="container.xl">
             <FormatCards
               ramp="blackberry"

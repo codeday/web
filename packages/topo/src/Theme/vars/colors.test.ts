@@ -51,6 +51,28 @@ describe("semantic palette stop contract", () => {
       contrastRatio(hexToRgb(colors[hue][900]), hexToRgb(colors[hue][100])),
     ).toBeGreaterThanOrEqual(4.5);
   });
+
+  it.each(HUES)(
+    "%s.800 clears 4.5:1 against white (it's a dark fill under white text, like .600)",
+    (hue) => {
+      expect(contrastRatio(hexToRgb(colors[hue][800]), WHITE)).toBeGreaterThanOrEqual(4.5);
+    },
+  );
+
+  const ALL_STOPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900] as const;
+  it.each(HUES)("%s defines the full ten-stop scale (50-900)", (hue) => {
+    for (const stop of ALL_STOPS) {
+      expect(colors[hue][stop]).toMatch(/^#[0-9a-fA-F]{6}$/);
+    }
+  });
+
+  it.each(HUES)("%s's dark-mode counterparts (darkColors.ts) cover the same ten stops", (hue) => {
+    const dark = darkColors[hue as keyof typeof darkColors] as unknown as Record<number, string>;
+    for (const stop of ALL_STOPS) {
+      expect(dark[stop]).toMatch(/^#[0-9a-fA-F]{6}$/);
+      expect(dark[stop]).not.toBe(colors[hue][stop]);
+    }
+  });
 });
 
 describe("gray.1100 removal (step 5 of the palette migration)", () => {
@@ -81,9 +103,12 @@ describe("ramp scale stop contract", () => {
     expect(rampScaleStops[name][800]).toBe(gradientStops[name][2]);
   });
 
-  it.each(RAMP_NAMES)("%s.500 clears 4.5:1 against black (it's a light fill under black text)", (name) => {
-    expect(contrastRatio(hexToRgb(rampScaleStops[name][500]), BLACK)).toBeGreaterThanOrEqual(4.5);
-  });
+  it.each(RAMP_NAMES)(
+    "%s.500 clears 4.5:1 against black (it's a light fill under black text)",
+    (name) => {
+      expect(contrastRatio(hexToRgb(rampScaleStops[name][500]), BLACK)).toBeGreaterThanOrEqual(4.5);
+    },
+  );
 
   it.each(RAMP_NAMES)(
     "%s.600 clears 4.5:1 against white (it's a dark fill under white text)",
@@ -96,11 +121,14 @@ describe("ramp scale stop contract", () => {
     expect(contrastRatio(hexToRgb(rampScaleStops[name][700]), WHITE)).toBeGreaterThanOrEqual(4.5);
   });
 
-  it.each(RAMP_NAMES)("%s.900 clears 4.5:1 against its own %s.100 (near-black text on a wash)", (name) => {
-    expect(
-      contrastRatio(hexToRgb(rampScaleStops[name][900]), hexToRgb(rampScaleStops[name][100])),
-    ).toBeGreaterThanOrEqual(4.5);
-  });
+  it.each(RAMP_NAMES)(
+    "%s.900 clears 4.5:1 against its own %s.100 (near-black text on a wash)",
+    (name) => {
+      expect(
+        contrastRatio(hexToRgb(rampScaleStops[name][900]), hexToRgb(rampScaleStops[name][100])),
+      ).toBeGreaterThanOrEqual(4.5);
+    },
+  );
 
   // 100/200/300/400/700 relate to the page background and must actually flip
   // between modes (that's the whole point — a divider/tick using one of
@@ -120,9 +148,12 @@ describe("ramp scale stop contract", () => {
     }
   });
 
-  it.each(RAMP_NAMES)("%s.500's dark counterpart clears 4.5:1 against white (light fill under black text becomes a dark fill under white text)", (name) => {
-    expect(contrastRatio(hexToRgb(darkColors[name][500]), WHITE)).toBeGreaterThanOrEqual(4.5);
-  });
+  it.each(RAMP_NAMES)(
+    "%s.500's dark counterpart clears 4.5:1 against white (light fill under black text becomes a dark fill under white text)",
+    (name) => {
+      expect(contrastRatio(hexToRgb(darkColors[name][500]), WHITE)).toBeGreaterThanOrEqual(4.5);
+    },
+  );
 
   it.each(RAMP_NAMES)(
     "%s.600's dark counterpart clears 4.5:1 against black (dark fill under white text becomes a light fill under black text)",

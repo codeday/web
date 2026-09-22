@@ -179,107 +179,162 @@ const colors: Record<string, any> = {
   black: "#252222",
   white: "#ffffff",
   // ---------------------------------------------------------------------------
-  // Semantic palette. Eleven scales at six stops, derived in
-  // OKLCH so lightness is perceptually even across hues (chroma capped at
-  // 0.155, just under the gradients' own peak chroma of 0.162, so these
-  // never out-saturate the brand).
+  // Semantic palette. Eleven scales at ten stops (the full Chakra-style
+  // 50-900 scale), derived in OKLCH so lightness is perceptually even across
+  // hues (chroma capped at 0.155, just under the gradients' own peak chroma
+  // of 0.162, so these never out-saturate the brand).
+  //
+  // Only 100/300/500/600/700/900 were hand-verified against the contract
+  // below (see colors.test.ts) when the scale was first built; 50/200/400/800
+  // are computed the same way as every dark-mode counterpart in this file —
+  // OKLCH interpolation, not hand-picked — by `scripts/generate-dark-
+  // scale.mjs` (its light-stop pass): 200/400/800 sit at the OKLCH lightness
+  // midpoint of their two neighbors (holding each hue's own chroma
+  // interpolated the same way); 50 extrapolates past 100 on the same
+  // lightness curve, at 100's chroma scaled down 30% (a paler, lower-chroma
+  // wash, same idea as `rampScaleStops`' hibiscus.50).
   //
   // Stop contract: 500 is a light fill that takes BLACK text. 600 and 700
   // are dark fills that take WHITE text. 100 is a wash. 300 is a light
-  // accent. 900 is near-black text on a 100 wash.
+  // accent. 900 is near-black text on a 100 wash. 800 is treated as a fill
+  // paired with WHITE text too (like 600), since it sits in the same "dark
+  // half" of the scale as 600/900. 50/200/400 are additional wash/accent
+  // stops (same bg-anchored role as 100/300) — not text-contrast fills; do
+  // not put fixed-color text directly on them expecting AA contrast.
   //
-  // BREAKING: this replaces a 50-1000(-1200) scale on a different lightness
-  // curve. The polarity at a given stop name is not preserved — e.g. the old
-  // red.600 (#ff686b) was a light fill under dark text; the new red.600
-  // (#AA342E) is a dark fill under white text. Every call site was audited
-  // and re-mapped by role, not by number.
+  // Re-run `scripts/generate-dark-scale.mjs` (with no args) and paste its
+  // light+dark output here and into `darkColors.ts` whenever a stop changes.
   // ---------------------------------------------------------------------------
   gray: {
+    50: "#FCECE7",
     100: "#F7E5D8",
+    200: "#F0DDD6",
     300: "#E7D7CF",
+    400: "#CFBEB8",
     500: "#B8A7A1",
     600: "#6F5F5A",
     700: "#524440",
+    800: "#3D302C",
     900: "#2A1E20",
   },
   red: {
+    50: "#FEEBE8",
     100: "#FBE4D7",
+    200: "#FDD7D2",
     300: "#FECEC5",
+    400: "#FFA89D",
     500: "#FD8074",
     600: "#AA342E",
     700: "#841817",
+    800: "#620F0E",
     900: "#41060C",
   },
   orange: {
+    50: "#FEECE2",
     100: "#FBE4D4",
+    200: "#FDD9C5",
     300: "#FED0B4",
+    400: "#FBAE7F",
     500: "#F68B43",
     600: "#9A4900",
     700: "#713400",
+    800: "#522503",
     900: "#371707",
   },
   yellow: {
+    50: "#F8F0D5",
     100: "#FBE6C2",
+    200: "#F2E2A4",
     300: "#F3D983",
+    400: "#DDC155",
     500: "#C9A800",
     600: "#766200",
     700: "#564700",
+    800: "#3E3305",
     900: "#2B1F07",
   },
   green: {
+    50: "#E4F6E4",
     100: "#E6EDCC",
+    200: "#C4EFC4",
     300: "#B3ECAC",
+    400: "#8BD88D",
     500: "#65C46A",
     600: "#06791F",
     700: "#005813",
+    800: "#093F10",
     900: "#07270D",
   },
   teal: {
+    50: "#E2F5EE",
     100: "#E0EDD8",
+    200: "#B5F1DB",
     300: "#91F0CC",
+    400: "#5FDCB6",
     500: "#00C89D",
     600: "#00755A",
     700: "#005541",
+    800: "#0A3D2F",
     900: "#072521",
   },
   cyan: {
+    50: "#E8F2F3",
     100: "#E4EBE1",
+    200: "#B4EEF4",
     300: "#7EEDF6",
+    400: "#55D7E6",
     500: "#00C1D1",
     600: "#00717A",
     700: "#005259",
+    800: "#053B40",
     900: "#07242C",
   },
   blue: {
+    50: "#ECF0F5",
     100: "#EFE7E1",
+    200: "#D5E3F3",
     300: "#C7DDF6",
+    400: "#95C7FB",
     500: "#60B0FF",
     600: "#0065B0",
     700: "#004982",
+    800: "#02355F",
     900: "#07203E",
   },
   indigo: {
+    50: "#EEEFF7",
     100: "#F2E6E1",
+    200: "#DDE0F5",
     300: "#D7D8F6",
+    400: "#B4BDFC",
     500: "#97A1FF",
     600: "#5254B9",
     700: "#393992",
+    800: "#29296C",
     900: "#1F1847",
   },
   purple: {
+    50: "#F5EDF7",
     100: "#F9E3E1",
+    200: "#F1D7F7",
     300: "#F5CAF6",
+    400: "#E3AAF1",
     500: "#D588E7",
     600: "#883F99",
     700: "#682576",
+    800: "#4C1957",
     900: "#340E3A",
   },
   pink: {
+    50: "#FDEBEF",
     100: "#FBE3DA",
+    200: "#FBD6E0",
     300: "#FECCD5",
+    400: "#FBA5C0",
     500: "#F77DA7",
     600: "#A53260",
     700: "#7F1744",
+    800: "#5E0D31",
     900: "#3F0523",
   },
 };

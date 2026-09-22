@@ -6,12 +6,16 @@
     "maxWarnings": 10
   },
   "plugins": ["typescript", "unicorn", "oxc"],
-  "jsPlugins": ["./.oxlint/no-section-lead-in-component.mjs"],
+  "jsPlugins": [
+    "./.oxlint/no-section-lead-in-component.mjs",
+    "./.oxlint/no-raw-chakra-color-var.mjs"
+  ],
   "categories": {
     "correctness": "error"
   },
   "rules": {
     "codeday/no-section-lead-in-component": "error",
+    "codeday-colors/no-raw-chakra-color-var": "error",
     "no-redundant-type-constituents": "off",
     "restrict-template-expressions": "off",
     "no-for-in-array": "off",
