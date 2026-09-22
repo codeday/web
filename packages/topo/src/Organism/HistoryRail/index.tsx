@@ -294,7 +294,7 @@ export const HistoryRail = React.forwardRef<HTMLDivElement, HistoryRailProps>(
               css={{
                 height: COMPARISON_STRIP_HEIGHT,
                 // Every item pins to the same `top`/`bottom` — one shared
-                // row — so all four comparisons read at a glance rather
+                // row — so all comparisons read at a glance rather
                 // than needing to hunt across stacked rows. Each is a
                 // column: label on top, a `flex: 1` connector filling
                 // whatever's left down to the bar.
@@ -305,9 +305,20 @@ export const HistoryRail = React.forwardRef<HTMLDivElement, HistoryRailProps>(
                   display: "flex",
                   flexDirection: "column",
                 },
+                // On a narrow (mobile-width) rail, even the narrowed labels
+                // below crowd each other, so only the first and last
+                // comparisons show — the span between them is the point
+                // anyway. Hidden via `display` (not removed) so nothing
+                // re-lays out when the rail widens past the breakpoint.
+                // Lives here rather than on the `<li>` itself because the
+                // `& > li` rule above outranks a single-class style there.
+                "& > li[data-middle='true']": { display: "none" },
+                "@container historyRail (min-width: 440px)": {
+                  "& > li[data-middle='true']": { display: "flex" },
+                },
               }}
             >
-              {placedComparisons.map((comparison) => {
+              {placedComparisons.map((comparison, i) => {
                 // Flip to right-anchored past the midpoint: a left-anchored
                 // label has `100% - x` of rail to grow into and a right-
                 // anchored one has `x`, so the midpoint is where the larger
@@ -318,6 +329,9 @@ export const HistoryRail = React.forwardRef<HTMLDivElement, HistoryRailProps>(
                   <Box
                     as="li"
                     key={comparison.id}
+                    {...({
+                      "data-middle": (i > 0 && i < placedComparisons.length - 1) || undefined,
+                    } as any)}
                     alignItems={isRightHalf ? "flex-end" : "flex-start"}
                     style={{
                       left: `${(comparison.index / span) * 100}%`,
