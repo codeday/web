@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { gradientStops } from "./colors";
+import { darkGradientStops, gradientStops } from "./colors";
 import { accentOnWhite, buildGradientTokens, capRamp, contrastRatio } from "./gradients";
 
 const RAMP_NAMES = Object.keys(gradientStops) as Array<keyof typeof gradientStops>;
@@ -114,11 +114,14 @@ describe("accentOnWhite", () => {
     expect(contrastRatio(hexToRgb(accent), WHITE)).toBeGreaterThanOrEqual(4.5 - 0.01);
   });
 
-  it.each(RAMP_NAMES)("%s returns the raw 62% stop, now that every ramp clears the floor", (name) => {
-    const raw62 = gradientStops[name][3];
-    expect(contrastRatio(hexToRgb(raw62), WHITE)).toBeGreaterThanOrEqual(4.5);
-    expect(accentOnWhite(gradientStops[name])).toBe(raw62);
-  });
+  it.each(RAMP_NAMES)(
+    "%s returns the raw 62% stop, now that every ramp clears the floor",
+    (name) => {
+      const raw62 = gradientStops[name][3];
+      expect(contrastRatio(hexToRgb(raw62), WHITE)).toBeGreaterThanOrEqual(4.5);
+      expect(accentOnWhite(gradientStops[name])).toBe(raw62);
+    },
+  );
 });
 
 describe("FormatCards' white-on-field contract", () => {
@@ -142,4 +145,35 @@ describe("FormatCards' white-on-field contract", () => {
       }
     },
   );
+});
+
+describe("darkGradientStops", () => {
+  // `colors.ts`'s `colors.modes.dark.bg` — duplicated here rather than
+  // imported so this contract reads the same literal value a consumer
+  // would, the same convention `scripts/generate-dark-gradient-stops.mjs`
+  // uses for its own copy.
+  const DARK_BG: [number, number, number] = [0x1e, 0x11, 0x19];
+
+  it.each(RAMP_NAMES)("%s's dark field pins the shared anchor unchanged", (name) => {
+    expect(darkGradientStops[name][0]).toBe(gradientStops[name][0]);
+  });
+
+  it.each(RAMP_NAMES)(
+    "%s's dark 62% stop reads as a foreground accent against the dark ground, in the same ~4.5-5:1 ballpark every ramp's light-mode accent holds against white",
+    (name) => {
+      const top = darkGradientStops[name][3];
+      expect(contrastRatio(hexToRgb(top), DARK_BG)).toBeGreaterThanOrEqual(4.5);
+      expect(contrastRatio(hexToRgb(top), DARK_BG)).toBeLessThan(5.5);
+    },
+  );
+
+  it.each(RAMP_NAMES)("%s's dark field rises monotonically toward the accent", (name) => {
+    const stops = darkGradientStops[name].map((hex) => {
+      const [r, g, b] = hexToRgb(hex);
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b; // relative brightness ordering only
+    });
+    for (let i = 1; i < stops.length; i += 1) {
+      expect(stops[i]).toBeGreaterThan(stops[i - 1]);
+    }
+  });
 });

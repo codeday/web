@@ -17,7 +17,7 @@
  *   - 700 is the on-wash / on-page text role (button.ts's danger hover text,
  *     field.ts's error text, StatementBlock's body text) — its counterpart
  *     is solved against the *new* dark 100, which also happens to sit close
- *     enough to the real page background (#292929) that this covers the
+ *     enough to the real page background (#1E1119) that this covers the
  *     direct-on-page-bg text cases too.
  *   - 500, 600, 800, 900 are fills whose job is contrast against a *fixed*
  *     text color (black or white) or, for 900, a fixed dark bubble bg —
@@ -43,7 +43,7 @@
 import colors from "../src/Theme/vars/colors.ts";
 
 // -- constants -------------------------------------------------------------
-const DARK_BG = "#292929";
+const DARK_BG = "#1E1119";
 const LIGHT_BG = "#ffffff";
 const BLACK_TEXT = colors.black; // "#252222" — not pure black
 const WHITE_TEXT = "#ffffff";

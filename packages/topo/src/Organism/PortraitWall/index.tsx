@@ -60,8 +60,8 @@ function PortraitCard({ person }: { person: PortraitWallPerson }) {
       display="flex"
       flexDirection="column"
       borderRadius="2xl"
-      colorPalette="hotsauce"
-      backgroundImage="linear-gradient(160deg, {colors.colorPalette.100} 0%, {colors.colorPalette.300} 100%)"
+      colorPalette="hibiscus"
+      backgroundImage="linear-gradient(160deg, {colors.colorPalette.50} 0%, {colors.current.background} 100%)"
       css={{ cornerShape: SQUIRCLE_CORNER_SHAPE }}
     >
       <Box position="relative" zIndex="1" flexShrink="0" padding="4" paddingBottom="2">

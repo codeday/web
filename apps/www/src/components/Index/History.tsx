@@ -1,4 +1,5 @@
-import { HistoryRail, type HistoryEvent } from "@codeday/topo/Organism";
+import * as m from "@codeday/i18n/messages";
+import { HistoryRail, type HistoryComparison, type HistoryEvent } from "@codeday/topo/Organism";
 import { DateTime } from "luxon";
 import React from "react";
 
@@ -45,5 +46,23 @@ export default function History({ data }: HistoryProps) {
 
   if (!first) return null;
 
-  return <HistoryRail startYear={first.year} startMonth={first.month} events={events} />;
+  // Fixed outside-world reference points, so a reader can gauge how much the
+  // technology landscape has moved over the span of the milestones. The years
+  // are deliberately hardcoded (they're facts, not copy) — only the labels are
+  // localized. `HistoryRail` extends its own left edge back to 2008 for these.
+  const comparisons: HistoryComparison[] = [
+    { id: "appstore", year: 2008, title: m.www_home_history_compare_appstore() },
+    { id: "ssd", year: 2012, title: m.www_home_history_compare_ssd() },
+    { id: "cloud", year: 2015, title: m.www_home_history_compare_cloud() },
+    { id: "chatgpt", year: 2022, title: m.www_home_history_compare_chatgpt() },
+  ];
+
+  return (
+    <HistoryRail
+      startYear={first.year}
+      startMonth={first.month}
+      events={events}
+      comparisons={comparisons}
+    />
+  );
 }

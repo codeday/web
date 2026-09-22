@@ -29,6 +29,16 @@ const EVENTS = [
   { id: "e8", year: 2025, month: 2, title: fakeMessage("[Milestone — not yet supplied]") },
 ];
 
+// Outside-world reference points — always labelled, never paged — mirroring
+// the homepage's set. The rail extends its own left edge back to the earliest
+// of these (2008), before the first event.
+const COMPARISONS = [
+  { id: "appstore", year: 2008, title: fakeMessage("iPhone App Store") },
+  { id: "ssd", year: 2012, title: fakeMessage("SSD hard drives") },
+  { id: "cloud", year: 2015, title: fakeMessage("Cloud native infra") },
+  { id: "chatgpt", year: 2022, title: fakeMessage("ChatGPT") },
+];
+
 // `HistoryRail` only renders the rail itself — placing copy beside it, and
 // picking a side, is the caller's layout concern. These stories show one
 // such composition: a container-queried grid with copy on the left.
@@ -44,7 +54,7 @@ function HistoryWithCopy() {
         <Box fontSize="lg" color="gray.700" maxWidth="46ch">
           {BODY}
         </Box>
-        <HistoryRail startYear={2009} events={EVENTS} />
+        <HistoryRail startYear={2009} events={EVENTS} comparisons={COMPARISONS} />
       </Box>
     </Box>
   );

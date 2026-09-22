@@ -41,7 +41,7 @@
 import { gradientStops } from "../src/Theme/vars/colors.ts";
 
 // -- constants ---------------------------------------------------------------
-const DARK_BG = "#292929";
+const DARK_BG = "#1E1119";
 const LIGHT_BG = "#ffffff";
 const BLACK_TEXT = "#252222"; // colors.black
 const WHITE_TEXT = "#ffffff";

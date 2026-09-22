@@ -11,7 +11,7 @@ page.on("console", (msg) => {
   if (msg.text().startsWith("MOUNT_CALL")) console.log(msg.text());
 });
 
-await page.goto("http://localhost:3000/en-us/micro-internship/register", { waitUntil: "networkidle" });
+await page.goto("http://localhost:3000/en-us/direct", { waitUntil: "networkidle" });
 const acceptAll = page.getByRole("button", { name: "Accept All" });
 if (await acceptAll.isVisible().catch(() => false)) await acceptAll.click();
 

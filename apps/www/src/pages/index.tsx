@@ -211,7 +211,7 @@ export default function Home({ query, seed }: HomeProps) {
                       detail: m.www_home_formats_microinternship_route_own_detail(),
                       action: {
                         label: m.www_home_formats_microinternship_route_own_action(),
-                        href: "/micro-internship/register",
+                        href: "/direct",
                       },
                     },
                     {

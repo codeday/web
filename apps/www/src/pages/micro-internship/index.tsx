@@ -320,7 +320,7 @@ export default function MicroInternship({ query, seed }: MicroInternshipProps) {
                     variant="primary"
                     colorPalette="blackberry"
                     marginTop="auto"
-                    {...({ href: "/micro-internship/register" } as any)}
+                    {...({ href: "/direct" } as any)}
                   >
                     {m.www_microinternship_register_own_cta()}
                   </Button>

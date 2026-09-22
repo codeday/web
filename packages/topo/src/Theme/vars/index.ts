@@ -179,7 +179,7 @@ const semanticColorTokens = {
   white: {
     value: {
       base: colors.white as string,
-      _dark: "#292929",
+      _dark: "#1E1119",
     },
   },
 
@@ -331,7 +331,7 @@ const semanticColorTokens = {
   // role-inverts to a *light* fill in dark mode, so `contrast`'s text must
   // invert right along with it, which is exactly what our own
   // self-inverting `white` token already does (light mode: white; dark
-  // mode: `#292929`, i.e. dark-ish — the correct polarity for text sitting
+  // mode: `#1E1119`, i.e. dark-ish — the correct polarity for text sitting
   // on a fill that just flipped from dark-under-white-text to
   // light-under-black-text).
   //

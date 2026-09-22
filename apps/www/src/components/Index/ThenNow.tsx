@@ -1,5 +1,10 @@
-import { PortraitWall, type PortraitWallPerson, type PortraitWallSlot } from "@codeday/topo/Organism";
+import {
+  PortraitWall,
+  type PortraitWallPerson,
+  type PortraitWallSlot,
+} from "@codeday/topo/Organism";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
 import { graphql } from "@/gql";
 import { FragmentType, useFragment } from "@/gql/fragment-masking";
@@ -196,9 +201,15 @@ export default function ThenNow({ data }: ThenNowProps) {
   // within that list, so it can't drift into another slot's cards.
   const cursors = useRef<number[]>(slotLists.map(() => 0));
 
-  useEffect(() => {
-    const timeoutIds: ReturnType<typeof setTimeout>[] = [];
+  // Per-slot rotation plan: the order it cycles through, and how long until
+  // its next swap. Kept in a ref rather than rebuilt by the scheduling
+  // effect below, because that effect tears down and restarts on every
+  // pause/resume — rebuilding there would reshuffle each slot's order and
+  // re-roll the stagger on every hover, and restarting from a full interval
+  // would let slots drift into ticking over together.
+  const plan = useRef<{ order: AlumCard[]; remainingMs: number }[]>([]);
 
+  useEffect(() => {
     // Evenly spaced points across one interval (0, 1/n, 2/n, ... of the
     // way through), handed out to slots in a shuffled order — every slot
     // still swaps exactly every `SWAP_INTERVAL_MS`, just starting from a
@@ -207,30 +218,64 @@ export default function ThenNow({ data }: ThenNowProps) {
     const staggerOffsetsMs = shuffled(
       slotLists.map((_, i) => (i * SWAP_INTERVAL_MS) / slotLists.length),
     );
-
-    slotLists.forEach((list, index) => {
-      // Nothing else to swap to.
-      if (list.length <= 1) return;
+    cursors.current = slotLists.map(() => 0);
+    plan.current = slotLists.map((list, index) => ({
       // The order a slot cycles through its own dealt list is randomized
       // too, independently of the swap-timing stagger above — so different
       // page loads don't all advance through the same sequence.
-      const order = [list[0], ...shuffled(list.slice(1))];
-      const advance = () => {
-        cursors.current[index] = (cursors.current[index] + 1) % order.length;
-        const card = order[cursors.current[index]];
-        setActiveIds((prev) => prev.map((id, i) => (i === index ? card.id : id)));
-        timeoutIds[index] = setTimeout(advance, SWAP_INTERVAL_MS);
+      order: [list[0], ...shuffled(list.slice(1))],
+      remainingMs: staggerOffsetsMs[index],
+    }));
+  }, [slotLists]);
+
+  // Rotation pauses while the wall is scrolled out of view (no point
+  // swapping what nobody can see) or while the pointer is over it (so a
+  // visitor reading someone's story doesn't have it swapped out mid-read).
+  const { ref: viewRef, inView } = useInView();
+  const [hovered, setHovered] = useState(false);
+  const paused = !inView || hovered;
+
+  useEffect(() => {
+    if (paused) return undefined;
+
+    const timeoutIds: ReturnType<typeof setTimeout>[] = [];
+    const deadlines: number[] = [];
+
+    plan.current.forEach((slot, index) => {
+      // Nothing else to swap to.
+      if (slot.order.length <= 1) return;
+      const schedule = (delayMs: number) => {
+        deadlines[index] = Date.now() + delayMs;
+        timeoutIds[index] = setTimeout(() => {
+          cursors.current[index] = (cursors.current[index] + 1) % slot.order.length;
+          const card = slot.order[cursors.current[index]];
+          setActiveIds((prev) => prev.map((id, i) => (i === index ? card.id : id)));
+          schedule(SWAP_INTERVAL_MS);
+        }, delayMs);
       };
-      timeoutIds[index] = setTimeout(advance, staggerOffsetsMs[index]);
+      schedule(slot.remainingMs);
     });
 
-    return () => timeoutIds.forEach((id) => clearTimeout(id));
-  }, [slotLists]);
+    return () => {
+      timeoutIds.forEach((id) => clearTimeout(id));
+      // Bank each slot's unexpired time so resuming picks up mid-interval
+      // and the stagger between slots survives the pause.
+      const now = Date.now();
+      plan.current.forEach((slot, index) => {
+        if (deadlines[index] !== undefined) {
+          slot.remainingMs = Math.max(0, deadlines[index] - now);
+        }
+      });
+    };
+  }, [slotLists, paused]);
 
   if (activeIds.length === 0) return null;
 
   return (
     <PortraitWall
+      ref={viewRef}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       maxWidth="container.lg"
       marginX="auto"
       slots={portraitPeopleBySlot.map(

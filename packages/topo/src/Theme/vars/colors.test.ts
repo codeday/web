@@ -81,9 +81,9 @@ describe("gray.1100 removal (step 5 of the palette migration)", () => {
     expect(colors.gray[1100]).toBeUndefined();
   });
 
-  it("dark-mode background/foreground still hardcodes the old gray.1100 value", () => {
-    expect(colors.modes.dark.bg).toBe("#292929");
-    expect(colors.modes.dark.background).toBe("#292929");
+  it("dark-mode background/foreground is the warm near-black ground", () => {
+    expect(colors.modes.dark.bg).toBe("#1E1119");
+    expect(colors.modes.dark.background).toBe("#1E1119");
   });
 });
 
