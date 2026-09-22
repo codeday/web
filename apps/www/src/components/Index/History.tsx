@@ -52,7 +52,7 @@ export default function History({ data }: HistoryProps) {
   // localized. `HistoryRail` extends its own left edge back to 2008 for these.
   const comparisons: HistoryComparison[] = [
     { id: "appstore", year: 2008, title: m.www_home_history_compare_appstore() },
-    { id: "cloud", year: 2015, title: m.www_home_history_compare_cloud() },
+    { id: "cloud", year: 2014, title: m.www_home_history_compare_cloud() },
     { id: "chatgpt", year: 2022, title: m.www_home_history_compare_chatgpt() },
   ];
 
