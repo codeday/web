@@ -13,8 +13,17 @@ import React from "react";
 import { CmpProvider } from "./providers/Cmp";
 import { FontStyles } from "./providers/Fonts";
 import codedaySystem, { Theme as codedayTheme } from "./vars";
-import { gradientStops } from "./vars/colors";
+import colors, { gradientStops } from "./vars/colors";
 import { accentOnWhite } from "./vars/gradients";
+
+// Browser chrome (mobile address bar, etc.) matches the page ground in each
+// mode. Module-level so the reference is stable — the theme provider re-applies
+// on every identity change. Its pre-paint script and mode-change handler both
+// write this, so it tracks system and `setTheme` switches live.
+const THEME_COLOR = {
+  light: colors.modes.light.bg,
+  dark: colors.modes.dark.bg,
+};
 
 export interface ProviderProps {
   analyticsId?: string | null;
@@ -84,6 +93,7 @@ const Provider = ({
         enableSystem={true}
         storage="none"
         followSystem
+        themeColor={THEME_COLOR}
       >
         <ThemeDataProvider value={themeData}>
           <FontStyles />

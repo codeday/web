@@ -31,7 +31,6 @@ export default class CustomDocument extends Document {
           <link rel="manifest" href="/site.webmanifest" />
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color={BRAND} />
           <meta name="msapplication-TileColor" content={BRAND} />
-          <meta name="theme-color" content="#ffffff" />
         </Head>
         <body>
           <ColorModeScript type="cookie" initialColorMode="system" />
