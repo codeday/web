@@ -9,6 +9,8 @@ export interface CreditListsEntry {
   href?: string;
   /** `'logos'` only. */
   logo?: string;
+  /** `'logos'` only. Optional dark mode variant; falls back to `logo` when omitted or in light mode. */
+  darkLogo?: string;
   /** `'logos'` only — set per entry, not per group: a busy seal renders flat so it doesn't fight the palette; a plain wordmark can stay as supplied. */
   mono?: boolean;
   /** `'press'` only. Omit to render the publication name alone — no placeholder line. */
@@ -36,24 +38,25 @@ export interface CreditListsProps extends Omit<BoxProps, "children"> {
 // (opacity 0, not `display:none`/`aria-hidden`) so it's still what a screen
 // reader announces.
 function LogoMark({ entry }: { entry: CreditListsEntry }) {
+  const { colorMode } = useColorMode();
+  const src = colorMode === "dark" && entry.darkLogo ? entry.darkLogo : entry.logo;
   // `mono` needs a real `logo` URL to mask against — without one,
-  // `url(${entry.logo})` becomes the literal, invalid CSS `url(undefined)`,
+  // `url(${src})` becomes the literal, invalid CSS `url(undefined)`,
   // which the browser then tries to fetch as a real resource path.
-  const mono = entry.mono && !!entry.logo;
+  const mono = entry.mono && !!src;
   // Resolved to a literal hex rather than passed as the `"gray.700"` token
   // string — see `LogoWall`'s `LogoMark` (`Index/LogoWall.tsx` in `apps/www`)
   // for why: a token (or `useToken`) resolves to
   // `var(--chakra-colors-gray-700)`, and WebKit has been observed to leave
   // this masked layer's `background-color` painted in the *previous* mode's
-  // colour when only that variable's value changes underneath it. Unlike
-  // `LogoWall`, this component never changes `entry.logo` at runtime, so
-  // there's no later re-render — no accidental toggle — to ever paint over
-  // a bad first paint here.
-  const { colorMode } = useColorMode();
+  // colour when only that variable's value changes underneath it. With
+  // `src` now swapping on colour-mode change, the literal hex ensures the
+  // masked layer repaints in step with the mark — never leaving the fill
+  // in the previous mode's colour.
   const color = colorMode === "dark" ? darkColors.gray[700] : legacyThemeData.colors.gray[700];
   const mark = (
     <Box position="relative" display="inline-block" height="12">
-      <Image src={entry.logo} alt={entry.name} height="12" width="auto" opacity={mono ? 0 : 1} />
+      <Image src={src} alt={entry.name} height="12" width="auto" opacity={mono ? 0 : 1} />
       {mono && (
         <Box
           aria-hidden="true"
@@ -61,8 +64,8 @@ function LogoMark({ entry }: { entry: CreditListsEntry }) {
           inset="0"
           backgroundColor={color}
           css={{
-            maskImage: `url(${entry.logo})`,
-            WebkitMaskImage: `url(${entry.logo})`,
+            maskImage: `url(${src})`,
+            WebkitMaskImage: `url(${src})`,
             maskRepeat: "no-repeat",
             WebkitMaskRepeat: "no-repeat",
             maskPosition: "center",

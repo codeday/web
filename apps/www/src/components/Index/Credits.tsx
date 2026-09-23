@@ -62,6 +62,7 @@ export default function Credits({ data }: CreditsProps) {
       name: sponsor.name,
       href: sponsor.link,
       logo: sponsor.logo?.url,
+      darkLogo: sponsor.darkLogo?.url,
     }),
   );
   // `pressCoverage` is already `date_DESC`. Sorting featured entries first
