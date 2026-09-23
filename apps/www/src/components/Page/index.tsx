@@ -184,7 +184,13 @@ export default function Page({
             background spans edge to edge on both mobile and desktop; the
             header's own `maxWidth`/`marginX="auto"` still centers its
             content the same way it always did. */}
-        <Box position="sticky" top="0" zIndex="30" paddingTop={{ base: "0", md: "8" }}>
+        <Box
+          position="sticky"
+          top="0"
+          zIndex="30"
+          paddingBlockStart={{ base: "2", md: "8" }}
+          paddingInline={{ base: "2", md: 0 }}
+        >
           <Header onWash={onWash} maxWidth="container.lg" marginX="auto" position="relative">
             <HeaderBrand>
               <Box as="a" display="block" {...({ href: "/" } as any)}>
