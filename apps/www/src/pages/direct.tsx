@@ -1,11 +1,14 @@
 import * as m from "@codeday/i18n/messages";
+import { getLocale } from "@codeday/i18n/runtime";
 import { Box, Button, SquircleLogo } from "@codeday/topo/Atom";
 import { Band, CognitoForm, Content, Section, Wash } from "@codeday/topo/Molecule";
-import { NumberWithDetails, StatementBlock } from "@codeday/topo/Organism";
+import { NumberWithDetails, StatementBlock, StatTrio } from "@codeday/topo/Organism";
 import { apiFetch } from "@codeday/topo/utils";
+import { fixLocaleCasing } from "@codeday/utils";
 import { ResultOf } from "@graphql-typed-document-node/core";
+import { DateTime } from "luxon";
 import { GetStaticProps } from "next";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { graphql } from "@/gql";
 
@@ -13,10 +16,31 @@ import { Message } from "../components/Message";
 import Checklist from "../components/MicroInternship/Checklist";
 import PartnerPill from "../components/MicroInternship/PartnerPill";
 import Questions from "../components/MicroInternship/Questions";
+import RegistrationCountdown from "../components/MicroInternship/RegistrationCountdown";
 import Page from "../components/Page";
 
+// The event whose registration closes soonest, among those still open —
+// `$now` is passed from getStaticProps, so "still open" is as of the last
+// ISR regeneration, not the visitor's clock (the countdown clamps at zero).
 const MicroInternshipRegisterQuery = graphql(`
-  query MicroInternshipRegisterQuery {
+  query MicroInternshipRegisterQuery($now: CmsDateTime!) {
+    cms {
+      events(
+        where: { program: { webname: "direct" }, registrationsCloseAt_gt: $now }
+        order: registrationsCloseAt_ASC
+        limit: 1
+      ) {
+        items {
+          id
+          registrationsCloseAt
+        }
+      }
+    }
+    labs {
+      statOutcomes {
+        studentCount
+      }
+    }
     ...MicroInternshipQuestionsComponent
   }
 `);
@@ -43,6 +67,21 @@ interface MicroInternshipRegisterProps {
 
 export default function MicroInternshipRegister({ query }: MicroInternshipRegisterProps) {
   const [selectedOption, setSelectedOption] = useState<"pay" | "scholarship" | null>(null);
+  const event = query.cms?.events?.items[0] ?? null;
+
+  // The due date is shown in the visitor's own timezone, which only the
+  // browser knows — formatting it during the static build would bake in the
+  // build server's zone (UTC) and then mismatch on hydration. So it's left
+  // blank until after mount.
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
+
+  // The hero buttons pick the same option as the cards further down, so they
+  // reveal the same form in #options rather than duplicating it up here.
+  const selectOption = (option: "pay" | "scholarship") => {
+    setSelectedOption(option);
+    document.getElementById("options")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <Page
@@ -136,6 +175,76 @@ export default function MicroInternshipRegister({ query }: MicroInternshipRegist
               </Box>
             </Box>
           </Content>
+          {/* Nothing to count down to or register for once every direct
+            event's registration has closed, so all three lines go together. */}
+          {event?.registrationsCloseAt && (
+            <Content
+              maxW="container.xl"
+              marginTop="9"
+              marginBottom="0"
+              display="flex"
+              flexDirection="column"
+              alignItems="flex-start"
+              gap="3"
+            >
+              <RegistrationCountdown closesAt={event.registrationsCloseAt} />
+              <Box display="flex" flexWrap="wrap" gap="3">
+                <Button
+                  variant="primary"
+                  colorPalette="blackberry"
+                  onClick={() => selectOption("pay")}
+                >
+                  {m.www_microinternship_individual_options_pay_cta()}
+                </Button>
+                <Button
+                  variant="ghost"
+                  colorPalette="blackberry"
+                  onClick={() => selectOption("scholarship")}
+                >
+                  {m.www_microinternship_individual_options_scholarship_cta()}
+                </Button>
+              </Box>
+              <Box fontSize="md" color="gray.700">
+                {m.www_microinternship_individual_title_due({
+                  date: isMounted
+                    ? DateTime.fromISO(event.registrationsCloseAt)
+                        .setLocale(fixLocaleCasing(getLocale()))
+                        .toLocaleString(DateTime.DATETIME_FULL)
+                    : "",
+                })}
+              </Box>
+            </Content>
+          )}
+        </Section>
+
+        {/* Same student count as the micro-internship page's evidence stats
+          (Labs outcomes), not the homepage's all-programs `impact` figure —
+          this program is the Labs track. */}
+        <Section ramp="blackberry">
+          <StatTrio
+            maxWidth="container.lg"
+            marginX="auto"
+            items={[
+              {
+                id: "students",
+                value: query.labs.statOutcomes.studentCount,
+                format: "integer",
+                label: m.www_microinternship_individual_stats_students_label(),
+              },
+              {
+                id: "jobs",
+                value: 70,
+                format: "percent",
+                label: m.www_microinternship_individual_stats_jobs_label(),
+              },
+              {
+                id: "mentors",
+                value: m.www_microinternship_individual_stats_mentors_value(),
+                format: "integer",
+                label: m.www_microinternship_individual_stats_mentors_label(),
+              },
+            ]}
+          />
         </Section>
 
         <Section ramp="blackberry" {...HAIRLINE}>
@@ -200,18 +309,6 @@ export default function MicroInternshipRegister({ query }: MicroInternshipRegist
                 />
               ) : (
                 <>
-                  <StatementBlock
-                    size="section"
-                    maxWidth="container.lg"
-                    heading={m.www_microinternship_individual_options_heading()}
-                    body={[
-                      <Message
-                        key="body"
-                        message={m.www_microinternship_individual_options_body}
-                      />,
-                    ]}
-                  />
-
                   <Box
                     display="grid"
                     gridTemplateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
@@ -286,7 +383,7 @@ export default function MicroInternshipRegister({ query }: MicroInternshipRegist
 export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
-      query: await apiFetch(MicroInternshipRegisterQuery, {}, {}),
+      query: await apiFetch(MicroInternshipRegisterQuery, { now: new Date().toISOString() }, {}),
     },
     revalidate: 300,
   };

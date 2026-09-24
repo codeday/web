@@ -28,9 +28,10 @@ export interface StatTrioItem {
    * around just part of itself), underlined but staying at the same resting
    * 72% opacity — the spec is explicit that provenance is "never visually
    * suppressed" and always "white at 72%"; only the underline signals it's
-   * a link.
+   * a link. Optional: a caller whose figures have no citation to give omits
+   * the line entirely rather than filling it with placeholder copy.
    */
-  provenance: Message;
+  provenance?: Message;
   href?: string;
 }
 
@@ -174,6 +175,10 @@ export const StatTrio = React.forwardRef<HTMLDivElement, StatTrioProps>(
                 // without touching the spec's own desktop value.
                 fontSize={{ base: "clamp(28px, 9vw, 60px)", md: "clamp(40px, 5vw, 60px)" }}
                 fontWeight="800"
+                // Without this the figure inherits the body line-height, and
+                // at this size its half-leading reads as a gap between the
+                // number and its label.
+                lineHeight="none"
                 letterSpacing="tight"
                 whiteSpace="nowrap"
                 css={{ fontVariantNumeric: "tabular-nums" }}
@@ -183,16 +188,18 @@ export const StatTrio = React.forwardRef<HTMLDivElement, StatTrioProps>(
               <Box marginTop="2" fontSize="md" color="trueWhite">
                 {item.label}
               </Box>
-              <Box
-                as={item.href ? "a" : "p"}
-                marginTop="2.5"
-                fontSize="xs"
-                color="rgba(255,255,255,0.72)"
-                textDecoration={item.href ? "underline" : undefined}
-                {...(item.href ? ({ href: item.href } as any) : {})}
-              >
-                {item.provenance}
-              </Box>
+              {item.provenance && (
+                <Box
+                  as={item.href ? "a" : "p"}
+                  marginTop="2.5"
+                  fontSize="xs"
+                  color="rgba(255,255,255,0.72)"
+                  textDecoration={item.href ? "underline" : undefined}
+                  {...(item.href ? ({ href: item.href } as any) : {})}
+                >
+                  {item.provenance}
+                </Box>
+              )}
             </Box>
           ))}
         </Box>
