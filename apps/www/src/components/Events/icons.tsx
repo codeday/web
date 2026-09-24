@@ -1,11 +1,5 @@
 import React from "react";
 
-// Small inline icon set for the glyphs in the CodeDay Weekend city-picker
-// design (docs/event/*.dc.html) that have no equivalent in `@codeday/topocons`
-// (no external-link or chevron glyphs there). Icons that do have a topocons
-// match (near-me, calendar, map pin, people, search, close) use that package
-// directly instead of living here — see Hero.tsx/Picker.tsx imports.
-
 interface IconProps {
   boxSize?: string | number;
   color?: string;

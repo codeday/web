@@ -9,9 +9,6 @@ import Document, {
 } from "next/document";
 import React from "react";
 
-// This document renders outside Chakra's tree (no `colors.x` token
-// resolution here), so the brand color is read directly off the shared
-// ramp rather than duplicated as a literal.
 const BRAND = gradientStops.hibiscus[3];
 
 export default class CustomDocument extends Document {

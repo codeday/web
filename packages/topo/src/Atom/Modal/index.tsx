@@ -9,11 +9,6 @@ import React from "react";
 
 import { useGrainOverlay } from "../../Theme/vars/grain";
 
-// Modal, built on Chakra v3's Dialog (v3's renamed Modal;
-// Topo didn't have one before — the app used react-responsive-modal
-// directly). Follows Card's "heading in the field" rule. Chili Oil,
-// specifically — like Button defaulting to Hibiscus, this is the modal's
-// own fixed choice, not something every caller is expected to override.
 export const Modal = React.forwardRef<HTMLDivElement, DialogRootProps>((props, ref) => (
   <ChakraDialog.Root {...props}>
     <ChakraDialog.Backdrop />
@@ -59,10 +54,6 @@ export const ModalCloseButton = () => (
 );
 export const ModalTrigger = ChakraDialog.Trigger;
 
-// Actions sit in the body, below the copy — not a separate dialog footer
-// bar (the same "actions inside the text column" rule Alert uses).
-// `ModalFooter` (`Dialog.Footer`) still exists for a caller that wants a
-// distinct bottom bar, but the worked example here doesn't.
 export const ModalActions = React.forwardRef<HTMLDivElement, BoxProps>((props, ref) => (
   <Box ref={ref} marginTop="3.5" display="flex" gap="2" {...props} />
 ));

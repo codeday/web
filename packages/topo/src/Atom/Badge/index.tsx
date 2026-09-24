@@ -8,15 +8,9 @@ export type BadgeVariant = "solid" | "solidDark" | "gradient" | "outline" | "dot
 
 export interface BadgeProps extends Omit<ChakraBadgeProps, "variant"> {
   variant?: BadgeVariant;
-  /** Renders the two-segment count form (`splitCount`). */
   count?: React.ReactNode;
 }
 
-// Badge. The `gradient` variant's grain overlay and the
-// `dot`/`splitCount` forms need markup a plain recipe can't add, so Badge is
-// a thin wrapper rather than a pure re-export. The `squircle` variant's
-// shape is plain CSS (`corner-shape`, see badge.ts) and needs no wrapper
-// logic of its own.
 export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
   ({ variant, count, children, css, ...props }, forwardedRef) => {
     const isGradient = variant === "gradient";

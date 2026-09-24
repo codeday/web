@@ -6,8 +6,6 @@ import React from "react";
 import { City, statusDateLabel, statusLabel, STATUS_COLOR } from "./data";
 import { ExternalLinkIcon } from "./icons";
 
-// Self-inverting — paired with a plain `white` card, so both flip together
-// in dark mode and stay contrasted either way.
 const INK = "{colors.black}";
 const BODY = "{colors.gray.700}";
 const ACCENT = "{colors.colorPalette.800}";

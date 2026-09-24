@@ -13,8 +13,6 @@ export default meta;
 
 type Story = StoryObj<typeof StatTrio>;
 
-// Placeholder demo numbers only — the real figures are `[BRACKETED]` in the
-// build spec and are not supplied yet.
 export const ThreeCells: Story = {
   name: "StatTrio — one field, three cells (not three fields)",
   render: () => (

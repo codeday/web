@@ -5,20 +5,7 @@ import { GraphQLClient } from "graphql-request";
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import useSwr, { SWRConfiguration } from "swr";
 
-/**
- * Paraglide's branded string type — what every `m.xxx()` message function
- * returns. Aliased here so design-system components can require localized
- * copy in their props (`label: Message`) without every file importing
- * straight from `@codeday/i18n`. A raw string literal is not assignable to
- * this type, which is the point: it's how "no string literals outside the
- * message catalogue" gets enforced at compile time instead of by convention.
- */
 export type Message = LocalizedString;
-
-// ---------------------------------------------------------------------------
-// ThemeData context (inlined here so next.config.js require() works without
-// hitting relative .ts imports that Node cannot resolve without SWC hooks)
-// ---------------------------------------------------------------------------
 
 export interface ThemeData {
   colors: Record<string, any>;
@@ -149,9 +136,6 @@ export function useApi(params: FetchParams & SWRConfiguration) {
   );
 }
 
-/**
- * usePrefersReducedMotion - removed from Chakra UI v3, reimplemented here.
- */
 export function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   useEffect(() => {
@@ -164,10 +148,6 @@ export function usePrefersReducedMotion() {
   }, []);
   return prefersReducedMotion;
 }
-
-// ---------------------------------------------------------------------------
-// Toast system - Chakra UI v3 uses createToaster instead of useToast
-// ---------------------------------------------------------------------------
 
 export const _toaster: ReturnType<typeof createToaster> = (
   typeof window !== "undefined"
@@ -196,10 +176,6 @@ export function useToasts(): UseToastsOptions {
   };
 }
 
-// ---------------------------------------------------------------------------
-// Theme helpers
-// ---------------------------------------------------------------------------
-
 /**
  * @deprecated Use Paraglide message functions from `@codeday/i18n/messages` directly instead.
  */
@@ -207,10 +183,6 @@ export function useString(key: string | number, initialValue: any) {
   const { strings } = useThemeData();
   return (strings as Record<string | number, string>)[key] || initialValue;
 }
-
-// ---------------------------------------------------------------------------
-// Local storage
-// ---------------------------------------------------------------------------
 
 export function useLocalStorage(key: string, initialValue: any) {
   const [hasValue, setHasValue] = useState(false);
@@ -278,7 +250,6 @@ export function awaitQuerySelectorAll(selector: string): Promise<NodeListOf<Elem
       }
     });
 
-    // If you get "parameter 1 is not of type 'Node'" error, see https://stackoverflow.com/a/77855838/492336
     observer.observe(document.documentElement, {
       childList: true,
       subtree: true,
@@ -300,7 +271,6 @@ export function subscribeQuerySelectorAll(
     }
   });
 
-  // If you get "parameter 1 is not of type 'Node'" error, see https://stackoverflow.com/a/77855838/492336
   observer.observe(document.documentElement, {
     childList: true,
     subtree: true,
@@ -308,13 +278,6 @@ export function subscribeQuerySelectorAll(
   return () => observer.disconnect();
 }
 
-/**
- * Creates a Next.js getStaticProps that fetches a GraphQL query and returns
- * the result as `props.query`.
- *
- * @example
- * export const getStaticProps = createStaticProps(MyQuery, { someVar: "value" });
- */
 export function createStaticProps(
   query: string | DocumentNode,
   variables?: Record<string, any> | (() => Record<string, any>),

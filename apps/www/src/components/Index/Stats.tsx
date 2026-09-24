@@ -27,10 +27,6 @@ interface StatsProps {
   data: FragmentType<typeof StatsFragment>;
 }
 
-// `baseLocale`, not the visitor's own locale — this renders during SSR too,
-// and a number formatted with the server's locale but the browser's locale
-// on the client is exactly the kind of mismatch that breaks hydration (see
-// `formatCompactUsd`'s own note on the same problem).
 const formatCount = (value: number) => new Intl.NumberFormat(baseLocale).format(value);
 
 export default function Stats({ data }: StatsProps) {

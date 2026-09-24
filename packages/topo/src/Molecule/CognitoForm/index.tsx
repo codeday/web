@@ -3,10 +3,11 @@ import { Box, Link, Spinner, Text } from "@codeday/topo/Atom";
 import { DataCollection } from "@codeday/topo/Molecule";
 import { useColorMode } from "@codeday/topo/Theme";
 import { useTheme } from "@codeday/topo/utils";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Form from "./form";
 import style from "./style";
+import { useInheritedBackground } from "./useInheritedBackground";
 
 interface CognitoFormProps {
   formId: number | string;
@@ -38,6 +39,8 @@ const CognitoForm = ({
   const { colorMode } = useColorMode();
   theme.colors.current = theme.colors.modes[colorMode];
   const [hasFirstPageChange, setHasFirstPageChange] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const background = useInheritedBackground(rootRef, [colorMode]);
 
   const [showFallback, setShowFallback] = useState(false);
   const typeofWindow = typeof window;
@@ -49,12 +52,14 @@ const CognitoForm = ({
   }, [typeofWindow, setShowFallback, showFallback]);
 
   return (
-    <>
+    <Box ref={rootRef}>
       <Form
         accountId={accountId || theme.cognito.id}
         formId={formId}
         prefill={prefill}
-        css={(formId) => style({ theme, showTitle, colorMode, formId }) + `\n${css || ""}`}
+        css={(formId) =>
+          style({ theme, showTitle, colorMode, formId, background }) + `\n${css || ""}`
+        }
         loading={
           <Box textAlign="center">
             <Spinner />
@@ -82,7 +87,7 @@ const CognitoForm = ({
         }}
       />
       {!hidePrivacy && <DataCollection message={payment ? "payment" : "pii"} />}
-    </>
+    </Box>
   );
 };
 

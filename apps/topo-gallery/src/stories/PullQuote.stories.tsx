@@ -34,7 +34,6 @@ export const Feature: Story = {
         project={fakeMessage("Home Assistant")}
         href="#"
       />
-      {/* Empty quote — must render nothing, not a placeholder. */}
       <PullQuote
         size="feature"
         ramp="chilioil"

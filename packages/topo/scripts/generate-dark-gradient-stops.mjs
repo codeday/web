@@ -1,53 +1,12 @@
 #!/usr/bin/env node
-/**
- * Generates each ramp's dark-mode "field" stop set — the 0/20/40/62% run,
- * the only part of a ramp that ever carries a contrast requirement (82%/100%
- * stay the shared decorative sand tail per `colors.ts`'s own stop-role
- * comment, and don't get a dark counterpart).
- *
- * Method, in OKLCH:
- *   - 0% (the shared near-black anchor, `#120510`) is pinned — copied
- *     verbatim, not recomputed. Moving it would break the "shared anchor"
- *     read across all six ramps.
- *   - Every other stop keeps its own light-mode hue exactly (the ramp's own
- *     hue path is unchanged) and has its lightness scaled up by a single
- *     per-ramp factor chosen so the 62% stop's L lands at 0.62 — bright
- *     enough to read as a foreground accent against the new dark ground
- *     (`current.bg`, #1E1119) rather than the deep fill role it plays in
- *     light mode.
- *   - Chroma rises alongside it: 0% boost at the anchor (unchanged) to +25%
- *     at the 62% stop, linear in position in between. A flat brightness
- *     lift alone reads washed-out on a dark ground; the extra saturation is
- *     what keeps the accent feeling like the same brand colour instead of a
- *     pastel of it.
- *   - The desired (boosted) chroma is then clamped to the sRGB gamut at
- *     each stop's own L/H — hotsauce and marmalade's naive +25% top
- *     overshoots the gamut at L 0.62 for their hues, so those two land
- *     slightly under +25% rather than being allowed to clip.
- *
- * Usage:
- *   node scripts/generate-dark-gradient-stops.mjs             # all six ramps
- *   node scripts/generate-dark-gradient-stops.mjs hibiscus    # just one
- *
- * Prints a report (target vs achieved L, chroma boost, contrast against the
- * dark ground) and a paste-ready object literal for `Theme/vars/colors.ts`'s
- * `darkGradientStops`. Re-run whenever a ramp's light-mode `gradientStops`
- * change.
- */
 
 import { gradientStops } from "../src/Theme/vars/colors.ts";
 
-// -- constants ---------------------------------------------------------------
-// Duplicated rather than imported from `generate-ramp-scale.mjs` /
-// `generate-dark-scale.mjs` so each generator script stays a standalone,
-// copy-pasteable tool.
-const DARK_BG = "#1E1119"; // colors.ts's `colors.modes.dark.bg`
-const FIELD_POSITIONS = [0, 20, 40, 62]; // colors.ts's `STOP_POSITIONS`, up to the 62% accent
+const DARK_BG = "#1E1119";
+const FIELD_POSITIONS = [0, 20, 40, 62];
 const TOP_TARGET_L = 0.62;
-const TOP_CHROMA_BOOST = 0.25; // +25% at the 62% stop, 0% at the anchor, linear between
+const TOP_CHROMA_BOOST = 0.25;
 
-// -- color math (OKLCH via Björn Ottosson's OKLab, sRGB D65) — identical to
-// the other two generator scripts. ------------------------------------------
 const hex2srgb = (h) => {
   h = h.trim().replace(/^#/, "");
   return [0, 2, 4].map((i) => Number.parseInt(h.slice(i, i + 2), 16) / 255);
@@ -97,7 +56,6 @@ function hexFromOklch(L, C, H) {
   return { hex: `#${toByte(r)}${toByte(g)}${toByte(b)}`.toUpperCase(), clipped };
 }
 
-// Binary search for the largest in-gamut chroma at a given L/H.
 function maxChromaAt(L, H) {
   let lo = 0;
   let hi = 0.5;
@@ -121,7 +79,6 @@ function contrastWithDarkBg(hex) {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-// -- generation ----------------------------------------------------------------
 function generateDarkField(stops) {
   const topOld = toOklch(stops[3]);
   const sL = TOP_TARGET_L / topOld.L;
@@ -137,7 +94,6 @@ function generateDarkField(stops) {
   return out;
 }
 
-// -- main ----------------------------------------------------------------------
 const requested = process.argv.slice(2).filter((a) => !a.startsWith("--"));
 const names = requested.length ? requested : Object.keys(gradientStops);
 

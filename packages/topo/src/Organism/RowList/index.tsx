@@ -5,9 +5,6 @@ import React from "react";
 import { type GradientName } from "../../Theme/vars/colors";
 import type { Message } from "../../utils";
 
-// `formats` and `fields` were retired in the v7 homepage rebuild —
-// `FormatCards` and `ImpactTicker` replaced them. `waysIn` is the one
-// variant still used (the partner band), so it's the only one left.
 export type RowListVariant = "waysIn";
 
 export interface RowListAction {
@@ -32,8 +29,6 @@ const GRID_TEMPLATE: Record<RowListVariant, string> = {
   waysIn: "{sizes.52} 1fr {sizes.36}",
 };
 
-// Two lines of body copy, clamped — not a spec'd pixel value, just the
-// standard clamp technique.
 const CLAMP_TWO_LINES = {
   display: "-webkit-box",
   WebkitLineClamp: 2,
@@ -57,8 +52,6 @@ function RowListRowView({ row, variant }: { row: RowListRow; variant: RowListVar
       }}
       paddingBlock="5"
       borderTop="sm"
-      // `colorPalette.300` (mode-aware, unlike the old `deep/18`
-      // alpha-blend) stays a faint-but-visible hairline in both modes.
       borderTopColor="colorPalette.300"
       _first={{ borderTop: "none" }}
     >
@@ -90,8 +83,6 @@ function RowListRowView({ row, variant }: { row: RowListRow; variant: RowListVar
   );
 }
 
-// `waysIn` rows: separated by a hairline in the gradient's own deep stop at
-// 18% (never grey), stacking to a single column below `md`.
 export const RowList = React.forwardRef<HTMLDivElement, RowListProps>(
   ({ variant, gradient, rows, ...props }, ref) => (
     <Box ref={ref} colorPalette={gradient} {...props}>

@@ -30,7 +30,6 @@ export interface Publication {
   venueLong: string;
   where?: string;
   doi?: string;
-  /** One factual sentence, straight from the source record's own abstract/description — never invented. */
   summary?: string;
   topics: string[];
   links: PublicationLink[];

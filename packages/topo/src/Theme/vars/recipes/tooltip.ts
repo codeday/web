@@ -2,7 +2,6 @@ import { defineSlotRecipe } from "@chakra-ui/react";
 
 import { SQUIRCLE_CORNER_SHAPE } from "../cornerShape";
 
-// Tooltip. Never a gradient.
 export const tooltipSlotRecipe = defineSlotRecipe({
   slots: ["trigger", "arrow", "arrowTip", "positioner", "content"],
   base: {

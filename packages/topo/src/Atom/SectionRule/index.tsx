@@ -3,12 +3,9 @@ import React from "react";
 import { Box, type BoxProps } from "../Box";
 
 export interface SectionRuleProps extends BoxProps {
-  /** The mono index shown in the fixed-width margin column. */
   index?: React.ReactNode;
 }
 
-// Rule + margin index, the primary sectioning device (the quietest of
-// the four, in order).
 export const SectionRule = React.forwardRef<HTMLDivElement, SectionRuleProps>(
   ({ index, children, ...props }, ref) => (
     <Box

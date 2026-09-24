@@ -7,16 +7,11 @@ export interface CardProps extends Omit<CardRootProps, "variant"> {
   variant?: "elevated" | "outline" | "subtle" | "plain";
 }
 
-// Defaults `colorPalette` to Hibiscus — a section wrapper
-// can set a different ramp, same convention as Button/Card's field.
 export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => (
   <ChakraCard.Root colorPalette="hibiscus" ref={ref} {...(props as any)} />
 ));
 Card.displayName = "Card";
 
-// The gradient field's grain overlay — painted onto a canvas sized to the
-// header, same as
-// Wash/StatTile/Badge/EmptyState.
 export const CardHeader = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<typeof ChakraCard.Header>

@@ -2,10 +2,6 @@ import { DateTime } from "luxon";
 
 import type { Publication, PublicationKind, PublicationType } from "./types";
 
-// Raw shapes matching exactly the fields queried from `cms.externalPublications`
-// and `cms.publications` (see `apps/www/src/pages/research.tsx`) — kept as
-// plain local interfaces (not the generated GraphQL types) so this module
-// stays pure and unit-testable without the codegen toolchain.
 export interface RawExternalPublication {
   title: string;
   authors: string[];

@@ -114,9 +114,6 @@ export default function Home({ pageQuery }: HomeProps) {
         >
           <Box>
             {details && <ContentfulRichText json={details?.json ?? {}} links={details.links} />}
-            {/* TODO(@oohwooh) make this better - leftover stuff in `query` might contaminate the prefill with things we don't want,
-            plus `query` is deprecated now in nextjs. Maybe cms should provide allowlist of what fields can be prefilled?
-            */}
             <CognitoForm formId={cognitoForm} prefill={{ ...query, ...cmsPrefill }} fallback />
           </Box>
           {sidebar && (

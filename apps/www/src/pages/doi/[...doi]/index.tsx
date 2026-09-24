@@ -184,8 +184,6 @@ export default function Home({ query: pageQuery }: HomeProps) {
     license,
     funderName,
   } = cms.publications.items[0];
-  // `files` can be null (e.g. under the read:users auth scope used here) —
-  // treat that the same as "no files" rather than crashing.
   const fileItems = files?.items || [];
 
   return (

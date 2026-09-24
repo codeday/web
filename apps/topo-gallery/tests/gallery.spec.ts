@@ -3,14 +3,6 @@ import path from "node:path";
 
 import { expect, test, type Page } from "@playwright/test";
 
-// Every check here targets the BUILT STATIC Storybook's iframe URL for a
-// given story — `/iframe.html?id=<story-id>&viewMode=story` — rather than
-// an app route the way the old Next.js gallery's pages did. `dist/index.json`
-// (written by `storybook build`, which `pnpm start` runs before serving) is
-// the story index: id -> {title, name, ...}. Read once at file-load time so
-// each story still gets its own named `test()`, matching the old per-route
-// shape rather than one giant loop inside a single test.
-
 interface StoryIndexEntry {
   id: string;
   title: string;
@@ -33,14 +25,6 @@ function storyUrl(id: string): string {
   return `/iframe.html?id=${id}&viewMode=story`;
 }
 
-// Storybook shows its own "preparing story" loader before the actual story
-// mounts — a fixed `waitForTimeout` right after `goto` can catch that loader
-// instead of the real content (which is exactly what broke the
-// squircle/hero-mesh checks below the first time: they scanned the loader's
-// own placeholder divs, found nothing, and silently "passed" on an empty
-// story). The loader element is never removed from the DOM, only hidden
-// (`display: none`) once the story mounts, so check its *visibility*, not
-// mere presence — a presence-only check never resolves.
 async function gotoStory(page: Page, id: string): Promise<void> {
   await page.goto(storyUrl(id));
   await page.waitForFunction(() => {
@@ -49,8 +33,6 @@ async function gotoStory(page: Page, id: string): Promise<void> {
     const loaderHidden = !loader || getComputedStyle(loader).display === "none";
     return !!root && root.children.length > 0 && loaderHidden;
   });
-  // Small settle buffer for post-mount async effects (grain canvases sized
-  // via ResizeObserver, Radix/Zag positioning, etc.).
   await page.waitForTimeout(200);
 }
 
@@ -104,9 +86,6 @@ test("removable chip: the close trigger sits inside the chip, not a circle over 
   expect(chipBox).toBeTruthy();
   expect(closeBox).toBeTruthy();
   if (chipBox && closeBox) {
-    // The close control must be near the trailing edge, not covering the
-    // whole chip (which is what the spec's "circle over its own label" bug
-    // looked like — a ~30px circle swallowing the label).
     expect(closeBox.width).toBeLessThan(chipBox.width * 0.5);
     expect(closeBox.x + closeBox.width).toBeGreaterThan(chipBox.x + chipBox.width * 0.6);
   }
@@ -117,9 +96,6 @@ test("squircle uses native CSS corner-shape, not a clip-path/mask-image simulati
 }) => {
   await gotoStory(page, "molecule-wash--rect-every-ramp");
   const cornerShape = await page.evaluate(() => {
-    // `corner-shape`'s initial value computes to "round" (superellipse(1))
-    // on every element, so only a value diverging from that default proves
-    // something actually set it.
     const els = Array.from(document.querySelectorAll("div"));
     for (const el of els) {
       const shape = getComputedStyle(el).getPropertyValue("corner-shape").trim();
@@ -150,7 +126,7 @@ test("hero mesh renders three radial-gradient lobes via ::before, not a single b
     }
     return count;
   });
-  expect(beforeCount).toBeGreaterThanOrEqual(2); // normal + tall mesh fields
+  expect(beforeCount).toBeGreaterThanOrEqual(2);
 });
 
 test("format cards: Residency's invitation-only action opens a popup, not a navigation", async ({
@@ -175,8 +151,6 @@ test("alert indicator is not a second coloured square inside a coloured box", as
   const bg = await solidAlertIndicator
     .evaluate((el) => getComputedStyle(el).backgroundColor)
     .catch(() => null);
-  // The indicator itself should carry no background fill of its own —
-  // just an icon colored to match, not a filled box.
   if (bg) {
     expect(["rgba(0, 0, 0, 0)", "transparent"]).toContain(bg);
   }
@@ -185,9 +159,6 @@ test("alert indicator is not a second coloured square inside a coloured box", as
 test("no white text sits on any ramp's light end — EmptyState and Alert critical clear 4.5:1", async ({
   page,
 }) => {
-  // Can't rasterize arbitrary DOM without html2canvas; fall back to reading
-  // the computed background-image's rightmost stop colour as a proxy for
-  // "the lightest point a full-field element reaches".
   async function sampleBackgroundImage(selector: string): Promise<string | null> {
     return page.evaluate((sel) => {
       const el = document.querySelector(sel);
@@ -215,8 +186,6 @@ test("no white text sits on any ramp's light end — EmptyState and Alert critic
       Number(lastStop[3]),
     ];
     const contrast = contrastRatio(rgb, [255, 255, 255]);
-    // The field's own lightest stop, checked against white TEXT (i.e. is
-    // this stop dark enough for white text) — mirrors the capRamp contract.
     expect(
       contrast,
       `${name}'s lightest stop must still hold white text legibly`,

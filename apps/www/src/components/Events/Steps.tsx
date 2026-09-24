@@ -5,10 +5,6 @@ import React from "react";
 
 const BODY = "{colors.gray.700}";
 
-// Lifted verbatim from the design's artboards (docs/event/*.dc.html) — one
-// stroke style throughout (round caps and joins), white or sand fills on
-// some shapes. SVG presentation attributes don't resolve Chakra's token
-// syntax, so these read the shared ramp endpoints (ink/sand) directly.
 const STROKE = {
   fill: "none",
   stroke: gradientStops.blackberry[0],

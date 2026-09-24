@@ -14,11 +14,6 @@ export default meta;
 
 type Story = StoryObj<typeof PortraitWall>;
 
-// Small SVG data-URIs with a visible frame + diagonal, so the squircle mask
-// and aspect-ratio crop are legible against a placeholder that isn't just a
-// flat colour. Real photographs must be colour-graded before they ship (see
-// the component's own doc comment) — these placeholders aren't graded, and
-// aren't meant to represent the final look, only the layout.
 function placeholder(hue: number) {
   const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>
     <rect width='200' height='200' fill='hsl(${hue},55%,55%)'/>

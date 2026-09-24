@@ -6,16 +6,9 @@ import type { Message } from "../../utils";
 
 export interface ActionLinkProps extends Omit<BoxProps, "children"> {
   label: Message;
-  /** Omit when composing as a non-navigating trigger (e.g. inside a `PopoverTrigger asChild`). */
   href?: string;
 }
 
-// The house "text link with a trailing arrow" treatment — originally
-// `RowList`'s own row-level action, lifted out here once `FormatCards`
-// needed the identical thing at a different size (12.5px vs RowList's
-// 13.5px) rather than copying the JSX a second time. Size, weight, and
-// colour are all plain `BoxProps` overrides at the call site — the
-// component itself only fixes the shape (label, gap, trailing arrow).
 export const ActionLink = React.forwardRef<HTMLAnchorElement, ActionLinkProps>(
   ({ label, href, ...props }, ref) => (
     <Box

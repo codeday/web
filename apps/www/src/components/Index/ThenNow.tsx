@@ -9,16 +9,8 @@ import { useInView } from "react-intersection-observer";
 import { graphql } from "@/gql";
 import { FragmentType, useFragment } from "@/gql/fragment-masking";
 
-// A slot swaps every 10s. The four slots' swaps are evenly staggered across
-// that interval (so they never tick over together) rather than jittered —
-// which slot gets which point in the stagger is randomized instead, so the
-// left-to-right swap order isn't identical on every page load.
 const SWAP_INTERVAL_MS = 10_000;
 const SLOT_COUNT = 4;
-// Each slot's own dealt list caps out at three typical stories to one
-// unusual one, so the wall reads as "mostly ordinary paths, occasionally a
-// wild one" rather than a highlight reel. The initial paint (all `unusual`)
-// doesn't count toward this ratio.
 const TYPICAL_PER_SLOT = 3;
 const UNUSUAL_PER_SLOT = 1;
 
@@ -152,28 +144,16 @@ export default function ThenNow({ data }: ThenNowProps) {
     [cms.thenNowTypical],
   );
 
-  // Each slot gets its own dealt-out list — up to one unusual example and
-  // up to three typical ones, with no card dealt to more than one slot — so
-  // the same photo can never show up in two slots. Dealt once per page
-  // load; with today's small alum pool, some slots come up a card or two
-  // short rather than reusing a photo another slot already has.
   const slotLists = useMemo((): AlumCard[][] => {
     const targetSlotCount = Math.min(SLOT_COUNT, unusualCards.length + typicalCards.length);
     if (targetSlotCount === 0) return [];
     const unusualDeal = deal(unusualCards, targetSlotCount, UNUSUAL_PER_SLOT);
     const typicalDeal = deal(typicalCards, targetSlotCount, TYPICAL_PER_SLOT);
-    return (
-      unusualDeal
-        // The unusual card leads its slot's list, so the initial paint favors it.
-        .map((unusual, i) => [...unusual, ...typicalDeal[i]])
-        .filter((list) => list.length > 0)
-    );
+    return unusualDeal
+      .map((unusual, i) => [...unusual, ...typicalDeal[i]])
+      .filter((list) => list.length > 0);
   }, [unusualCards, typicalCards]);
 
-  // Every card a slot may ever show, converted once to the shape
-  // `PortraitWall` renders — it mounts one permanent element per person and
-  // only ever toggles which is displayed, so this list has to be stable
-  // (not rebuilt with new object identities) across the rotation below.
   const portraitPeopleBySlot = useMemo(
     (): PortraitWallPerson[][] =>
       slotLists.map((list) =>
@@ -192,45 +172,23 @@ export default function ThenNow({ data }: ThenNowProps) {
     [slotLists],
   );
 
-  // Which card id is currently shown per slot — filled with each slot's
-  // `unusual` example first, falling back to a typical one only if that
-  // slot wasn't dealt an unusual example.
   const [activeIds, setActiveIds] = useState<string[]>(() => slotLists.map((list) => list[0]?.id));
 
-  // Cursor into each slot's own dealt list — rotation only ever cycles
-  // within that list, so it can't drift into another slot's cards.
   const cursors = useRef<number[]>(slotLists.map(() => 0));
 
-  // Per-slot rotation plan: the order it cycles through, and how long until
-  // its next swap. Kept in a ref rather than rebuilt by the scheduling
-  // effect below, because that effect tears down and restarts on every
-  // pause/resume — rebuilding there would reshuffle each slot's order and
-  // re-roll the stagger on every hover, and restarting from a full interval
-  // would let slots drift into ticking over together.
   const plan = useRef<{ order: AlumCard[]; remainingMs: number }[]>([]);
 
   useEffect(() => {
-    // Evenly spaced points across one interval (0, 1/n, 2/n, ... of the
-    // way through), handed out to slots in a shuffled order — every slot
-    // still swaps exactly every `SWAP_INTERVAL_MS`, just starting from a
-    // different, randomly-assigned point in that cycle, client-side, after
-    // the deterministic (SSR-safe) first paint.
     const staggerOffsetsMs = shuffled(
       slotLists.map((_, i) => (i * SWAP_INTERVAL_MS) / slotLists.length),
     );
     cursors.current = slotLists.map(() => 0);
     plan.current = slotLists.map((list, index) => ({
-      // The order a slot cycles through its own dealt list is randomized
-      // too, independently of the swap-timing stagger above — so different
-      // page loads don't all advance through the same sequence.
       order: [list[0], ...shuffled(list.slice(1))],
       remainingMs: staggerOffsetsMs[index],
     }));
   }, [slotLists]);
 
-  // Rotation pauses while the wall is scrolled out of view (no point
-  // swapping what nobody can see) or while the pointer is over it (so a
-  // visitor reading someone's story doesn't have it swapped out mid-read).
   const { ref: viewRef, inView } = useInView();
   const [hovered, setHovered] = useState(false);
   const paused = !inView || hovered;
@@ -242,7 +200,6 @@ export default function ThenNow({ data }: ThenNowProps) {
     const deadlines: number[] = [];
 
     plan.current.forEach((slot, index) => {
-      // Nothing else to swap to.
       if (slot.order.length <= 1) return;
       const schedule = (delayMs: number) => {
         deadlines[index] = Date.now() + delayMs;
@@ -258,8 +215,6 @@ export default function ThenNow({ data }: ThenNowProps) {
 
     return () => {
       timeoutIds.forEach((id) => clearTimeout(id));
-      // Bank each slot's unexpired time so resuming picks up mid-interval
-      // and the stagger between slots survives the pause.
       const now = Date.now();
       plan.current.forEach((slot, index) => {
         if (deadlines[index] !== undefined) {

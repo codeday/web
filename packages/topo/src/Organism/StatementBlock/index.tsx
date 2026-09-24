@@ -11,7 +11,6 @@ export type StatementBlockActionStyle = "button" | "link";
 export interface StatementBlockAction {
   label: Message;
   href: string;
-  /** Overrides this size's default action treatment (hero/closing default to `"button"`, section defaults to `"link"`). */
   style?: StatementBlockActionStyle;
 }
 
@@ -54,21 +53,10 @@ const SIZES: Record<StatementBlockSize, SizeSpec> = {
 export interface StatementBlockProps extends Omit<BoxProps, "children"> {
   size: StatementBlockSize;
   as?: "h1" | "h2";
-  /** May contain a gradient-fill span (e.g. `<GradientText>`) — this component just sizes/positions it, it doesn't care what's inside. */
   heading: React.ReactNode;
   body?: React.ReactNode[];
   actions?: StatementBlockAction[];
-  /** Closing size only — wraps just the heading in a gradient field with grain, per the design language's rule that headings sit in the field and supporting text sits below it on the page ground. */
   field?: GradientName;
-  /**
-   * Colours this block's own actions (button gradient / link colour) —
-   * not in the spec's literal prop list, but needed all the same: a
-   * `section`-size instance sitting in a Hot Sauce or Chili Oil section (per
-   * the page composition) needs its action to match that section's ramp,
-   * not fall back to a hardcoded default. Defaults to `"hibiscus"`; `field`
-   * (closing only) always wins when both are set, since a closing
-   * statement's action should match its own field.
-   */
   ramp?: GradientName;
 }
 
@@ -137,9 +125,6 @@ function HeadingField({ ramp, children }: { ramp: GradientName; children: React.
   );
 }
 
-// The three statement sizes used across the homepage — hero, in-page
-// section openers, and the closing statement. Left-aligned at every size;
-// nothing on this page is centred.
 export const StatementBlock = React.forwardRef<HTMLElement, StatementBlockProps>(
   ({ size, as = "h2", heading, body, actions, field, ramp = "hibiscus", ...props }, ref) => {
     const spec = SIZES[size];

@@ -17,7 +17,6 @@ const Error404Query = graphql(`
 `);
 
 interface HomeProps {
-  /** Undefined when rendered directly as an inline not-found fallback (see `data.tsx`, `doi/[...doi]/index.tsx`, `f/[slug].tsx`) rather than through this page's own `getStaticProps`. */
   query?: ResultOf<typeof Error404Query>;
 }
 

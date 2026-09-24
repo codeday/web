@@ -20,14 +20,11 @@ const STRICT_MODE_OR_FRAGMENT =
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
-  // Wire Next.js locale to Paraglide.
-  // The "_default" sentinel locale means no prefix was in the URL — treat as baseLocale.
   const resolvedLocale = (
     router.locale && router.locale !== "_default" ? router.locale : baseLocale
   ) as Locale;
   overwriteGetLocale(() => resolvedLocale);
 
-  // Resolve region from the current hostname.
   const region = useMemo(
     () =>
       getRegionFromHostname(typeof window !== "undefined" ? window.location.hostname : undefined),

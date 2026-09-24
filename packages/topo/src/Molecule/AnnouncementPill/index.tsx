@@ -6,24 +6,13 @@ import { gradientStops } from "../../Theme/vars/colors";
 
 export interface AnnouncementPillProps extends Omit<BoxProps, "children"> {
   href: string;
-  /** Plain `string`, not `Message` — the usual source is CMS copy that changes without a deploy. */
   text: string;
-  /** Decorative lead-in label. Defaults to "New". */
   chip?: string;
 }
 
-// Hibiscus's 20/40/62% stops, not `badgeGradient` or any of the prebuilt
-// `gradient.*` stop lists — none of those runs exactly 20→62%. Composed from
-// `gradientStops` the same way StatementBlock's hero button is, so it tracks
-// the ramp if it's ever retuned. White text clears 6:1 against the lightest
-// (62%) stop.
 const [, CHIP_FROM, CHIP_MID, CHIP_TO] = gradientStops.hibiscus;
 const CHIP_GRADIENT = `linear-gradient(115deg, ${CHIP_FROM} 0%, ${CHIP_MID} 50%, ${CHIP_TO} 100%)`;
 
-// A one-line link pill (chip + text + arrow) that sits above a heading. The
-// whole pill is the link; the chip and arrow are aria-hidden so the
-// accessible name is the text alone. It never wraps — on narrow screens the
-// text truncates, and the chip/arrow keep their size.
 export const AnnouncementPill = React.forwardRef<HTMLAnchorElement, AnnouncementPillProps>(
   ({ href, text, chip, ...props }, ref) => (
     <Box

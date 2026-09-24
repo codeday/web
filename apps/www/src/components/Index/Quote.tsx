@@ -10,15 +10,9 @@ import { FragmentType, useFragment } from "@/gql/fragment-masking";
 
 import { useSlideshow } from "../../providers";
 
-// A feature-size quote can run several wrapped lines — this holds much
-// longer than the logo wall's single-word mark rotation so there's time to
-// actually read it before it cycles.
 const QUOTE_DURATION_MS = 14_000;
 const FADE_MS = 500;
 
-// Rendered as a second citation line below name/role/project, not as the
-// `eyebrow` above the quote — see `PullQuote`'s `tag` prop. Shared with
-// `MicroInternship/Evidence.tsx`, which uses the same two labels.
 const LABEL_BY_TYPE: Record<string, () => Message> = {
   Employer: m.www_microinternship_evidence_quote_employer_label,
   Maintainer: m.www_microinternship_evidence_quote_maintainer_label,
@@ -67,10 +61,6 @@ export default function Quote({ data, seed, ...props }: QuoteProps) {
 
   const activeIndex = useSlideshow(quotes.length, QUOTE_DURATION_MS);
 
-  // Lags one fade behind `activeIndex`: the outgoing quote fades out, its
-  // content swaps while invisible, then the incoming one fades in. A
-  // feature quote can wrap several lines, so a straight cut on swap would
-  // be jarring in a way it isn't for the logo wall's single-mark fade.
   const [shownIndex, setShownIndex] = useState(activeIndex);
   const [visible, setVisible] = useState(true);
 
@@ -88,12 +78,6 @@ export default function Quote({ data, seed, ...props }: QuoteProps) {
   const t = quotes[shownIndex];
 
   return (
-    // `minHeight` keeps the layout from jumping as quotes of different
-    // lengths cycle through. Because of it, this box is usually taller than
-    // the quote itself, so the flex centring below is what actually lines
-    // the quote up with the logo wall beside it on the index page — the
-    // parent grid's `alignItems="center"` only centres this box, not its
-    // content.
     <Box
       minHeight="300px"
       display="flex"

@@ -75,34 +75,11 @@ interface PageProps {
   title?: string;
   slug?: string;
   seo?: any;
-  /** Overrides the CMS `mission` fallback for the meta/OG description — for a page whose description is fixed copy rather than editorial content. */
   description?: string;
-  /**
-   * Undefined on pages that don't compose `PageFragment` into their query
-   * yet — the disclaimer footer and CMS-sourced meta description simply
-   * no-op in that case, same as they always have.
-   */
   data?: FragmentType<typeof PageFragment>;
-  /**
-   * The hidden "CodeDay" logo text is an `h1` by default, since most pages
-   * have no other heading acting as the document's title. A page whose own
-   * content supplies its own real `h1` (e.g. a hero heading) needs this
-   * demoted to `span` instead, or the page ends up with two `h1`s.
-   */
   logoHeadingLevel?: "h1" | "span";
-  /**
-   * Whether the header sits over its own colourful gradient field (the
-   * design system's `onWash` treatment) rather than a plain light bar.
-   * Defaults on — this is the header's normal state, not a special case.
-   */
   onWash?: boolean;
   fun?: boolean;
-  /**
-   * Extra disclaimer paragraphs to append after the CMS-sourced global
-   * sponsor disclaimers — e.g. the alum-employer trademark disclaimer a page
-   * rendering `LogoWall` computes for the logos it actually shows. Each
-   * entry renders as its own paragraph, same as a sponsor disclaimer.
-   */
   fundingDisclaimers?: string[];
   [key: string]: any;
 }
@@ -194,9 +171,6 @@ export default function Page({
           <Header onWash={onWash} maxWidth="container.lg" marginX="auto" position="relative">
             <HeaderBrand>
               <Box as="a" display="block" {...({ href: "/" } as any)}>
-                {/* Always the full-colour mark in the header — deliberately
-                  NOT following `onWash` here, unlike the header's links/
-                  action, which do still flip white-on-wash. */}
                 <SquircleLogo boxSize="7" onWash={false} />
               </Box>
             </HeaderBrand>
@@ -206,17 +180,6 @@ export default function Page({
             <HeaderLink href="/micro-internship" active={isMicroInternshipActive}>
               {m.www_navmenu_microinternship()}
             </HeaderLink>
-            {/* The separator is a `_before` pseudo-element floated into the
-              flex `gap` before this link, not a real border/padding on the
-              link's own box — the active-state bar (rendered inside
-              `HeaderLink` when `active`) spans `left: 0; right: 0` of that
-              box, so widening the box with padding would stretch the bar
-              into the gap along with it. A pseudo-element adds no layout
-              width, so it doesn't touch that box, and — like the rest of
-              `HeaderLink`'s own props — only ever renders in the desktop
-              bucket: the mobile menu rebuilds each link from scratch
-              (`MobileMenuLink`) reading only `href`/`active`/`items`/
-              `children` off it, so this stays invisible on mobile too. */}
             <HeaderLink
               href="/research"
               active={isResearchActive}

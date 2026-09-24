@@ -14,7 +14,6 @@ import RegionStep from "./RegionStep";
 
 const DEBUG = debug(["www", "components", "Volunteer", "Wizard"]);
 
-// https://stackoverflow.com/a/48981669
 function groupBy(xs: any[], f: (x: any) => string): Record<string, any[]> {
   return xs.reduce(
     (r: any, v: any, i: number, a: any[], k = f(v)) => ((r[k] || (r[k] = [])).push(v), r),
@@ -61,7 +60,7 @@ export default function Wizard({
           }),
         ),
     ),
-  ).map((e) => JSON.parse(e)); // json -> string -> json for deduplication
+  ).map((e) => JSON.parse(e));
   const regionsByCountry = groupBy(regions, (r) => r.country);
 
   useEffect(() => {
@@ -106,7 +105,6 @@ export default function Wizard({
     posthog?.group("background", background);
   }, [background]);
 
-  // 'last' should really be 'penultimate' but 'last' is shorter
   const [page, navigate] = useReducer(
     (prev: number, action: string) =>
       Math.max(0, action === "next" ? prev + 1 : prev - 1, action === "last" ? PAGE_COUNT - 2 : 0),
@@ -149,18 +147,11 @@ export default function Wizard({
   useEffect(() => setHasSelection(false), [page]);
 
   async function onClickNext() {
-    // I wish i could set behavior: 'smooth' here but for some reason
-    // When i set that it stops working entirely??????????????????"??"
-    // Apparently you can fix it by modifying chrome flags but i dont want
-    // it to not work for people who are using the defaults
     formRef.current!.scrollIntoView();
     if (hasSelection) {
       if (background === "industry" && page === 0) {
-        // if industry, we want to skip region selection and get them in touch with
-        // labs team
         navigate("last");
       } else if (page === PAGE_COUNT - 2) {
-        // if submitting penultimate page, we now have all info
         setIsSubmitting(true);
         try {
           const resp = await fetch("/api/applyAsVolunteer", {
@@ -181,7 +172,6 @@ export default function Wizard({
             setSubmitError(`${resp.status}: ${resp.statusText}`);
           } else {
             if (after) window.location.href = after;
-            // Do not redirect if there is an error, as otherwise no indication would be shown to the user that their application was not recieved
           }
           navigate("next");
         } catch (ex: any) {

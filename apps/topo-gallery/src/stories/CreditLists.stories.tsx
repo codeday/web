@@ -13,10 +13,6 @@ export default meta;
 
 type Story = StoryObj<typeof CreditLists>;
 
-// Flat placeholder "wordmark" SVGs (data URIs) standing in for real funder
-// logos — one deliberately busy/multi-tone (to show `mono` flattening it)
-// and one already a plain single-tone mark (to show `mono: false` passing
-// it through untouched).
 const busySeal =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(

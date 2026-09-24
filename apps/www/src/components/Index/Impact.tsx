@@ -9,11 +9,6 @@ import React, { useMemo } from "react";
 import { graphql } from "@/gql";
 import { FragmentType, useFragment } from "@/gql/fragment-masking";
 
-// Two sources feed the ticker. `showcase.projects` — one of the two sources
-// the pre-rewrite `Index/Community` marquee used — renders as the ticker's
-// photo-card variant (see `ImpactTicker`'s `PhotoImpactCard`). `labs.
-// contributions` is a real accepted open-source PR, rendered as the icon
-// variant (repository name, what shipped, and the repo's own impact story).
 export const ImpactFragment = graphql(`
   fragment IndexImpactComponent on Query {
     showcase {
@@ -51,13 +46,6 @@ export const ImpactFragment = graphql(`
 interface ImpactProps {
   data: FragmentType<typeof ImpactFragment>;
   seed?: any;
-  /**
-   * Default `"mixed"` — the homepage's own showcase photos + open-source PRs,
-   * shuffled together. `"contributions"` drops the showcase photo cards
-   * entirely and shows only real accepted pull requests — the Micro-
-   * Internship page's shipped-work section, which is about code review, not
-   * finished projects.
-   */
   variant?: "mixed" | "contributions";
 }
 
@@ -99,12 +87,6 @@ function contributionToItem(contribution: RawContribution): ImpactItem | null {
 export default function Impact({ data, seed, variant = "mixed" }: ImpactProps) {
   const { showcase, labs } = useFragment(ImpactFragment, data);
 
-  // Shuffled once, with the page's own build-time `seed` — same value on
-  // the server render and the client hydration, so the order doesn't
-  // mismatch. `ImpactTicker` itself just slices this into two halves, so
-  // shuffling here also randomizes which ticker row each item lands in,
-  // real showcase projects and real open-source contributions freely mixed
-  // across both (when `variant` includes both).
   const items = useMemo(() => {
     const contributions = labs.contributions
       .map(contributionToItem)
@@ -122,12 +104,6 @@ export default function Impact({ data, seed, variant = "mixed" }: ImpactProps) {
   return <ImpactTicker ramp="chilioil" items={items} />;
 }
 
-// The "N projects" aggregate footer linking out to the full showcase — the
-// homepage's own closing line under its ticker, not part of what `Impact`
-// renders: the Micro-Internship page's ticker (`variant="contributions"`)
-// counts real PRs, not showcase projects, so it has no use for this footer
-// and doesn't render it. Composed by the homepage directly, same as it
-// composes its own section headings.
 export function ImpactAggregate({ data }: { data: FragmentType<typeof ImpactFragment> }) {
   const { impact } = useFragment(ImpactFragment, data);
 

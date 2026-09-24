@@ -27,10 +27,6 @@ import { Message } from "../components/Message";
 import Page from "../components/Page";
 import useTwitch from "../useTwitch";
 
-// Composition happens via `#import`-like project-wide fragment resolution —
-// codegen finds `IndexLogoWallComponent`/`IndexCreditsComponent`/
-// `PageComponent` wherever they're declared and stitches them in, so the
-// child fragment consts don't need to be imported here.
 const IndexQuery = graphql(`
   query IndexQuery {
     ...PageComponent
@@ -58,18 +54,10 @@ export default function Home({ query, seed, now }: HomeProps) {
   const twitch = useTwitch();
   const announcement = useHomepageAnnouncement(query, now);
 
-  // One sentence per alum employer shown in `LogoWall` below, concatenated
-  // into a SINGLE paragraph (unlike the sponsor disclaimers, which stay one
-  // paragraph each) — the wall shows many small logos at once, so their
-  // trademark notices read as one dense block rather than dozens of
-  // one-line paragraphs.
   const { cms: logoWallCms } = useFragment(LogoWallFragment, query);
   const alumEmployerDisclaimer = (logoWallCms.logoWallEmployers?.items || [])
     .filter((employer: any) => employer.name && employer.legalName)
     .map((employer: any) =>
-      // The sentence template supplies its own closing period — a trailing
-      // one already in `legalName` (e.g. "Apple Inc.") would otherwise
-      // double up ("Apple Inc..").
       m.www_home_logowall_disclaimer({
         name: employer.name,
         legalName: employer.legalName.replace(/\.$/, ""),
@@ -83,23 +71,13 @@ export default function Home({ query, seed, now }: HomeProps) {
       slug="/"
       description={m.www_home_meta_description()}
       fundingDisclaimers={alumEmployerDisclaimer ? [alumEmployerDisclaimer] : []}
-      // The hero heading below is this page's own `h1` — the header's
-      // hidden "CodeDay" logo text has to step down to a `span` or the page
-      // would carry two `h1`s.
       logoHeadingLevel="span"
     >
       <Band tone="page">
-        {/* With a pill, the top padding steps down one notch (32->28px base,
-            56->48px xl) so the headline moves down by about the pill's own
-            height. xl has to be restated either way: `compact` spacing's xl
-            `paddingBlock` otherwise overrides a bare `paddingTop` there. */}
         <Section ramp="hibiscus" spacing="compact" paddingTop={announcement ? "0" : "8"}>
           <Grid templateColumns={{ base: "1fr", lg: "3fr 2fr" }} gap={8} alignItems="center">
             <Box>
               {announcement && (
-                // A flex wrapper, not a block one — an inline-flex pill in a
-                // block box would sit on a line box and pick up descender
-                // space under it, on top of the margin.
                 <Box display="flex" marginBlockEnd={{ base: "5", sm: "7" }}>
                   <AnnouncementPill
                     href={announcement.href}
@@ -185,9 +163,6 @@ export default function Home({ query, seed, now }: HomeProps) {
         <Section ramp="hibiscus" id="formats" paddingY={0}>
           <Content maxWidth="container.lg" marginX="auto">
             <Box marginBottom="6" maxWidth="60ch">
-              {/* Matches `StatementBlock size="section"` / `RowList` / `CreditLists`
-                  — one of five section-opening headings on the page, all reading
-                  as the same level. */}
               <Heading
                 as="h2"
                 fontSize="clamp({fontSizes.3xl}, 3.4vw, {fontSizes.5xl})"
@@ -217,9 +192,6 @@ export default function Home({ query, seed, now }: HomeProps) {
                   actions: [{ label: m.www_home_formats_event_action(), href: "/events" }],
                 },
                 {
-                  // Capstone stops being its own card here — it becomes the
-                  // "for credit" route below, since the two differ in how a
-                  // student enrols rather than in what they do.
                   id: "microinternship",
                   duration: m.www_home_formats_microinternship_duration(),
                   name: m.www_home_formats_microinternship_name(),
@@ -314,27 +286,11 @@ export default function Home({ query, seed, now }: HomeProps) {
             />
           </Content>
           <Content maxWidth="container.xl">
-            {/* The element establishing a container can't itself be queried
-                by that same container's `@container` rules (a query
-                container never queries its own box — that's circular) — so
-                the "history" container lives on this OUTER box, one level
-                up from the grid it sizes. */}
             <Box css={{ containerType: "inline-size", containerName: "history" }}>
               <Box
                 display="grid"
                 gridTemplateColumns="1fr"
                 gap="6"
-                // Not tokenized: Chakra's `{category.key}` string-interpolation
-                // treats any "/" inside the braces as its color alpha-mix
-                // shorthand (e.g. `{colors.colorPalette.600/7}`), not a
-                // fraction-token lookup — so `{sizes.3/5}` silently resolved to
-                // a bogus `color-mix(...)` value, which made the browser drop
-                // this whole declaration and collapse the container query to
-                // the single-column base case (copy stacking above the rail
-                // instead of beside it). 62% is also this split's own
-                // deliberate proportion, not a round fraction, so there's no
-                // clean token to fall back to even if the interpolation
-                // worked.
                 css={{
                   "@container history (min-width: 820px)": { gridTemplateColumns: "1fr 62%" },
                 }}
@@ -365,7 +321,6 @@ export default function Home({ query, seed, now }: HomeProps) {
 
         <Section ramp="blackberry">
           <Content maxWidth="container.lg">
-            {/* Body copy for all four rows is not yet supplied — see rendered `[Body copy for the ... row — not yet supplied]` placeholders. */}
             <RowList
               variant="waysIn"
               gradient="blackberry"

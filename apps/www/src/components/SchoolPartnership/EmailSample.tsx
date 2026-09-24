@@ -9,9 +9,7 @@ async function copyToClipboard(text: string): Promise<void> {
     try {
       await navigator.clipboard.writeText(text);
       return;
-    } catch {
-      // Permission denied or unsupported in this context — fall through to execCommand.
-    }
+    } catch {}
   }
   const textarea = document.createElement("textarea");
   textarea.value = text;
@@ -26,9 +24,6 @@ async function copyToClipboard(text: string): Promise<void> {
 
 export default function EmailSample() {
   const templates = getEmailTemplates();
-  // Starts at 0 so server and first client render match, then a random
-  // pick happens post-mount — swapping templates here never causes a
-  // hydration mismatch since it happens after hydration completes.
   const [index, setIndex] = useState(0);
   const [copied, setCopied] = useState(false);
 

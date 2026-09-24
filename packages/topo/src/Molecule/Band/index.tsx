@@ -7,23 +7,10 @@ import { Wash } from "../Wash";
 
 export interface BandProps {
   tone: "page" | "tinted";
-  /**
-   * `tone="tinted"` only. The margin index only works as a *change* — a
-   * word repeated on every section it touches stops being a signal and
-   * becomes decoration. The tinted band is ONE region, so it takes ONE
-   * label, once, at its own top — not a gutter, not a per-`Section` index.
-   */
   label?: Message;
   children: React.ReactNode;
 }
 
-// The one layout primitive this page needs beyond `Section` itself.
-// `tinted` is a SINGLE full-bleed field spanning every section given to it —
-// one element, not one per section, so there's no seam between them — filled
-// with `Wash`'s own tint fill (Hibiscus 100, a solid mode-aware wash —
-// exactly what `shape="tint"` already computes) rather than reimplementing
-// that here. A 1px Hibiscus 300 rule separates consecutive
-// sections, and every `Section` inside runs at compact spacing via context.
 export const Band = React.forwardRef<HTMLDivElement, BandProps>(
   ({ tone, label, children }, ref) => {
     if (tone === "page") {

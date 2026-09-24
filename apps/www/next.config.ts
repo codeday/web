@@ -6,8 +6,6 @@ import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 
 const nextConfig: NextConfig = {
   i18n: {
-    // "_default" is a sentinel for unprefixed URLs; the middleware redirects
-    // those to a real locale based on Accept-Language / cookie.
     locales: ["_default", ...locales],
     defaultLocale: "_default",
     localeDetection: false,

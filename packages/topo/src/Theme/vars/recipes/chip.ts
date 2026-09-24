@@ -1,9 +1,5 @@
 import { defineSlotRecipe } from "@chakra-ui/react";
 
-// Chip (removable). Named Chip, not Tag — and namespaced
-// (`topo-chip`, not a bare `.tag`) per the spec's own war story: a generic
-// `.tag` class name collided with unrelated page styling and the remove
-// button swallowed the label.
 export const chipSlotRecipe = defineSlotRecipe({
   className: "topo-chip",
   slots: ["root", "label", "closeTrigger"],

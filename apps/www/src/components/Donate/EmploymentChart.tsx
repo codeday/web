@@ -3,7 +3,6 @@ import { Box, Grid, Text } from "@codeday/topo/Atom";
 import { useColorMode } from "@codeday/topo/Theme";
 import React from "react";
 
-// Federal Reserve Bank of New York, "Labor Market for Recent College Graduates."
 const CS_UNEMPLOYMENT_BY_YEAR = [
   { year: "2024", value: 3.9 },
   { year: "2025", value: 6.1 },

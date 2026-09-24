@@ -14,7 +14,6 @@ import {
   textareaRecipe,
 } from "./forms";
 import { linkRecipe } from "./link";
-import { separatorRecipe } from "./separator";
 import {
   avatarSlotRecipe,
   breadcrumbSlotRecipe,
@@ -25,12 +24,10 @@ import {
   tableSlotRecipe,
   tabsSlotRecipe,
 } from "./misc";
+import { separatorRecipe } from "./separator";
 import { tooltipSlotRecipe } from "./tooltip";
 import { headingRecipe } from "./typography";
 
-// Recipes live here (split into per-component files once this
-// got long), not in `vars/components.ts` (which stays the empty stub the
-// v3 migration left it as).
 export const recipes = {
   link: linkRecipe,
   button: buttonRecipe,

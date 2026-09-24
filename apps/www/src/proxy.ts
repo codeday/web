@@ -2,17 +2,11 @@ import { locales, baseLocale as FALLBACK_LOCALE } from "@codeday/i18n/locales";
 import { getRegionFromHostname, REGION_HEADER } from "@codeday/topo/Region/config";
 import { NextRequest, NextResponse } from "next/server";
 
-// Widen the readonly literal tuple so we can test against arbitrary strings
-// from Accept-Language / cookies.
 const AVAILABLE_LOCALES: readonly string[] = locales;
 const UNSPECIFIED = "_default";
 
 const PUBLIC_FILE = /\.(.*)$/;
 
-/**
- * Parse the Accept-Language header and return the first supported locale.
- * Falls back to FALLBACK_LOCALE if no match is found.
- */
 function getPreferredLocale(acceptLanguage: string | null): string {
   if (!acceptLanguage) return FALLBACK_LOCALE;
 
@@ -34,7 +28,6 @@ function getPreferredLocale(acceptLanguage: string | null): string {
 }
 
 export function proxy(request: NextRequest) {
-  // Skip Next.js internals, API routes, and static files
   if (
     request.nextUrl.pathname.startsWith("/_next") ||
     request.nextUrl.pathname.includes("/api/") ||
@@ -43,8 +36,6 @@ export function proxy(request: NextRequest) {
     return;
   }
 
-  // If Next.js resolved locale to _default, the URL has no locale prefix.
-  // Detect the browser's preferred language and redirect.
   if (request.nextUrl.locale === UNSPECIFIED) {
     const browserLocale = getPreferredLocale(request.headers.get("accept-language"));
     const cookieLocale = request.cookies.get("NEXT_LOCALE")?.value;
@@ -57,8 +48,6 @@ export function proxy(request: NextRequest) {
     );
   }
 
-  // Resolve region from the hostname and forward it as a request header
-  // so getServerSideProps can read it without re-parsing.
   const region = getRegionFromHostname(request.headers.get("host"));
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set(REGION_HEADER, region);

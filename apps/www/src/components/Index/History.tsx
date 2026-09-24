@@ -39,17 +39,10 @@ export default function History({ data }: HistoryProps) {
       return { id: item.sys.id, year: date.year, month: date.month, title: item.title };
     });
 
-  // Milestones come back ordered `date_ASC`, so the earliest event sets the
-  // rail's own start — there's no fixed "founding year" to fall back to once
-  // this is CMS-driven rather than hardcoded.
   const first = events[0];
 
   if (!first) return null;
 
-  // Fixed outside-world reference points, so a reader can gauge how much the
-  // technology landscape has moved over the span of the milestones. The years
-  // are deliberately hardcoded (they're facts, not copy) — only the labels are
-  // localized. `HistoryRail` extends its own left edge back to 2008 for these.
   const comparisons: HistoryComparison[] = [
     { id: "appstore", year: 2008, title: m.www_home_history_compare_appstore() },
     { id: "cloud", year: 2014, title: m.www_home_history_compare_cloud() },

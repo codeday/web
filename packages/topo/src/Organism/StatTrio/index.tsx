@@ -10,27 +10,9 @@ export type StatFormat = "integer" | "percent" | "usd" | "usd-compact";
 
 export interface StatTrioItem {
   id: string;
-  /**
-   * A real number is formatted via `Intl.NumberFormat` per `format`. A
-   * `Message` (e.g. `"[N]"`, `"[N]%"`, `"$[N]"`) renders literally instead —
-   * for a figure that's genuinely not decided yet, the same bracket-
-   * placeholder convention used everywhere else on this page, rather than
-   * `null`'s "this cell doesn't apply, omit it" meaning. Only `null` omits
-   * the cell.
-   */
   value: number | Message | null;
   format: StatFormat;
   label: Message;
-  /**
-   * The full attribution sentence, e.g. "Modelled by [institution], [year].
-   * Read the study →" — when `href` is present the WHOLE provenance line
-   * becomes the link (a single `Message` can't carry an embedded anchor
-   * around just part of itself), underlined but staying at the same resting
-   * 72% opacity — the spec is explicit that provenance is "never visually
-   * suppressed" and always "white at 72%"; only the underline signals it's
-   * a link. Optional: a caller whose figures have no citation to give omits
-   * the line entirely rather than filling it with placeholder copy.
-   */
   provenance?: Message;
   href?: string;
 }
@@ -69,12 +51,6 @@ function formatValue(value: number, format: StatFormat): string {
     case "integer":
       return new Intl.NumberFormat(baseLocale, { maximumFractionDigits: 0 }).format(value);
     case "percent":
-      // `value` is read as the whole number to display (e.g. 62, not a
-      // pre-divided 0.62 fraction) — the spec's example row shows the
-      // literal figure as `[N]%`, and nothing in the prop type suggests a
-      // fraction, so this formats the integer and appends a literal "%"
-      // rather than using `Intl.NumberFormat`'s `style: "percent"`, which
-      // would read 62 as 6200%.
       return `${new Intl.NumberFormat(baseLocale, { maximumFractionDigits: 0 }).format(value)}%`;
     case "usd":
       return new Intl.NumberFormat(baseLocale, {
@@ -89,26 +65,11 @@ function formatValue(value: number, format: StatFormat): string {
   }
 }
 
-// One field holding three cells, not three fields — the design language's
-// stat component is a single radial Chili Oil card; three side by side
-// would be three colour blocks, which it rules against. Borrows StatTile's
-// exact field recipe (radial gradient, squircle corner, grain) rather than
-// reusing StatTile itself, which owns a single number+label structure this
-// three-cell layout doesn't fit.
 export const StatTrio = React.forwardRef<HTMLDivElement, StatTrioProps>(
   ({ items, ...props }, forwardedRef) => {
-    // A null-valued cell is omitted entirely, and the remaining cells widen to
-    // fill the bar — filtering before laying out the grid means N surviving
-    // cells become `repeat(N, 1fr)` automatically, no separate "widen" logic,
-    // and rule placement is keyed off each cell's position in this filtered
-    // array (so a surviving second cell never inherits the first cell's "no
-    // rule" treatment).
     const cells = items.filter((item) => item.value !== null);
     const { containerRef, canvas } = useGrainOverlay("stat-trio");
 
-    // Every value null (e.g. figures not yet supplied) — an empty gradient
-    // field with nothing in it isn't a graceful degradation, it's just a
-    // broken-looking box, so render nothing at all rather than that.
     if (cells.length === 0) return null;
 
     return (
@@ -124,8 +85,6 @@ export const StatTrio = React.forwardRef<HTMLDivElement, StatTrioProps>(
         overflow="hidden"
         borderRadius="2xl"
         color="trueWhite"
-        // Capped at 6.36, same as StatTile — the uncapped full ramp puts the
-        // white figure over the radial's lightest (sand) reach.
         backgroundImage="radial-gradient(125% 135% at 20% 12%, {colors.colorPalette.gradient.critical})"
         css={{ cornerShape: SQUIRCLE_CORNER_SHAPE }}
         {...props}
@@ -141,7 +100,6 @@ export const StatTrio = React.forwardRef<HTMLDivElement, StatTrioProps>(
             <Box key={item.id} position="relative" padding="6" minWidth="0">
               {index > 0 && (
                 <>
-                  {/* Desktop: a 1px rule inset 20px from the field's own top/bottom edges, so it reads as a separator rather than a table border. */}
                   <Box
                     position="absolute"
                     display={{ base: "none", md: "block" }}
@@ -151,7 +109,6 @@ export const StatTrio = React.forwardRef<HTMLDivElement, StatTrioProps>(
                     width="1px"
                     background="rgba(255,255,255,0.14)"
                   />
-                  {/* Mobile: the same rule rotated to a full-width horizontal line between stacked cells. */}
                   <Box
                     position="absolute"
                     display={{ base: "block", md: "none" }}
@@ -164,20 +121,8 @@ export const StatTrio = React.forwardRef<HTMLDivElement, StatTrioProps>(
                 </>
               )}
               <Box
-                // The spec's `clamp(40px, 5vw, 60px)` is sized for a desktop
-                // 3-up row; in a single narrow mobile column a long currency
-                // figure (e.g. "$340,000,000") can be just wide enough to wrap
-                // mid-number at the 40px floor — a table of digits breaking
-                // across three lines is exactly the "clips/breaks its figure"
-                // failure the spec calls out, just in wrap form instead of
-                // clip form. `nowrap` plus a lower, steeper-scaling floor below
-                // `md` guarantees a single line at any realistic figure length
-                // without touching the spec's own desktop value.
                 fontSize={{ base: "clamp(28px, 9vw, 60px)", md: "clamp(40px, 5vw, 60px)" }}
                 fontWeight="800"
-                // Without this the figure inherits the body line-height, and
-                // at this size its half-leading reads as a gap between the
-                // number and its label.
                 lineHeight="none"
                 letterSpacing="tight"
                 whiteSpace="nowrap"

@@ -13,8 +13,6 @@ export default meta;
 
 type Story = StoryObj<typeof StatementBlock>;
 
-// Demo copy only — the real page sources this from the message catalogue at
-// composition time. `StatementBlock` itself never calls into `m.xxx()`.
 export const Hero: Story = {
   name: "Hero — gradient-fills only the two numerals",
   render: () => (

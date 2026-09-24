@@ -4,11 +4,6 @@ import { Wash } from "@codeday/topo/Molecule";
 import { UiCheck } from "@codeday/topocons";
 import React from "react";
 
-// The hero's right-column field: a merged-PR card and a mentor-meeting card,
-// both fixed illustrative examples (bracketed placeholders throughout) rather
-// than live data — the real PR ticker with real projects lives further down
-// the page. A real Wash `mesh` field, not the mockup's own stacked-radials
-// approximation.
 export default function HeroField() {
   return (
     <Wash

@@ -2,8 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import { generateGrainField } from "./grain";
 
-// A modest patch is plenty here — there's no spatial-period calibration to
-// resolve precisely anymore, just basic sanity checks on a simple generator.
 const WIDTH = 400;
 const HEIGHT = 400;
 

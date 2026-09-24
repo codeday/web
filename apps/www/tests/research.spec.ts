@@ -4,11 +4,6 @@ const PATH = "/en-us/research";
 
 test("hero, stats and index render", async ({ page }) => {
   await page.goto(PATH);
-  // Matched by name, not just role+level — the third-party cookie-consent
-  // banner sometimes mounts its own `<h1>` ("Cookie Settings") before this
-  // assertion runs, which otherwise makes a bare `getByRole("heading",
-  // { level: 1 })` ambiguous (there's no `<main>` landmark to scope to
-  // instead — the page doesn't render one).
   await expect(page.getByRole("heading", { level: 1, name: /What works/ })).toBeVisible();
   await expect(page.locator("#index")).toBeVisible();
 });

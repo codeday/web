@@ -6,8 +6,6 @@ import { useInView } from "react-intersection-observer";
 import { graphql } from "@/gql";
 import { FragmentType, useFragment } from "@/gql/fragment-masking";
 
-// A slot swaps roughly every 10s; the jitter keeps slots from ever visibly
-// ticking over in lockstep with each other.
 const SWAP_INTERVAL_MS = 10_000;
 const SWAP_JITTER_MS = 5_000;
 const SLOT_COUNT = 12;
@@ -41,7 +39,6 @@ export const LogoWallFragment = graphql(`
 
 interface LogoWallProps {
   data: FragmentType<typeof LogoWallFragment>;
-  /** Overrides the logo grid's column count — narrower when the wall shares a row with another section instead of spanning full-width. */
   columns?: Record<string, string>;
 }
 
@@ -62,20 +59,12 @@ function toLogo(item: any): EmployerLogo | null {
   };
 }
 
-// Deals `pool` out to `slotCount` buckets round-robin — every logo lands in
-// at most one bucket, so slots never end up showing the same logo at once.
-// `pool` arrives sorted ascending by `sort`, and dealing preserves that
-// order within each bucket, so a lower-`sort` logo is always next in line
-// to rotate in ahead of a higher-`sort` one.
 function deal<T>(pool: T[], slotCount: number): T[][] {
   const buckets: T[][] = Array.from({ length: slotCount }, (): T[] => []);
   pool.forEach((item, i) => buckets[i % slotCount].push(item));
   return buckets;
 }
 
-// A consumer that swaps `src`/`name` over time (rotating through employers)
-// gets a fade instead of a hard cut: this fades the mark out, swaps its
-// content while invisible, then fades back in.
 function LogoMark({ name, src, color }: { name: string; src: string; color: string }) {
   const [displayed, setDisplayed] = useState({ name, src });
   const [visible, setVisible] = useState(true);
@@ -92,13 +81,6 @@ function LogoMark({ name, src, color }: { name: string; src: string; color: stri
     return () => clearTimeout(timeout);
   }, [src, name, displayed]);
 
-  // A single, real `<img>` per logo establishes the accessible name (a real
-  // `alt`, the employer's `name`) and the mark's intrinsic aspect ratio. An
-  // absolutely-positioned, `aria-hidden` flat-colour copy is layered on top,
-  // masked by that same source image via `mask-image` — the only CSS-only way
-  // to recolour arbitrary source art (raster or vector) to one exact target
-  // colour, matching the technique `CreditLists`' `LogoMark` uses for the same
-  // reason.
   return (
     <Box
       position="relative"
@@ -159,10 +141,6 @@ export default function LogoWall({ data, columns, ...props }: LogoWallProps) {
     [cms.logoWallEmployers],
   );
 
-  // The lowest-`sort` logos fill the wall immediately. Anything past the
-  // first 12 is dealt out into one disjoint rotation list per slot, so a
-  // slot with more logos than fit on screen fades between them over time
-  // instead of the wall ever needing more than 12 slots at once.
   const slotLists = useMemo((): EmployerLogo[][] => {
     const slotCount = Math.min(SLOT_COUNT, logos.length);
     if (slotCount === 0) return [];
@@ -171,15 +149,10 @@ export default function LogoWall({ data, columns, ...props }: LogoWallProps) {
     return initial.map((first, i) => [first, ...rest[i]]);
   }, [logos]);
 
-  // Filled with each slot's lowest-`sort` logo — the ones past the first 12
-  // only show up once their slot rotates to them.
   const [slots, setSlots] = useState<EmployerLogo[]>(() => slotLists.map((list) => list[0]));
 
-  // Cursor into each slot's own dealt list — rotation only ever cycles
-  // within that list, so it can't drift into another slot's logos.
   const cursors = useRef<number[]>(slotLists.map(() => 0));
 
-  // Rotation is paused whenever the wall is scrolled out of view.
   const { ref: viewRef, inView } = useInView();
 
   useEffect(() => {
@@ -188,7 +161,6 @@ export default function LogoWall({ data, columns, ...props }: LogoWallProps) {
     const timeoutIds: ReturnType<typeof setTimeout>[] = [];
 
     slotLists.forEach((list, index) => {
-      // Nothing else to swap to.
       if (list.length <= 1) return;
       const scheduleNext = () => {
         const delay = SWAP_INTERVAL_MS + (Math.random() * 2 - 1) * SWAP_JITTER_MS;

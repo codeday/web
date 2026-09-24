@@ -5,10 +5,6 @@
  * the cutout as a new Asset linked + published as that entry's
  * `photoCutout`.
  *
- * The Pro Upscaler flattens transparency to a solid black JPEG, so it must
- * run on the original (still-opaque) photo, before background removal —
- * running it on the cutout would destroy the alpha channel.
- *
  * One-off/manual dev tool — run with:
  *   pnpm --filter @codeday/www cutouts:alum
  *
@@ -80,7 +76,6 @@ async function denoiseAndUpscale(imageBuffer: Buffer): Promise<Buffer> {
     throw new Error(`Leonardo upscale API returned no generationId: ${JSON.stringify(createJson)}`);
   }
 
-  // The upscaler only runs async, so poll the (v1) generation-status endpoint until it completes.
   let resultUrl: string | undefined;
   for (let attempt = 0; attempt < 40; attempt++) {
     await sleep(3000);

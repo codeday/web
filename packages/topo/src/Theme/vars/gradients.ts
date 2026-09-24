@@ -7,11 +7,6 @@ import {
   gradientStops,
 } from "./colors";
 
-// ---------------------------------------------------------------------------
-// Colour-space helpers. Ramps are interpolated in sRGB exactly as a CSS
-// `linear-gradient()` would interpolate them — no gamma correction beyond the
-// standard sRGB -> linear step used for WCAG contrast.
-// ---------------------------------------------------------------------------
 type Rgb = readonly [number, number, number];
 
 const WHITE: Rgb = [255, 255, 255];
@@ -46,7 +41,6 @@ function relativeLuminance([r, g, b]: Rgb): number {
   );
 }
 
-/** WCAG contrast ratio between two sRGB colours (1:1 to 21:1). */
 export function contrastRatio(a: Rgb, b: Rgb): number {
   const la = relativeLuminance(a);
   const lb = relativeLuminance(b);
@@ -59,11 +53,6 @@ function contrastWithWhite(hex: string): number {
   return contrastRatio(hexToRgb(hex), WHITE);
 }
 
-/**
- * Interpolate a set of stops (positioned at `STOP_POSITIONS`, in % / 100) at
- * fractional position `u`, channel-linear in sRGB — exactly how a CSS
- * `linear-gradient()` stop list interpolates.
- */
 function rampAt(stops: readonly string[], u: number): Rgb {
   const pos = u * 100;
   for (let i = 0; i < STOP_POSITIONS.length - 1; i += 1) {
@@ -83,12 +72,8 @@ function rampAt(stops: readonly string[], u: number): Rgb {
   return hexToRgb(stops[stops.length - 1]);
 }
 
-const SEARCH_ITERATIONS = 60; // far more precision than a hex channel needs
+const SEARCH_ITERATIONS = 60;
 
-/**
- * Truncate a ramp at the last point where white text still clears
- * `minContrast`, then rescale the surviving stops back across 0-100%.
- */
 export function capRamp(stops: readonly string[], minContrast: number): Array<[string, number]> {
   let lo = 0;
   let hi = 1;
@@ -112,10 +97,6 @@ export function capRamp(stops: readonly string[], minContrast: number): Array<[s
   return result;
 }
 
-/**
- * The 62% stop, unless it fails `minContrast` on white, in which case walk
- * back down the ramp (continuously, not stop-to-stop) until it passes.
- */
 export function accentOnWhite(stops: readonly string[], minContrast = 4.5): string {
   const MID = 0.62;
   if (contrastRatio(rampAt(stops, MID), WHITE) >= minContrast) {
@@ -126,9 +107,9 @@ export function accentOnWhite(stops: readonly string[], minContrast = 4.5): stri
   for (let i = 0; i < SEARCH_ITERATIONS; i += 1) {
     const mid = (lo + hi) / 2;
     if (contrastRatio(rampAt(stops, mid), WHITE) >= minContrast) {
-      lo = mid; // still passes — walk back up toward the 62% stop
+      lo = mid;
     } else {
-      hi = mid; // fails — need to go darker
+      hi = mid;
     }
   }
   return rgbToHex(rampAt(stops, lo));
@@ -142,24 +123,12 @@ export interface GradientTokenSet {
   full: string;
   button: string;
   badgeGradient: string;
-  /** Full ramp capped at 6.36 ("content sitting inside a field") —
-   * for full-field white-text-throughout uses like Alert's `critical`. */
   criticalField: string;
-  /** Capped at ~4.9 — matches the worked EmptyState example, whose
-   * marmalade contrasts (14.8/7.7/4.9) land at that floor. */
   emptyState: string;
-  /** The ramp's own 0/20/40/62% stops, rescaled to fill 0-100% — Alert
-   * `rail`'s "gradient rail... stopping at the 62% stop, it never reaches
-   * sand", a positional truncation rather than a contrast-based one. */
   rail: string;
-  /** Just the 20% and 62% stops (skipping 40% entirely), rescaled to 0-100%
-   * — Modal's short heading-only field. Uncapped: a field this short
-   * never travels far enough toward sand to need `criticalField`'s contrast
-   * floor, so the plain two-stop compression is fine as-is. */
   modal: string;
 }
 
-/** Build the full token set for every named ramp. */
 export function buildGradientTokens(): Record<GradientName, GradientTokenSet> {
   const names = Object.keys(gradientStops) as GradientName[];
   return Object.fromEntries(
@@ -180,10 +149,10 @@ export function buildGradientTokens(): Record<GradientName, GradientTokenSet> {
             .map(([color, position]) => `${color} ${position}%`)
             .join(","),
           rail: stops
-            .slice(0, 4) // 0%, 20%, 40%, 62% — the ramp up to its midpoint
+            .slice(0, 4)
             .map((color, i) => `${color} ${(STOP_POSITIONS[i] / STOP_POSITIONS[3]) * 100}%`)
             .join(","),
-          modal: `${stops[1]} 0%,${stops[3]} 100%`, // 20% -> 62%, the 40% stop skipped entirely
+          modal: `${stops[1]} 0%,${stops[3]} 100%`,
         },
       ];
     }),

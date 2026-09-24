@@ -33,7 +33,6 @@ export default function ContactStep({
   return (
     <Box>
       <Heading as="h3" fontSize="xl" mb={2}>
-        {/*special logic if the only page user sees is contact info*/}
         {resolvedStartPage === 2
           ? background === "industry"
             ? m.www_contact_apply_labs()

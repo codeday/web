@@ -40,37 +40,32 @@ export default function RegionStep({
       <Heading as="h3" fontSize="xl" mb={2}>
         {m.www_region_select_city()}
       </Heading>
-      {
-        // force "Other" to end of list (kind of hacky)
-        [
-          ...Object.keys(regionsByCountry).filter((k) => k !== "Other"),
-          Object.keys(regionsByCountry).includes("Other") ? "Other" : undefined,
-        ].map((regionKey) => (
-          <Box>
-            {/* Capitalize first letter of region (this is mostly to fix "the United States" looking weird) */}
-            <Heading as="h4" fontSize="lg" mb={1}>
-              {regionKey?.charAt(0).toUpperCase()}
-              {regionKey?.substring(1)}
-            </Heading>
-            {regionsByCountry[regionKey!]?.map((r) => (
-              <Box display="inline-block" m={2}>
-                <Radio
-                  isChecked={region === r.name}
-                  onClick={() => {
-                    setRegion(r.name);
-                    setHasSelection(true);
-                    setIsOrganize(false);
-                  }}
-                >
-                  {r.name}
-                </Radio>
-              </Box>
-            ))}
-          </Box>
-        ))
-      }
+      {[
+        ...Object.keys(regionsByCountry).filter((k) => k !== "Other"),
+        Object.keys(regionsByCountry).includes("Other") ? "Other" : undefined,
+      ].map((regionKey) => (
+        <Box>
+          <Heading as="h4" fontSize="lg" mb={1}>
+            {regionKey?.charAt(0).toUpperCase()}
+            {regionKey?.substring(1)}
+          </Heading>
+          {regionsByCountry[regionKey!]?.map((r) => (
+            <Box display="inline-block" m={2}>
+              <Radio
+                isChecked={region === r.name}
+                onClick={() => {
+                  setRegion(r.name);
+                  setHasSelection(true);
+                  setIsOrganize(false);
+                }}
+              >
+                {r.name}
+              </Radio>
+            </Box>
+          ))}
+        </Box>
+      ))}
       <Divider m={4} />
-      {/* Clear region state in case they clicked some other region button before this */}
       <Button
         mt={2}
         variant="secondary"

@@ -81,9 +81,6 @@ async function ApplyAsVolunteer(req: NextApiRequest, res: NextApiResponse) {
     console.error(ex);
   }
   let emailText: string | undefined;
-  // if(background === 'industry') {
-  // emailText = renderLabsMentor({firstName})
-  // This is disabled for now as we want non-student volunteers to be manually reviewed + followed up with
 
   if (banned) {
     emailText = renderBannedVolunteer({ firstName });

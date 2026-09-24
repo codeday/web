@@ -17,9 +17,6 @@ import HowItWorks from "../../components/MicroInternship/HowItWorks";
 import PartnerPill from "../../components/MicroInternship/PartnerPill";
 import Page from "../../components/Page";
 
-// `...IndexImpactComponent` is the homepage's own PR/showcase ticker
-// fragment (`Impact.tsx`) — reused as-is (`variant="contributions"` below
-// drops the showcase photo cards) rather than forked, per the build spec.
 const MicroInternshipQuery = graphql(`
   query MicroInternshipQuery {
     ...PageComponent
@@ -30,8 +27,6 @@ const MicroInternshipQuery = graphql(`
 
 const HAIRLINE = { borderTop: "sm", borderTopColor: "current.border" } as const;
 
-// Two registration-path cards share this shell; the default path gets an
-// ink outline, the alternative a hairline.
 const CARD = {
   boxSizing: "border-box",
   padding: "{spacing.9} {spacing.9} {spacing.8}",
@@ -226,10 +221,6 @@ export default function MicroInternship({ query, seed }: MicroInternshipProps) {
 
         <Wash ramp="blackberry" shape="tint">
           <Section ramp="blackberry" {...HAIRLINE}>
-            {/* Two doors — a school's own link, or registering directly —
-                plus a quiet third option (asking a school to partner) below
-                both. `#register` is the anchor every "Register" button on
-                the page scrolls to. */}
             <Content
               id="register"
               maxW="container.xl"

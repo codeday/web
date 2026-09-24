@@ -8,13 +8,6 @@ export interface EyebrowProps extends BoxProps {
   ramp?: GradientName;
 }
 
-// Eyebrow. Colored with `accentOnWhite`, not the raw 62%
-// stop (so it stays legible for ramps like Marmalade whose 62% stop fails
-// on white). Uses the heading face, not `fontFamily="mono"` — that token
-// is Fira Code, a programming face with ligatures that reads as code in a
-// short all-caps tracked label. `mono` is still right for genuinely
-// monospaced content elsewhere (e.g. a press byline) — this is specific to
-// the eyebrow style itself.
 export const Eyebrow = React.forwardRef<HTMLElement, EyebrowProps>(
   ({ ramp = "hibiscus", ...props }, ref) => (
     <Box

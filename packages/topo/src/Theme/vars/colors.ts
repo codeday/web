@@ -1,4 +1,3 @@
-// Alpha color scales (previously from @chakra-ui/theme)
 const blackAlpha: Record<string, string> = {
   50: "rgba(0, 0, 0, 0.04)",
   100: "rgba(0, 0, 0, 0.06)",
@@ -25,20 +24,8 @@ const whiteAlpha: Record<string, string> = {
   900: "rgba(255, 255, 255, 0.92)",
 };
 
-// Only ever consumed at 180deg (Organism/Header's mobile-nav overlay), so this
-// is a plain two-color helper rather than the old all-angles `linearGrads`.
 const grad180 = (from: string, to: string) => `linear-gradient(180deg, ${from} 0%, ${to} 100%)`;
 
-// ---------------------------------------------------------------------------
-// The six brand gradients. Each ramp is six stops between a
-// shared near-black `#120510` and a shared sand `#F7DEC9` — the shared
-// endpoints are what make them read as one family.
-//
-// Stop roles: 62% is the ramp's midpoint and doubles as the solid accent
-// colour (focus rings, tab markers, checked states); 40% is the deep. 82%
-// and 100% are decorative-only — white text never sits over them (see
-// `capRamp` in `./gradients.ts`).
-// ---------------------------------------------------------------------------
 export const gradientStops = {
   hibiscus: ["#120510", "#38102A", "#701C46", "#A83A5C", "#D97C56", "#F7DEC9"],
   hotsauce: ["#120510", "#3E1206", "#7E2608", "#BC4A1A", "#E28C3C", "#F7DEC9"],
@@ -187,10 +174,6 @@ export const rampScaleStops: Record<keyof typeof gradientStops, Record<number, s
 
 export type GradientName = keyof typeof gradientStops;
 
-// Per-section primary button fills — each ramp compressed as
-// far as it can travel while still holding white text at AA, plus a
-// hand-tuned lightened tail. These are fixed values from the approved build,
-// not derived.
 export const gradientButtonStops = {
   hibiscus: ["#38102A", "#A83A5C", "#BC545A"],
   hotsauce: ["#3E1206", "#BC4A1A", "#CE5E22"],
@@ -202,11 +185,6 @@ export const gradientButtonStops = {
 
 export const GRADIENT_BUTTON_POSITIONS = [0, 62, 100] as const;
 
-// Badge `gradient` variant fills — its own hand-tuned
-// two-color set, not the general deep/mid stops. Marmalade has no separate
-// hand-tuned value yet — falls back to its own deep/mid stops, which (now
-// that marmalade's mid stop clears 4.5:1 against white, see colors.test.ts)
-// still resolves to a contract-clearing pair for every ramp.
 export const badgeGradientStops: Record<GradientName, readonly [string, string]> = {
   hibiscus: ["#6A1A43", "#A83A5C"],
   hotsauce: ["#77240A", "#BC4A1A"],
@@ -382,9 +360,6 @@ const colors: Record<string, any> = {
   },
 };
 
-// Hibiscus's accent-on-white — not the raw 62% stop, the
-// contrast-walked value from `accentOnWhite`, which for Hibiscus happen to
-// be the same since Hibiscus already clears 4.5:1 at its 62% stop.
 colors.brand = gradientStops.hibiscus[3];
 colors.success = {
   border: colors.green[100],
@@ -397,9 +372,6 @@ colors.failure = {
   text: colors.red[900],
 };
 colors.grad = {
-  // Only ever consumed at 180deg (Header's mobile-nav overlay via the `Box`
-  // `grad` prop), so this is a flat sm/lg pair rather than the old
-  // all-angles table `linearGrads` used to produce.
   darken: {
     sm: grad180(blackAlpha[300], "rgba(0,0,0,0)"),
     lg: grad180(blackAlpha[700], "rgba(0,0,0,0)"),
@@ -408,8 +380,6 @@ colors.grad = {
     sm: grad180(whiteAlpha[300], "rgba(255, 255, 255, 0)"),
     lg: grad180(whiteAlpha[700], "rgba(255, 255, 255, 0)"),
   },
-  // Skelly retuned to the new neutrals, 90deg (paired with
-  // the component's own background-size/animation-duration retune).
   skelly: `linear-gradient(90deg, ${colors.gray[300]} 0, ${colors.gray[100]} 50%, ${colors.gray[300]} 100%)`,
   darkSkelly: `linear-gradient(90deg, ${colors.gray[700]} 0, ${colors.gray[600]} 50%, ${colors.gray[700]} 100%)`,
 };
@@ -421,8 +391,6 @@ colors.modes = {
     bg: colors.white,
     background: colors.white,
     primary: colors.brand,
-    // gray.200 no longer exists in the new six-stop scale (100/300/500/600/700/900);
-    // nearest stop by role (a visible-but-quiet light border) is gray.300.
     border: colors.gray[300],
     borderColor: colors.gray[300],
     placeholder: colors.gray[600],
@@ -431,10 +399,6 @@ colors.modes = {
     color: whiteAlpha[900],
     text: whiteAlpha[900],
     textLight: "#717171",
-    // gray.1100 is removed entirely (step 5 of the palette migration) — the dark-mode
-    // page background is hardcoded here rather than being a palette stop.
-    // Warm near-black derived from the #120510 brand anchor, sitting below the
-    // ramp so it reads as ground rather than a step in it (Wash/gradient fix).
     bg: "#1E1119",
     background: "#1E1119",
     primary: colors.brand,

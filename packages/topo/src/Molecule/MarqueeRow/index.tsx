@@ -3,17 +3,12 @@ import React from "react";
 import Marquee from "react-fast-marquee";
 
 export interface MarqueeRowProps extends Omit<BoxProps, "children"> {
-  /** Repeated enough times to loop seamlessly — see below for why we do that ourselves. */
   items: React.ReactNode[];
-  /** Pixels per second — `react-fast-marquee`'s own unit. Default 50. */
   speed?: number;
   reverse?: boolean;
-  /** Gap between items, and between the last item and its looped repeat. */
   gap?: string;
 }
 
-// Rendered length floor — comfortably wider than any real viewport even at
-// a generous per-card width, so the row never runs out of content mid-loop.
 const MIN_RENDERED_ITEMS = 24;
 
 // One marquee row, built on `react-fast-marquee` — the same library the

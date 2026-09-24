@@ -8,17 +8,11 @@ export interface GeoPoint {
   lon: number;
 }
 
-// Centralizes the page's one piece of cross-component state: which city is
-// "current" (shown in the details panel, bolded in the list) and where the
-// visitor is. Both the hero callout and the picker need the same nearest
-// city and the same selection, so it lives here once instead of twice.
 export function useEventsState(cities: City[], serverPoint: GeoPoint | null) {
   const router = useRouter();
   const [point, setPoint] = useState<GeoPoint | null>(serverPoint);
   const [query, setQuery] = useState("");
 
-  // Never blocks render: the server-derived (IP) point is already painted,
-  // this just quietly upgrades to a precise fix if the browser grants one.
   const requestLocation = useCallback(() => {
     if (typeof navigator === "undefined" || !navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
@@ -30,7 +24,6 @@ export function useEventsState(cities: City[], serverPoint: GeoPoint | null) {
 
   useEffect(() => {
     requestLocation();
-    // Only on mount — "Use my location" re-triggers this explicitly.
   }, []);
 
   const nearestCity = useMemo(() => findNearestCity(cities, point), [cities, point]);

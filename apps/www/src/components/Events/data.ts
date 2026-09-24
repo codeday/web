@@ -17,10 +17,6 @@ export const REGION_GROUPS = [
 
 export type RegionGroup = (typeof REGION_GROUPS)[number];
 
-// The CMS's `area` field is a free-text string, not a schema enum, so this
-// maps its known values onto the display groups above. `Canada`/`LATAM` are
-// combined per spec; anything unmapped (typos, new areas) falls into "Other"
-// rather than being silently dropped.
 const AREA_GROUPS: Record<string, RegionGroup> = {
   "US West": "US West",
   "US Midwest": "US Midwest",
@@ -89,8 +85,6 @@ export interface RawCmsRegion {
   clearEvents?: RawClearEvent[] | null;
 }
 
-// State/province only shows up for North America — everywhere else the
-// spec calls for just the country name, so there's nothing to look up.
 function subtitleFor(region: RawCmsRegion, soonestEvent: RawClearEvent | null): string {
   const iso = (region.iso3166Alpha2Code || "").toUpperCase();
   const countryName = (region.countryName || "").replace(/^the /i, "");
@@ -184,8 +178,6 @@ export function distanceTo(city: City, point: { lat: number; lon: number } | nul
   return haversineDistance({ lat: point.lat, lon: point.lon }, { lat: city.lat, lon: city.lon });
 }
 
-// Miles for US viewers, kilometers elsewhere; rounded to the nearest 10
-// once past 100 units so the callout doesn't read like a precise fix.
 export function formatDistance(meters: number, viewerIsUs: boolean): string {
   const raw = viewerIsUs ? meters / 1609.344 : meters / 1000;
   const rounded = raw > 100 ? Math.round(raw / 10) * 10 : Math.round(raw);
@@ -193,9 +185,6 @@ export function formatDistance(meters: number, viewerIsUs: boolean): string {
   return `${rounded} ${unit}`;
 }
 
-// The spec's one focus-ring color for every interactive element on this
-// page, since these are custom-styled buttons/rows rather than topo's own
-// recipe-driven ones (which already carry their own focus treatment).
 export const FOCUS_RING = { outline: "3px solid {colors.colorPalette.600}", outlineOffset: "0.5" };
 
 export const STATUS_COLOR: Record<CityStatus, string> = {

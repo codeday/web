@@ -29,8 +29,6 @@ export default function VideoTestimonialThumbnail({
   ...props
 }: VideoTestimonialThumbnailProps) {
   const video = useFragment(VideoTestimonialThumbnailFragment, videoRef);
-  // `CmsTestimonial` has no `largeImage` field — the poster was always
-  // undefined even before this migration.
   return (
     <VideoLink url={video.video.url} poster={undefined} autoPlay>
       <Box

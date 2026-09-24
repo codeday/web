@@ -11,10 +11,6 @@ type AnyMessage = ((inputs?: any, options?: any) => string) & {
   parts?: (inputs?: any, options?: any) => MessagePart[];
 };
 
-// Markup tags available to every translated string without redeclaring them
-// at each call site (see packages/i18n/messages/en-us.json for the `{#tag}`
-// syntax). Pass a `markup` override to `Message` to replace one of these for
-// a single call site.
 export const defaultMarkup: Record<string, MarkupRenderer<any>> = {
   link: ({ children, options }) => <Link href={(options.to as string) ?? "#"}>{children}</Link>,
   b: ({ children }) => (

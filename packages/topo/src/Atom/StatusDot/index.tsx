@@ -8,15 +8,9 @@ export interface StatusDotProps extends Omit<BoxProps, "children"> {
   away?: boolean;
   pending?: boolean;
   offline?: boolean;
-  /**
-   * Always paired with a text label — colour is never the only signal.
-   * Required, not optional.
-   */
   label: React.ReactNode;
 }
 
-// Repointed to the new palette's 600 stops (dark fills),
-// and now always renders with its text label rather than just the dot.
 export const StatusDot = React.forwardRef<HTMLDivElement, StatusDotProps>(
   ({ size = 3, online, away, pending, offline, label, ...props }, ref) => {
     const status = (online && "online") || (away && "away") || (pending && "pending") || "offline";

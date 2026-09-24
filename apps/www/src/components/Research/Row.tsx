@@ -128,8 +128,7 @@ export default function Row({ publication, first }: { publication: Publication; 
               _hover={{
                 textDecoration: "underline",
                 textDecorationColor: "colorPalette.600",
-                textUnderlineOffset:
-                  "3px" /* FIXME: no clean token match (space scale jumps 2px/4px = 0.5/1, both ~33% off) — needs human input */,
+                textUnderlineOffset: "3px",
               }}
             >
               {publication.title}

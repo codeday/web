@@ -1,56 +1,14 @@
 #!/usr/bin/env node
-/**
- * Generates dark-mode counterparts for a palette's stops computationally
- * (OKLCH search + WCAG contrast targets) instead of hand-picking or
- * mechanically inverting the light-mode scale. Covers the full ten-stop
- * scale (50-900); six of those stops (100/300/500/600/700/900) are the
- * original hand-verified anchors (see the contract in `colors.ts`), the
- * other four (50/200/400/800) are themselves computed — `deriveFullLightScale`
- * below — rather than hand-picked, so this script is also the source of
- * truth for regenerating `colors.ts`'s light-mode 50/200/400/800 if one of
- * the six anchors ever changes.
- *
- *   - 50, 100, 200, 300, 400 relate to the *page* background (wash, light
- *     accent) — this flips between modes, so each dark stop is solved to
- *     hit the same contrast ratio against the dark surface that the light
- *     stop hits against the light surface.
- *   - 700 is the on-wash / on-page text role (button.ts's danger hover text,
- *     field.ts's error text, StatementBlock's body text) — its counterpart
- *     is solved against the *new* dark 100, which also happens to sit close
- *     enough to the real page background (#1E1119) that this covers the
- *     direct-on-page-bg text cases too.
- *   - 500, 600, 800, 900 are fills whose job is contrast against a *fixed*
- *     text color (black or white) or, for 900, a fixed dark bubble bg —
- *     every stop inverts its ROLE for dark mode instead of staying
- *     identical: a light fill built for black text (500) becomes a dark
- *     fill built for white text, and a dark fill built for white text (600,
- *     800, 900) becomes a light fill built for black text — each solved to
- *     hold the *same* contrast ratio the light stop held against its own
- *     paired text color, now against the opposite one. Consumers that
- *     paired one of these with a fixed `trueWhite`/`trueBlack` label need
- *     that label switched back to the self-inverting `white`/`black`, since
- *     the fill now flips with it.
- *
- * Usage:
- *   node scripts/generate-dark-scale.mjs            # every semantic hue
- *   node scripts/generate-dark-scale.mjs red        # just one palette
- *
- * Prints a report (target vs. achieved contrast, hue drift, chroma) and a
- * paste-ready object literal for `Theme/vars/darkColors.ts`. Re-run this
- * whenever a light-mode stop in `Theme/vars/colors.ts` changes.
- */
 
 import colors from "../src/Theme/vars/colors.ts";
 
-// -- constants -------------------------------------------------------------
 const DARK_BG = "#1E1119";
 const LIGHT_BG = "#ffffff";
-const BLACK_TEXT = colors.black; // "#252222" — not pure black
+const BLACK_TEXT = colors.black;
 const WHITE_TEXT = "#ffffff";
-const CHROMA_CAP = 0.155; // matches the doc'd cap in colors.ts
-const DARK_CHROMA_SCALE = 0.85; // simultaneous-contrast: same chroma reads more saturated on a dark surface
+const CHROMA_CAP = 0.155;
+const DARK_CHROMA_SCALE = 0.85;
 
-// -- color math (OKLCH via Björn Ottosson's OKLab, sRGB D65) ---------------
 const hex2srgb = (h) => {
   h = h.trim().replace(/^#/, "");
   return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
@@ -105,9 +63,6 @@ function hexFromOklch(L, C, H) {
   return { hex: `#${toByte(r)}${toByte(g)}${toByte(b)}`, clipped };
 }
 
-// Scans L (fine-grained, gamut-clip-safe — no monotonicity assumed) within
-// the given half of the range to find the stop whose contrast against `ref`
-// best matches `targetRatio`, holding hue/chroma fixed.
 function solveL({ H, C, ref, targetRatio, side }) {
   const refL = toOklch(ref).L;
   const [lo, hi] = side === "lighter" ? [refL, 0.99] : [0.01, refL];
@@ -128,17 +83,6 @@ function generateDarkStop(lightHex, { ref, targetRatio, side }) {
   return { hex: solved.hex, H, C, achieved: solved.achieved, target: targetRatio };
 }
 
-// -- light-stop derivation ----------------------------------------------------
-// The six anchors (100/300/500/600/700/900) are hand-verified against the
-// contract in colors.ts. The other four stops of the full ten-stop scale are
-// derived, not hand-picked: 200/400/800 sit at the OKLCH lightness midpoint
-// of their two neighboring anchors (chroma midpoint too, per-hue); 50
-// extrapolates past 100 on the same lightness gap as 100->200, at 70% of
-// 100's chroma (a paler, lower-chroma wash — same idea as `rampScaleStops`'
-// hibiscus.50). Lightness is computed once per stop, averaged across every
-// hue (they're already near-identical per hue — the palette is explicitly
-// "derived in OKLCH so lightness is perceptually even across hues") so the
-// same L curve applies everywhere; only chroma is hue-specific.
 const ANCHOR_STOPS = [100, 300, 500, 600, 700, 900];
 function deriveFullLightScale(allStops, canonicalL) {
   const out = { ...allStops };
@@ -181,16 +125,6 @@ function canonicalLightnessCurve(palettes) {
   return L;
 }
 
-// -- role rules --------------------------------------------------------------
-// 50/100/200/300/400: "wash" and "light accent" relate to the page
-// background, which flips — solve for a dark hex that's *lighter* than the
-// dark surface by the same contrast margin the light stop holds against the
-// light surface.
-// 700: the on-wash / on-page text role — solved against the *new* dark 100,
-// lighter than it by the same margin the light 700 holds against light 100.
-// 500/600/800/900: fills whose contrast requirement is against a fixed text
-// color (black/white) or, for 900, a fixed dark bubble bg — held identical,
-// just sanity-checked against the dark surface.
 const WASH_STOPS = [50, 100, 200, 300, 400];
 function generatePalette(name, stops) {
   const dark = {};
@@ -207,9 +141,6 @@ function generatePalette(name, stops) {
     side: "lighter",
   });
 
-  // Fill stops invert their role rather than staying identical: solved
-  // against the *opposite* fixed text color, holding the same contrast
-  // ratio the light stop held against its own paired text.
   const invertFill = (hex, lightTextRef, darkTextRef, side) =>
     generateDarkStop(hex, {
       ref: darkTextRef,
@@ -225,7 +156,6 @@ function generatePalette(name, stops) {
   return dark;
 }
 
-// -- report ------------------------------------------------------------------
 function hueDelta(a, b) {
   const d = Math.abs(a - b) % 360;
   return Math.min(d, 360 - d);
@@ -257,12 +187,6 @@ function report(name, lightStops, darkStops) {
   }
 }
 
-// -- main ----------------------------------------------------------------------
-// Re-derive the full ten-stop light scale from each hue's six hand-verified
-// anchors (ignoring colors.ts's already-committed 50/200/400/800, so this
-// script stays the reproducible source of truth for them — re-run it and
-// paste the light+dark output back into colors.ts/darkColors.ts whenever an
-// anchor changes).
 const FULL_HUES = {
   gray: colors.gray,
   red: colors.red,

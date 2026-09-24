@@ -6,9 +6,6 @@ export interface PartnerPillProps {
   id?: string;
 }
 
-// The quiet third option below the two registration paths — shared between
-// the landing page's register section and the individual-registration
-// subpage's options section, which show the identical pill.
 export default function PartnerPill({ id }: PartnerPillProps) {
   return (
     <Box

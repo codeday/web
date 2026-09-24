@@ -6,12 +6,6 @@ import React from "react";
 const meta: Meta<typeof Header> = {
   title: "Organism/Header",
   component: Header,
-  // Not Storybook's default padded canvas — the header needs to sit flush
-  // against the true viewport edges (position: sticky; top: 0) to match
-  // how the mobile menu (a fixed, full-viewport overlay) positions itself;
-  // padding here would offset the visible header from the portal's
-  // coordinate space and make "the close control lands where the trigger
-  // was" look broken when it isn't.
   parameters: { layout: "fullscreen" },
 };
 export default meta;
@@ -59,9 +53,6 @@ export const OnWashAndLightGround: Story = {
     <Box display="flex" flexDirection="column" gap={3} width="full">
       <Header onWash ramp="hibiscus" data-testid="header-on-wash">
         <HeaderBrand>
-          {/* The navbar always shows the full-colour mark, even on the
-              coloured field — the white variant is for other, darker
-              contexts (e.g. a dark-mode footer), not the nav itself. */}
           <SquircleLogo boxSize="7" />
         </HeaderBrand>
         {demoLinks()}

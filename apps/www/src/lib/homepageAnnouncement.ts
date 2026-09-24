@@ -18,21 +18,12 @@ export type HomepageAnnouncement =
 
 const DEADLINE_WINDOW_DAYS = 30;
 
-// Every comparison happens between absolute instants in UTC. Contentful
-// returns offsets on the wire (`-04:00` for the `direct` events, `Z` for
-// announcements); `fromISO` honours whichever offset is present, so the
-// stored zone never shifts the instant being compared.
 function parse(value: string | null | undefined): DateTime | null | undefined {
   if (!value) return undefined;
   const parsed = DateTime.fromISO(value, { zone: "utc" });
   return parsed.isValid ? parsed : null;
 }
 
-/**
- * Picks at most one pill for the homepage: an active Contentful announcement
- * always wins, then a `direct` application deadline within the next
- * `DEADLINE_WINDOW_DAYS`, then nothing.
- */
 export function selectHomepageAnnouncement(
   announcements: AnnouncementCandidate[],
   deadlines: DeadlineCandidate[],
@@ -42,14 +33,11 @@ export function selectHomepageAnnouncement(
     .flatMap((a) => {
       const startsAt = parse(a.startsAt);
       const endsAt = parse(a.endsAt);
-      // `null` = the field is set but unparseable. Hiding the entry is safer
-      // than guessing a window for it.
       if (!a.text || !a.href || startsAt === null || endsAt === null) return [];
       if (startsAt && startsAt > now) return [];
       if (endsAt && endsAt <= now) return [];
       return [{ ...a, text: a.text, href: a.href, startsAt }];
     })
-    // "Most recent" = latest start; an open-ended start sorts as oldest.
     .sort((a, b) => (b.startsAt?.toMillis() ?? -Infinity) - (a.startsAt?.toMillis() ?? -Infinity));
 
   if (active.length > 0) {

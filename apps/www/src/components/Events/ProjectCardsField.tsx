@@ -2,8 +2,6 @@ import * as m from "@codeday/i18n/messages";
 import { Box, Card, CardBody, Eyebrow, Image, Link, Text } from "@codeday/topo/Atom";
 import React from "react";
 
-// Self-inverting — paired with plain `white` cards below, so both flip
-// together in dark mode and stay contrasted either way.
 const INK = "{colors.black}";
 const BODY = "{colors.gray.700}";
 const CAPTION = "{colors.gray.600}";
@@ -118,8 +116,6 @@ function ProjectCard({
   );
 }
 
-// The hero's right column: a scatter of tilted showcase-project cards (four
-// on desktop, three on phones) with a link out to the full showcase below.
 export default function ProjectCardsField({ projects }: { projects: HeroProject[] }) {
   return (
     <Box display="flex" flexDirection="column" gap="3.5">

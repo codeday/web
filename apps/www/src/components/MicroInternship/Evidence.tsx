@@ -11,8 +11,6 @@ import { FragmentType, useFragment } from "@/gql/fragment-masking";
 
 import { useSlideshow } from "../../providers";
 
-// Mirrors `Index/Quote.tsx`'s fade timing/pattern, applied per-column below
-// so the maintainer and employer quotes can cycle independently.
 const QUOTE_DURATION_MS = 14_000;
 const FADE_MS = 500;
 
@@ -60,8 +58,6 @@ export const EvidenceFragment = graphql(`
   }
 `);
 
-// Same SSR/hydration rationale as `Index/Stats.tsx`'s `formatCount`: the
-// visitor's own locale can't be used here since this renders during SSR too.
 const formatCount = (value: number) => new Intl.NumberFormat(baseLocale).format(value);
 
 interface Stat {
@@ -110,9 +106,6 @@ function FadingTestimonial({ items, seed, tag }: FadingTestimonialProps) {
 
   const activeIndex = useSlideshow(quotes.length, QUOTE_DURATION_MS);
 
-  // Lags one fade behind `activeIndex`, same as `Index/Quote.tsx` — the
-  // outgoing quote fades out, its content swaps while invisible, then the
-  // incoming one fades in, rather than cutting straight to the new text.
   const [shownIndex, setShownIndex] = useState(activeIndex);
   const [visible, setVisible] = useState(true);
 

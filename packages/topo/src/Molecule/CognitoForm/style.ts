@@ -1,24 +1,14 @@
-/*export default (...args: any[]) =>
-  `@import url(https://f1.srnd.org/topo/fonts/all.css);${[
-    require("./buttons"),
-    require("./titles"),
-    require("./text"),
-    require("./fields"),
-    require("./layout"),
-  ]
-    .map((f) => f.default(...args))
-    .join(" ")
-    .replace(/\n/g, " ")}`;
-*/
+import type { InheritedBackground } from "./useInheritedBackground";
 
 export interface ThemeProps {
   theme: any;
   showTitle: boolean;
   colorMode: string;
   formId: string;
+  background: InheritedBackground | null;
 }
 
-export default ({ theme, showTitle, colorMode, formId }: any): string => `
+export default ({ theme, showTitle, colorMode, formId, background }: ThemeProps): string => `
   ${!showTitle && `#${formId} .cog-header { display: none !important; } #${formId} .cog-page-progress .el-scrollbar__view { padding-top: 0 !important; }`}
   #${formId} .el-input__inner:focus { border-color: rgb(171, 216, 255); }
   #${formId} input[type="text"],
@@ -26,7 +16,7 @@ export default ({ theme, showTitle, colorMode, formId }: any): string => `
   #${formId} input[type="phone"],
   #${formId} input[type="number"],
   #${formId} input[type="url"],
-  #${formId} textarea { background-color: transparent !important; }
+  #${formId} textarea { background-color: ${theme.colors.current.bg} !important; }
   #${formId} .cog-repeating-section__heading { font-size: 0 !important; }
   #${formId} .cog-repeating-section__heading button { font-size: initial !important; }
   #${formId} .cog-repeating-section__section h3 + .cog-row { margin-top: -3em !important; }
@@ -40,8 +30,8 @@ export default ({ theme, showTitle, colorMode, formId }: any): string => `
 
   #${formId} .cog-cognito {
     --form__width: 100%;
-    --form__background-color: ${theme.colors.current.bg};
-    --background-hsl: ${colorMode === "dark" ? "0, 0%, 16%" : "0, 0, 100%"};
+    --form__background-color: ${background?.color ?? theme.colors.current.bg};
+    --background-hsl: ${background?.hsl ?? (colorMode === "dark" ? "0, 0%, 16%" : "0, 0%, 100%")};
     --color: ${theme.colors.current.text};
     --header__color: ${theme.colors.current.text};
     --label__color: ${theme.colors.current.text};
@@ -57,7 +47,7 @@ export default ({ theme, showTitle, colorMode, formId }: any): string => `
     --button-secondary__color: ${theme.colors.current.text};
     --button-secondary__border-color: ${theme.colors.current.text};
     --input__color: ${theme.colors.current.text};
-    --input__background-color: transparent;
+    --input__background-color: ${theme.colors.current.bg};
     --placeholder__color: ${colorMode === "dark" ? theme.colors.whiteAlpha[300] : theme.colors.gray[500]};
     --input__border-color: ${colorMode === "dark" ? theme.colors.whiteAlpha[300] : theme.colors.gray[500]};
 

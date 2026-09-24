@@ -12,9 +12,7 @@ async function copyToClipboard(text: string): Promise<void> {
     try {
       await navigator.clipboard.writeText(text);
       return;
-    } catch {
-      // Permission denied or unsupported in this context — fall through to execCommand.
-    }
+    } catch {}
   }
   const textarea = document.createElement("textarea");
   textarea.value = text;

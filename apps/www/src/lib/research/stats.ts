@@ -7,8 +7,6 @@ export interface ResearchStats {
   talks: number;
 }
 
-// Strips a trailing four-digit year so "SIGCSE TS 2024" and "SIGCSE TS 2026"
-// count as one venue.
 function venueKey(venue: string): string {
   return venue.replace(/\s*\d{4}\s*$/, "").trim();
 }

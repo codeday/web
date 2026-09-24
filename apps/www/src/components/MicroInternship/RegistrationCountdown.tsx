@@ -15,15 +15,10 @@ function remaining(closesAt: number, now: number) {
 }
 
 export interface RegistrationCountdownProps extends Omit<BoxProps, "children"> {
-  /** ISO-8601 timestamp registration closes at. */
   closesAt: string;
 }
 
 export default function RegistrationCountdown({ closesAt, ...props }: RegistrationCountdownProps) {
-  // `now` starts null and is only set after mount: the page is statically
-  // generated (ISR), so any time computed during render would be the build
-  // server's clock and wouldn't match the first client render, causing a
-  // hydration mismatch. Until then the timer renders as zeros.
   const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
     setNow(Date.now());
@@ -46,8 +41,6 @@ export default function RegistrationCountdown({ closesAt, ...props }: Registrati
         _motionReduce={{ animation: "none" }}
         aria-hidden
       />
-      {/* role="timer" is implicitly aria-live="off", so screen readers aren't
-        interrupted every second — the value is read on demand instead. */}
       <Box
         as="span"
         role="timer"

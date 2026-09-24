@@ -9,24 +9,12 @@ import type { Message } from "../../utils";
 export interface ImpactItem {
   id: string;
   href?: string;
-  // `project`/`student` accept a plain `string`, not just `Message` — a real
-  // showcase project's name or an alum's name is per-record data from the
-  // API, not editorial UI copy translated via the message catalogue, same
-  // reasoning `PortraitWallPerson` documents for the same distinction.
-  /** Project name, set in the eyebrow style (icon variant) or as bold overlay text (photo variant). */
   project: Message | string;
   student?: Message | string;
-  // Icon variant: a one-line "impact" story with a small mark/favicon,
-  // backed by `labs.contributions` — a real accepted PR's repository and
-  // description, not editorial UI copy (see `Impact.tsx`).
-  /** The hook. "Runs in 2 million homes." */
   impact?: Message | string;
   contribution?: Message | string;
-  /** Project mark or favicon. Omit and the chip slot collapses. */
   mark?: string;
   markAlt?: Message;
-  // Photo variant: a real showcase-project photo or event photo, used
-  // instead of the icon+text layout when present.
   photo?: string;
   photoAlt?: Message;
   avatar?: string | null;
@@ -35,9 +23,7 @@ export interface ImpactItem {
 export interface ImpactTickerProps extends Omit<BoxProps, "children"> {
   ramp: GradientName;
   items: ImpactItem[];
-  /** Default 2. */
   rows?: 1 | 2;
-  /** Pixels per second, per row. Default [40, 46] — different on purpose, so the rows never line up. */
   speeds?: [number, number];
 }
 
@@ -49,10 +35,6 @@ function splitIntoRows(items: ImpactItem[], rowCount: 1 | 2): ImpactItem[][] {
   return [items.slice(0, mid), items.slice(mid)];
 }
 
-// Photo variant: a real project/event photo (from `showcase`) with an
-// overlay caption — used instead of the icon+text layout whenever
-// `item.photo` is set. There's no curated "impact" narrative for these
-// (see `Impact.tsx`), so the card leads with the photo itself instead.
 function PhotoImpactCard({ item }: { item: ImpactItem }) {
   const content = (
     <Box
@@ -195,8 +177,6 @@ function ImpactCard({ item }: { item: ImpactItem }) {
   );
 }
 
-// A thin wrapper around the shared `MarqueeRow` track — see that component
-// for the looping/accessibility/reduced-motion mechanics.
 function TickerRow({
   items,
   speed,
@@ -217,13 +197,6 @@ function TickerRow({
   );
 }
 
-// A moving strip of what students actually shipped — the unit is "what the
-// project does in the world, what changed, who did it", not "a field a
-// student learned" (the old `RowList variant="fields"`, which this
-// replaces). Two rows by default, scrolling opposite directions at
-// different speeds on purpose (so they never line up), each pausable by
-// hover or keyboard focus, each degrading to a plain horizontal scroller
-// under `prefers-reduced-motion`.
 export const ImpactTicker = React.forwardRef<HTMLDivElement, ImpactTickerProps>(
   ({ ramp, items, rows = 2, speeds = DEFAULT_SPEEDS, ...props }, ref) => {
     const rowItems = splitIntoRows(items, rows);

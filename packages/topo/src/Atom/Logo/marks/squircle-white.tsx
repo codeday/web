@@ -1,11 +1,6 @@
 import { type IconProps, Icon } from "@chakra-ui/react";
 import React from "react";
 
-// The squircle brand mark, solid white — for use on top of a colour/gradient
-// field, never on white/light grounds (see `squircle-color.tsx` for that
-// case, and `../SquircleLogo.tsx` for the component that picks between the
-// two automatically). Always literal white, not `currentColor` — this mark's
-// two variants are a fixed pair, not a single recolorable icon.
 export const SquircleLogoWhite = (props: IconProps) => (
   <Icon as="svg" viewBox="0 0 2000 2000" fill="#fff" {...props}>
     <title>{"CodeDay"}</title>

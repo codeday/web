@@ -25,9 +25,6 @@ import {
 } from "./data";
 import { ChevronDownIcon, ChevronRightIcon, ExternalLinkIcon } from "./icons";
 
-// `black`/`white` both invert in dark mode, so every ink/paper pair below
-// flips together and stays contrasted either way — a light card with dark
-// ink becomes a dark card with light ink, not near-black-on-near-black.
 const TEXT = "{colors.black}";
 const BODY = "{colors.gray.700}";
 const CAPTION = "{colors.gray.600}";
@@ -611,7 +608,6 @@ export default function Picker({
 
   return (
     <>
-      {/* Desktop / tablet layout */}
       <Box
         display={{ base: "none", lg: "grid" }}
         gridTemplateColumns="repeat(12, minmax(0, 1fr))"
@@ -661,7 +657,6 @@ export default function Picker({
         </Box>
       </Box>
 
-      {/* Phone layout */}
       <Box display={{ base: "flex", lg: "none" }} flexDirection="column" gap="4.5">
         <SearchInput
           query={query}

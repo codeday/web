@@ -1,11 +1,3 @@
-// Section leads — `StatementBlock`, or an `h1`/`h2` — title a page or a
-// page section, so they belong in `apps/www/src/pages/**`, rendered by the
-// page directly beside the component. A component under
-// `apps/www/src/components/**` renders only the thing below the lead (the
-// grid, the cards, the rows). `h3` and below title an item inside the thing
-// and are fine in a component. See AGENTS.md, "A section component renders
-// the thing, not the section."
-
 const COMPONENTS_DIR = "/apps/www/src/components/";
 const ALLOWED_DIRS = ["/apps/www/src/components/Page/"];
 const SECTION_LEAD_COMPONENTS = new Set(["StatementBlock"]);

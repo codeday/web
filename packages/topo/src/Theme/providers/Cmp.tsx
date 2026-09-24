@@ -13,7 +13,6 @@ import {
 
 const DEBUG = debug(["topo", "Theme", "providers", "Cmp"]);
 
-// If the CMP hasn't loaded within this window, assume it's blocked (e.g. by an ad blocker).
 const CMP_BLOCKED_TIMEOUT_MS = 8000;
 
 interface CmpContextType {
@@ -63,8 +62,6 @@ export function CmpProvider({
     isCmpLoadedRef.current = isCmpLoaded;
   }, [isCmpLoaded]);
 
-  // Fallback for blocking methods that don't fire a script `error` event (e.g. silent stubs):
-  // if the CMP hasn't finished loading after a generous timeout, assume it's blocked.
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (!isCmpLoadedRef.current) {
@@ -117,7 +114,7 @@ export function CmpProvider({
   }, [isCmpLoaded, isConsentRequired, ucUi]);
 
   const checkConsent = (provider: string) => {
-    if (isCmpBlocked) return true; // CMP is blocked, assume consent is granted.
+    if (isCmpBlocked) return true;
     return (
       (ucUi.getServicesBaseInfo() || []).filter((s: any) => s.id === provider && s.consent.status)
         .length > 0

@@ -6,8 +6,6 @@ import React from "react";
 import { graphql } from "@/gql";
 import { FragmentType, useFragment } from "@/gql/fragment-masking";
 
-// Register-your-own-project applies to students and their parents — school
-// and partner audiences have their own FAQ surfaces under `/help`.
 export const QuestionsFragment = graphql(`
   fragment MicroInternshipQuestionsComponent on Query {
     cms {
@@ -32,9 +30,6 @@ export const QuestionsFragment = graphql(`
 
 type Faq = NonNullable<ResultOf<typeof QuestionsFragment>["cms"]["faqs"]["items"][number]>;
 
-// A question left, an answer right, separated by hairlines — the design
-// language's one remaining "row" device once the side-index margin rule
-// (`SectionRule`) is retired for pages.
 function QaRow({ faq }: { faq: Faq }) {
   return (
     <Box

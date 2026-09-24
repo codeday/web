@@ -138,7 +138,7 @@ Icon source SVGs live in the `packages/topocons/svg` git submodule (`git@github.
 ## Code style
 
 - **Import order** is enforced by `oxfmt` (run `pnpm format:fix` rather than hand-ordering) — three blank-line-separated groups: external packages (alphabetized by package name), then `@/`-aliased imports, then relative (`./`, `../`) imports.
-- **Comments explain WHY, not WHAT**, and this codebase leans on them more than most for exactly that reason — expect (and write) multi-line comments above non-obvious code that name the specific constraint, prior bug, or rejected alternative driving the code as written (e.g. why a story's decorator omits a provider, why a gradient bypasses the shared helper for a specific layout). Don't add comments that just restate what the following line does.
+- **Use comments very rarely.** Comments should only be used where information cannot be easily inferred from the code.
 - Avoid `any`/untyped props on new code — the pre-migration components still using `[key: string]: any`-style props are legacy, not the pattern to copy.
 
 ## Testing

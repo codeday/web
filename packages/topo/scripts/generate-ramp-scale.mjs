@@ -1,56 +1,14 @@
 #!/usr/bin/env node
-/**
- * Generates a full 100-900 mode-aware swatch scale for each of the six brand
- * gradient ramps (hibiscus, hotsauce, chilioil, blackberry, figjam,
- * marmalade), the same way `generate-dark-scale.mjs` does for gray/red — an
- * OKLCH search against WCAG contrast targets, not hand-picked or a
- * mechanical light/dark inversion.
- *
- * Why a scale instead of the old `deep`/`mid` pair? Those were two fixed
- * points along the ramp's 6-stop CSS gradient (40%/62%), designed only as
- * *fill* colors (something white text sits on top of) — never mode-aware,
- * and never contrast-checked as a foreground mark against the page's own
- * background. Every component that used them as a border/tick/text color
- * directly on the page (rather than as a fill) inherited that gap, and
- * mostly went unnoticed because it happened to look fine on a white page and
- * only broke in dark mode.
- *
- * `600` and `800`'s LIGHT-mode value is still pinned to the ramp's exact
- * `mid`/`deep` hex (so a flat swatch matches the gradient's own 62%/40%
- * stops in light mode) — but their dark-mode value now inverts role like
- * 500/900 do, rather than staying pinned. This means a flat `colorPalette.
- * 600`/`.800` swatch no longer matches the (never-mode-aware) raw gradient
- * in dark mode — an accepted tradeoff so these fills stay legible against
- * their own fixed text color rather than disappearing into a page that's
- * gone dark. The other 5 stops (100/200/300/400, 700) are new: derived from
- * the mid/deep anchors using the same lightness/chroma shape gray/red
- * already use (see role rules below), so a divider or tick can reference
- * e.g. `colorPalette.300` and get a value that's correctly faint-but-visible
- * in *both* modes, the same guarantee `gray.300` already provides.
- *
- * Usage:
- *   node scripts/generate-ramp-scale.mjs             # all six ramps
- *   node scripts/generate-ramp-scale.mjs hibiscus     # just one
- *
- * Prints a report (target vs. achieved contrast, hue drift, chroma) and a
- * paste-ready object literal for `Theme/vars/colors.ts` (light) and
- * `Theme/vars/darkColors.ts` (dark). Re-run whenever a ramp's `deep`/`mid`
- * stop (`Theme/vars/colors.ts`'s `gradientStops`) changes.
- */
 
 import { gradientStops } from "../src/Theme/vars/colors.ts";
 
-// -- constants ---------------------------------------------------------------
 const DARK_BG = "#1E1119";
 const LIGHT_BG = "#ffffff";
-const BLACK_TEXT = "#252222"; // colors.black
+const BLACK_TEXT = "#252222";
 const WHITE_TEXT = "#ffffff";
-const CHROMA_CAP = 0.155; // matches the doc'd cap in colors.ts
-const DARK_CHROMA_SCALE = 0.85; // simultaneous-contrast: same chroma reads more saturated on a dark surface
+const CHROMA_CAP = 0.155;
+const DARK_CHROMA_SCALE = 0.85;
 
-// -- color math (OKLCH via Björn Ottosson's OKLab, sRGB D65) — identical to
-// generate-dark-scale.mjs, duplicated rather than shared so each generator
-// script stays a standalone, copy-pasteable tool. -------------------------
 const hex2srgb = (h) => {
   h = h.trim().replace(/^#/, "");
   return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
@@ -105,8 +63,6 @@ function hexFromOklch(L, C, H) {
   return { hex: `#${toByte(r)}${toByte(g)}${toByte(b)}`, clipped };
 }
 
-// Same L within gamut, walking chroma down until the sRGB round-trip stops
-// clipping — keeps derived stops in-gamut without hand-tuning each one.
 function hexFromOklchInGamut(L, C, H) {
   let c = C;
   for (let i = 0; i < 40; i += 1) {
@@ -142,21 +98,6 @@ function hueLerp(h1, h2, t) {
   return (h1 + diff * t + 360) % 360;
 }
 
-// -- light-mode scale generation ---------------------------------------------
-// 600/800 are pinned to the ramp's real `mid`/`deep` stop (zero change for
-// existing consumers). Every other stop is derived from those two anchors
-// via a lightness/chroma shape lifted straight from gray/red's own achieved
-// values (see generate-dark-scale.mjs's report for 100/300/500/600/700/900 —
-// 200/400/900's deltas are interpolated/extrapolated from the same curve).
-// 50 is new (not part of that gray/red-derived curve) — an even paler,
-// lower-chroma wash for background tints, requested after `.100` turned out
-// too saturated/dark for that role (it's a real "wash" stop with real
-// chroma, not a near-white alpha blend). Its lightness (`L[100] + 0.05`)
-// already clamps to the curve's 0.97 ceiling — every other stop shares that
-// same ceiling to avoid pure white/black — so chroma is the only remaining
-// lever for "lighter" here; this is a near-achromatic sliver of it.
-// Provisional until it's visually confirmed, then the same formula extends
-// to every other ramp.
 const CHROMA_SHAPE = {
   50: 0.035,
   100: 0.2,
@@ -169,8 +110,8 @@ const CHROMA_SHAPE = {
 };
 
 function generateLightScale(stops) {
-  const deepHex = stops[2]; // 40%
-  const midHex = stops[3]; // 62%
+  const deepHex = stops[2];
+  const midHex = stops[3];
   const deep = toOklch(deepHex);
   const mid = toOklch(midHex);
 
@@ -186,10 +127,6 @@ function generateLightScale(stops) {
   L[200] = (L[100] + L[300]) / 2;
   L[400] = (L[300] + L[500]) / 2;
   for (const k of Object.keys(L)) L[k] = Math.min(0.97, Math.max(0.03, L[k]));
-  // 50's whole point is getting closer to true white than the other stops'
-  // shared 0.97 ceiling allows — that ceiling exists so 500-900's *chroma*
-  // doesn't wash out, which isn't a concern for a near-achromatic wash, so
-  // it gets its own, higher one instead of joining the clamp above.
   L[50] = Math.min(0.98, L[100] + 0.05);
 
   const peakC = Math.min(Math.max(mid.C, deep.C), CHROMA_CAP);
@@ -206,15 +143,6 @@ function generateLightScale(stops) {
   return light;
 }
 
-// -- dark-mode counterpart generation -----------------------------------------
-// Same role split as gray/red, extended to the four wash/accent stops below
-// 500: 100/200/300/400 relate to the page background (flips), 700 is the
-// on-wash/on-page text role (flips, solved against the new dark 100), and
-// 500/600/800/900 are fills that invert role in dark mode — a light fill
-// built for black text becomes a dark fill built for white text, and a dark
-// fill built for white text becomes a light fill built for black text —
-// each solved to hold the light stop's own contrast ratio against the
-// *opposite* fixed text color.
 function generateDarkScale(light) {
   const dark = {};
   for (const stop of [50, 100, 200, 300, 400]) {
@@ -242,7 +170,6 @@ function generateDarkScale(light) {
   return dark;
 }
 
-// -- report --------------------------------------------------------------------
 function hueDelta(a, b) {
   const d = Math.abs(a - b) % 360;
   return Math.min(d, 360 - d);
@@ -274,7 +201,6 @@ function report(name, light, dark) {
   }
 }
 
-// -- main ------------------------------------------------------------------------
 const requested = process.argv.slice(2).filter((a) => !a.startsWith("--"));
 const names = requested.length ? requested : Object.keys(gradientStops);
 

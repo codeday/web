@@ -6,31 +6,15 @@ import type { Message } from "../../utils";
 
 export interface PullQuoteProps extends Omit<BoxProps, "children" | "role"> {
   ramp?: GradientName;
-  /**
-   * `"body"` (default) is the design language's small in-copy quote: italic,
-   * 16px. `"feature"` is a large standalone quote — roman, not italic. At
-   * body size italic reads as a quote; at display size across four ragged
-   * lines it reads as decoration, so `"feature"` deliberately drops it.
-   */
   size?: "body" | "feature";
-  /** `"feature"` only — e.g. `MAINTAINER`, supplied by the caller so no English literal lives inside this component. */
   eyebrow?: Message;
-  /**
-   * `"feature"` only. Renders nothing at all when empty — no placeholder, no
-   * empty state. Typed as `ReactNode` rather than `Message` — unlike
-   * `eyebrow`, this is arbitrary caller-supplied content (e.g. a CMS
-   * testimonial), not a fixed, localized UI label.
-   */
   quote?: React.ReactNode;
-  /** `"feature"` only. Overrides the blockquote's default display-size clamp — e.g. a smaller size when the quote shares a row with other content. */
   quoteFontSize?: BoxProps["fontSize"];
   name?: React.ReactNode;
   role?: React.ReactNode;
   project?: React.ReactNode;
-  /** `"feature"` only. A second citation line below name/role/project — e.g. a testimonial's category (Partner/Mentor/Judge) — kept separate from `eyebrow`, which sits above the quote instead. */
   tag?: React.ReactNode;
   href?: string;
-  /** `"body"` only — the quote content, as arbitrary children. */
   children?: React.ReactNode;
 }
 

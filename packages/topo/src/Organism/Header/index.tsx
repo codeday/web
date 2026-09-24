@@ -13,10 +13,6 @@ import type { GradientName } from "../../Theme/vars/colors";
 import { useGrainOverlay } from "../../Theme/vars/grain";
 import { usePrefersReducedMotion } from "../../utils";
 
-// The header's own field runs at .5 opacity, matching the critical Alert
-// — both put white text directly over a gradient field, and need the
-// heavier grain to keep the field from reading flat. The mobile full-screen
-// menu is the same kind of field and uses the same value.
 const HEADER_GRAIN_OPACITY = 0.5;
 
 // Locks body scroll for as long as `active` is true, using `overflow:
@@ -37,19 +33,7 @@ function useBodyScrollLock(active: boolean): void {
 }
 
 export interface HeaderProps extends Omit<BoxProps, "children"> {
-  /**
-   * Whether this header sits over a deep gradient field — a Wash — (white
-   * links, an inverted white action button) or a light ground (ink links,
-   * the ordinary gradient `primary` button). Driven by the page — whatever
-   * ground the header is actually sitting on — never by colour mode: a
-   * header over a gradient hero stays `onWash` even in light mode, so this
-   * is a plain boolean prop, not `useColorModeValue`. A page that wants the
-   * header to react to scrolling past a hero Wash just flips this prop
-   * itself (e.g. from an `IntersectionObserver` on the hero) — the header
-   * doesn't need to know about the page's own layout to do that.
-   */
   onWash?: boolean;
-  /** Which ramp fills the field when `onWash` is true. Ignored otherwise. */
   ramp?: GradientName;
   /**
    * A `HeaderBrand`, some `HeaderLink`s, a `HeaderSpacer`, and a trailing
@@ -72,14 +56,8 @@ export interface HeaderLinkItem {
 }
 
 export interface HeaderLinkProps extends Omit<BoxProps, "children"> {
-  /** Renders the 2px active-state bar and brings opacity to 1. */
   active?: boolean;
   href?: string;
-  /**
-   * Sub-links — rendered as an in-place accordion in the mobile full-screen
-   * menu only. The desktop row has no dropdown behaviour and ignores this
-   * entirely (four to six links fit flat; nesting is a mobile-only need).
-   */
   items?: HeaderLinkItem[];
   children?: React.ReactNode;
 }
@@ -118,14 +96,8 @@ export const HeaderLink = React.forwardRef<HTMLAnchorElement, HeaderLinkProps>(
 );
 HeaderLink.displayName = "HeaderLink";
 
-// Sits between the links and the action, pushing the action to the far
-// end regardless of how many links there are. Desktop-layout-only — the
-// mobile bar and menu build their own layout and never see this child.
 export const HeaderSpacer = (props: BoxProps) => <Box flex="1" {...props} />;
 
-// The hamburger/X glyph, cross-faded and rotated in place — the tap
-// target itself never moves between the closed bar's trigger and the open
-// menu's close control; only the glyph animates.
 function MenuGlyph({ open }: { open: boolean }) {
   return (
     <Box position="relative" boxSize="5">
@@ -149,8 +121,6 @@ function MenuGlyph({ open }: { open: boolean }) {
   );
 }
 
-// One mobile-menu link — a plain row, or (when `items` is given) a toggle
-// that opens an accordion in place rather than pushing a second screen.
 function MobileMenuLink({
   item,
   index,
@@ -275,11 +245,6 @@ function HeaderMobileMenu({
   useBodyScrollLock(open);
   const { containerRef, canvas } = useGrainOverlay("header-mobile-menu", HEADER_GRAIN_OPACITY);
 
-  // Handled directly rather than via the dialog's own `initialFocusEl`/
-  // `finalFocusEl` — focus moves to the close control on open, and back to
-  // the trigger on close. `requestAnimationFrame`-deferred: the dialog
-  // machine mounts `Content` (and this ref) on the same tick `open` flips,
-  // but doesn't paint/attach it until the following frame.
   const wasOpen = useRef(false);
   useEffect(() => {
     if (open && !wasOpen.current) {
@@ -294,10 +259,6 @@ function HeaderMobileMenu({
     return undefined;
   }, [open, triggerRef]);
 
-  // Escape closes — handled directly rather than relying on the dialog's
-  // own escape handling, which (at least with several `Dialog.Root`s
-  // mounted on one page, as a nav bar + its menu naturally are) didn't
-  // reliably fire in testing.
   useEffect(() => {
     if (!open) return undefined;
     function handleKeyDown(e: KeyboardEvent) {
@@ -307,15 +268,6 @@ function HeaderMobileMenu({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open, onClose]);
 
-  // Only re-style the action if it's actually a `Button` — a caller can
-  // pass something else entirely (e.g. a third-party widget's own mount
-  // element) as the trailing child, and blindly cloning Button-shaped
-  // props onto an arbitrary element is a silent no-op at best.
-  //
-  // `onColor`'s ground is `trueWhite` (fixed — see `button.ts`), so the
-  // label needs the matching fixed `colorPalette.true.800`, not the
-  // mode-aware `colorPalette.800`: that stop is solved for a dark-mode
-  // *background*, not for sitting on this button's permanently-white fill.
   const mobileAction =
     action &&
     (action.type === Button
@@ -357,12 +309,6 @@ function HeaderMobileMenu({
             flexDirection="column"
             overflow="hidden"
             color="trueWhite"
-            // 180deg — vertical, so the darkest end sits behind the link list
-            // (top) and the lightest sits behind the footer row (bottom).
-            // Same capped-at-6.36 token the desktop header/Card/Alert
-            // critical use (`gradient.critical`) — an uncapped ramp would put
-            // white text on the sand end, the §3 rule this system has caught
-            // twice already.
             backgroundImage="linear-gradient(180deg, {colors.colorPalette.gradient.critical})"
             onTouchStart={(e) => {
               touchStartY.current = e.touches[0]?.clientY ?? null;
@@ -406,8 +352,6 @@ function HeaderMobileMenu({
               },
             }}
           >
-            {/* Top row — same 56px height and inline padding as the closed
-              bar, so the close control lands exactly where the trigger was. */}
             <Box
               display="flex"
               alignItems="center"
@@ -438,7 +382,6 @@ function HeaderMobileMenu({
               </Box>
             </Box>
 
-            {/* Links */}
             <Box
               as="nav"
               display="flex"
@@ -456,7 +399,6 @@ function HeaderMobileMenu({
 
             <Box flex="1" />
 
-            {/* Footer: CTA, then the bottom-centre close in thumb reach. */}
             <Box
               display="flex"
               flexDirection="column"
@@ -499,13 +441,6 @@ function isElementOfType(node: React.ReactNode, type: unknown): node is React.Re
   return React.isValidElement(node) && node.type === type;
 }
 
-// Navigation header. Above `md` (768px): the desktop row — brand, links,
-// spacer, action, all inline, field flips with `onWash`. Below `md`: it
-// collapses to a brand + a 44x44 trigger (the action moves into the menu —
-// two controls plus a brand in a 375px bar is crowded), which opens a
-// full-screen menu built from the SAME `HeaderLink`/action children, just
-// laid out and styled for a phone. One component, three renderings of one
-// set of children, not three components.
 export const Header = React.forwardRef<HTMLElement, HeaderProps>(
   ({ onWash = false, ramp = "hibiscus", children, ...props }, forwardedRef) => {
     const { containerRef, canvas } = useGrainOverlay("header", HEADER_GRAIN_OPACITY);
@@ -514,8 +449,6 @@ export const Header = React.forwardRef<HTMLElement, HeaderProps>(
     const triggerRef = useRef<HTMLButtonElement | null>(null);
     const menuId = React.useId();
 
-    // If the viewport crosses back over `md` while the menu is open (a
-    // resize, not a real navigation), don't leave it mounted invisibly.
     useEffect(() => {
       if (!isMobile && mobileOpen) setMobileOpen(false);
     }, [isMobile, mobileOpen]);
@@ -564,10 +497,6 @@ export const Header = React.forwardRef<HTMLElement, HeaderProps>(
           zIndex="30"
           overflow="hidden"
           colorPalette={onWash ? ramp : undefined}
-          // White link text sits directly in this field (not behind a white
-          // button ground the way the action is), so it needs the same
-          // contrast-capped token Card/Alert-critical/StatTile use — the
-          // plain full ramp would put white text on the sand end.
           backgroundImage={
             onWash ? "linear-gradient(115deg, {colors.colorPalette.gradient.critical})" : undefined
           }
@@ -577,13 +506,10 @@ export const Header = React.forwardRef<HTMLElement, HeaderProps>(
           color={onWash ? "trueWhite" : "black"}
           {...props}
         >
-          {/* Desktop row (md+) — unchanged: brand, links, spacer, action, all
-            as authored by the caller. */}
           <Box display={{ base: "none", md: "flex" }} alignItems="center" gap="6" width="full">
             {children}
           </Box>
 
-          {/* Mobile closed bar (below md) — brand + trigger only. */}
           <Box display={{ base: "flex", md: "none" }} alignItems="center" width="full">
             {brand}
             <Box flex="1" />

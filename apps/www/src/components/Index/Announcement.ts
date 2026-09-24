@@ -6,14 +6,6 @@ import { FragmentType, useFragment } from "@/gql/fragment-masking";
 
 import { selectHomepageAnnouncement } from "../../lib/homepageAnnouncement";
 
-// Aliased because other fragments on this page's query may select
-// `cms.announcements`/`cms.events` with different arguments, which GraphQL
-// won't merge under one response key.
-//
-// Date windows are evaluated in `selectHomepageAnnouncement` with luxon, not
-// here as `where` filters, so these just bound the candidate set: the 20
-// latest-starting public announcements, and the 10 latest `direct`
-// deadlines (any upcoming deadline is necessarily among the latest).
 export const AnnouncementFragment = graphql(`
   fragment IndexAnnouncementComponent on Query {
     cms {
@@ -49,11 +41,6 @@ export interface HomepageAnnouncementContent {
   chip?: string;
 }
 
-/**
- * `now` is the ISO timestamp captured in getStaticProps, not the visitor's
- * clock, so the server render and hydration always agree (no layout shift
- * from a pill that appears or vanishes on mount).
- */
 export function useHomepageAnnouncement(
   data: FragmentType<typeof AnnouncementFragment>,
   now: string,

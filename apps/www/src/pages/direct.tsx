@@ -19,9 +19,6 @@ import Questions from "../components/MicroInternship/Questions";
 import RegistrationCountdown from "../components/MicroInternship/RegistrationCountdown";
 import Page from "../components/Page";
 
-// The event whose registration closes soonest, among those still open —
-// `$now` is passed from getStaticProps, so "still open" is as of the last
-// ISR regeneration, not the visitor's clock (the countdown clamps at zero).
 const MicroInternshipRegisterQuery = graphql(`
   query MicroInternshipRegisterQuery($now: CmsDateTime!) {
     cms {
@@ -47,9 +44,6 @@ const MicroInternshipRegisterQuery = graphql(`
 
 const HAIRLINE = { borderTop: "sm", borderTopColor: "current.border" } as const;
 
-// Two ways to cover the cost of the same program share this card shell —
-// "Register and pay" is the default (ink outline, dark button), "Apply for a
-// scholarship" the alternative (hairline outline, outline button).
 const CARD = {
   boxSizing: "border-box",
   padding: "{spacing.9} {spacing.9} {spacing.8}",
@@ -69,15 +63,9 @@ export default function MicroInternshipRegister({ query }: MicroInternshipRegist
   const [selectedOption, setSelectedOption] = useState<"pay" | "scholarship" | null>(null);
   const event = query.cms?.events?.items[0] ?? null;
 
-  // The due date is shown in the visitor's own timezone, which only the
-  // browser knows — formatting it during the static build would bake in the
-  // build server's zone (UTC) and then mismatch on hydration. So it's left
-  // blank until after mount.
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => setIsMounted(true), []);
 
-  // The hero buttons pick the same option as the cards further down, so they
-  // reveal the same form in #options rather than duplicating it up here.
   const selectOption = (option: "pay" | "scholarship") => {
     setSelectedOption(option);
     document.getElementById("options")?.scrollIntoView({ behavior: "smooth" });
@@ -175,8 +163,6 @@ export default function MicroInternshipRegister({ query }: MicroInternshipRegist
               </Box>
             </Box>
           </Content>
-          {/* Nothing to count down to or register for once every direct
-            event's registration has closed, so all three lines go together. */}
           {event?.registrationsCloseAt && (
             <Content
               maxW="container.xl"
@@ -217,9 +203,6 @@ export default function MicroInternshipRegister({ query }: MicroInternshipRegist
           )}
         </Section>
 
-        {/* Same student count as the micro-internship page's evidence stats
-          (Labs outcomes), not the homepage's all-programs `impact` figure —
-          this program is the Labs track. */}
         <Section ramp="blackberry">
           <StatTrio
             maxWidth="container.lg"
@@ -303,10 +286,12 @@ export default function MicroInternshipRegister({ query }: MicroInternshipRegist
               gap="8"
             >
               {selectedOption ? (
-                <CognitoForm
-                  formId={131}
-                  prefill={{ Scholarship: selectedOption === "scholarship" }}
-                />
+                <Content maxW="container.md">
+                  <CognitoForm
+                    formId={131}
+                    prefill={{ Scholarship: selectedOption === "scholarship" }}
+                  />
+                </Content>
               ) : (
                 <>
                   <Box

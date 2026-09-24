@@ -65,11 +65,6 @@ export default function Credits({ data }: CreditsProps) {
       darkLogo: sponsor.darkLogo?.url,
     }),
   );
-  // `pressCoverage` is already `date_DESC`. Sorting featured entries first
-  // (stably, so each bucket keeps its date order) then deduping by
-  // `publicationName` on first occurrence means each publication's pick is
-  // its most recent featured article, or its most recent article at all if
-  // it has never been featured.
   const pressEntries = dedupeFirstByKey(
     [...(pressCoverage?.items || [])].sort(
       (a: any, b: any) => Number(b.featured) - Number(a.featured),
@@ -78,8 +73,6 @@ export default function Credits({ data }: CreditsProps) {
   );
 
   return (
-    // The section opens directly on the credit groups, with no "Who pays
-    // for this" title or explainer paragraph above them.
     <Box display="flex" flexDirection="column" gap="10" colorPalette="hibiscus">
       <CreditLists
         groups={[

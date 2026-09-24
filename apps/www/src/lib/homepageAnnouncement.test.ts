@@ -61,9 +61,7 @@ describe("selectHomepageAnnouncement", () => {
   });
 
   it("compares instants across stored offsets", () => {
-    // 2026-10-24T07:00-04:00 is 11:00Z — just inside 30 days of NOW (12:00Z + 30d = 10-24T12:00Z).
     const inside = [{ deadline: "2026-10-24T07:00:00.000-04:00" }];
-    // 09:00-04:00 is 13:00Z — an hour past the window.
     const outside = [{ deadline: "2026-10-24T09:00:00.000-04:00" }];
     expect(selectHomepageAnnouncement([], inside, NOW)).toEqual({ kind: "deadline" });
     expect(selectHomepageAnnouncement([], outside, NOW)).toBeNull();

@@ -7,9 +7,6 @@ export interface GradientTextProps extends BoxProps {
   ramp?: GradientName;
 }
 
-// Gradient fill on text. A real `color` fallback (the deep
-// stop) is always set, so it degrades to a solid if `background-clip: text`
-// isn't supported.
 export const GradientText = React.forwardRef<HTMLElement, GradientTextProps>(
   ({ ramp = "hibiscus", css, ...props }, ref) => {
     const [, , deep, mid, light] = gradientStops[ramp];

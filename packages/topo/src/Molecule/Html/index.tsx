@@ -8,15 +8,6 @@ import darkColors from "../../Theme/vars/darkColors";
 
 function Html({ children, ...props }: BoxProps) {
   const t = useTheme();
-  // `code`'s bg/border is the same "wash" role Atom/Text/Code.tsx uses —
-  // this component needs a literal string for its styled-components
-  // template rather than a Chakra token prop, so it can't pick up
-  // `gray.100`'s `_dark` condition automatically and still needs the
-  // explicit light/dark switch; `t.colors.gray[100]` only ever holds the
-  // light value (the legacy `Theme.colors` snapshot isn't mode-aware),
-  // so the dark side comes from `darkColors` instead. (Previously this read
-  // `gray[50]`/`gray[800]`/`gray[900]` — none of which exist in the current
-  // six-stop scale, so it was already broken.)
   const codeChipColor = useColorModeValue(t.colors.gray[100], darkColors.gray[100]);
   const StyledBox = styled.div`
     h1,

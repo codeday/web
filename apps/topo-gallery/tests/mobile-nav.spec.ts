@@ -19,7 +19,6 @@ for (const width of [320, 375, 768]) {
     await page.setViewportSize({ width, height: 700 });
     await gotoStory(page, STORY);
     await page.screenshot({ path: `${SHOT_DIR}/closed-${width}.png` });
-    // no horizontal overflow
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
     );
@@ -43,7 +42,6 @@ test("open state — trigger position, aria, and screenshot at 375", async ({ pa
   const dialog = page.getByRole("dialog", { name: "Menu" }).first();
   await expect(dialog).toBeVisible();
 
-  // close control lands where the trigger was
   const closeButtons = page.getByRole("button", { name: "Close menu" });
   const topClose = closeButtons.first();
   const topCloseBox = await topClose.boundingBox();
@@ -53,15 +51,11 @@ test("open state — trigger position, aria, and screenshot at 375", async ({ pa
     expect(Math.abs(topCloseBox.y - triggerBox.y)).toBeLessThan(2);
   }
 
-  // no trailing arrows on plain links, only the accordion item gets one
   const arrowCount = await dialog.locator("svg").count();
-  // brand + close + 1 chevron on the "Programs" accordion item = at least 1, but
-  // definitely fewer than one-per-link; just sanity check it's a small number
   expect(arrowCount).toBeLessThan(6);
 
   await page.screenshot({ path: `${SHOT_DIR}/open-375.png` });
 
-  // focus should have moved into the dialog (to the close control)
   const activeIsInsideDialog = await page.evaluate(() => {
     const dialogEl = document.querySelector('[role="dialog"]');
     return !!dialogEl && dialogEl.contains(document.activeElement);
@@ -83,8 +77,6 @@ test("open state at 320 — link type does not wrap mid-word, no horizontal over
   );
   expect(overflow, "horizontal overflow at 320px open").toBe(false);
 
-  // No link row should wrap to more than one line (mid-word or otherwise) —
-  // a wrapped row grows past the single-line font-size * line-height box.
   const rowHeights = await page.evaluate(() => {
     const dialogEl = document.querySelector('[role="dialog"]');
     if (!dialogEl) return [];
@@ -93,7 +85,6 @@ test("open state at 320 — link type does not wrap mid-word, no horizontal over
   });
   expect(rowHeights.length).toBeGreaterThan(0);
   for (const h of rowHeights) {
-    // 28px * 1.15 line-height ~= 32px; allow generous slack for the min-height/gap box, but a wrap would roughly double it
     expect(h).toBeLessThan(60);
   }
 });

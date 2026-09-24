@@ -10,9 +10,6 @@ export interface StatTileProps extends BoxProps {
   colorPalette?: string;
 }
 
-// StatTile, the one home for the radial geometry. No
-// gradient elsewhere in the dashboard group — the rest runs on the
-// semantic palette alone.
 export const StatTile = React.forwardRef<HTMLDivElement, StatTileProps>(
   ({ number, label, colorPalette = "hibiscus", css, ...props }, forwardedRef) => {
     const { containerRef, canvas } = useGrainOverlay("stat-tile");
@@ -30,9 +27,6 @@ export const StatTile = React.forwardRef<HTMLDivElement, StatTileProps>(
         borderRadius="2xl"
         padding="{spacing.4.5} {spacing.4}"
         color="trueWhite"
-        // Capped at 6.36 ("content sitting inside a field") — the
-        // uncapped full ramp puts the white label over the radial's
-        // lightest (sand) reach.
         backgroundImage="radial-gradient(125% 135% at 20% 12%, {colors.colorPalette.gradient.critical})"
         css={{ cornerShape: SQUIRCLE_CORNER_SHAPE, ...(css as object) }}
         {...props}

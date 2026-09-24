@@ -26,13 +26,13 @@ describe("computeResearchStats", () => {
   it("counts papers, collapses repeated venues across years, counts distinct authors", () => {
     const stats = computeResearchStats([
       paper("SIGCSE TS 2024", [MENEZES, EXTERNAL_A]),
-      { ...paper("SIGCSE TS 2026", [MENEZES, EXTERNAL_A]) }, // same venue family, different year
+      { ...paper("SIGCSE TS 2026", [MENEZES, EXTERNAL_A]) },
       paper("Koli Calling 2022", [MENEZES, EXTERNAL_B]),
       { ...paper("Some Talk", [MENEZES]), type: "talk", kind: "talk" },
     ]);
 
     expect(stats.count).toBe(4);
-    expect(stats.venues).toBe(3); // "SIGCSE TS" once, "Koli Calling", "Some Talk"
+    expect(stats.venues).toBe(3);
     expect(stats.coauthors).toBe(3);
     expect(stats.talks).toBe(1);
   });

@@ -33,9 +33,6 @@ export default function PhotoGallery({ data, seed, ...props }: PhotoGalleryProps
   const {
     cms: { pressPhotos },
   } = useFragment(PhotoGalleryFragment, data);
-  // `tags` is selected directly here (in addition to spreading `Photo`'s
-  // own fragment) so filtering doesn't need to unmask `Photo`'s data —
-  // each item passed to `<Photo>` stays exactly the fragment ref it needs.
   const photos = shuffle(pressPhotos?.items || [], seed);
 
   return (

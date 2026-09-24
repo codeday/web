@@ -2,8 +2,6 @@ import { defineSlotRecipe } from "@chakra-ui/react";
 
 import { SQUIRCLE_CORNER_SHAPE } from "../cornerShape";
 
-// Tabs. Active marker is a 2.5px bar in the 62% stop, inset
-// 8px from each edge of the tab, sitting on the 1px bottom rule.
 export const tabsSlotRecipe = defineSlotRecipe({
   slots: ["root", "trigger", "list", "content", "contentGroup", "indicator"],
   base: {
@@ -63,7 +61,6 @@ export const tabsSlotRecipe = defineSlotRecipe({
   },
 });
 
-// Breadcrumb. Muted links, last crumb in ink.
 export const breadcrumbSlotRecipe = defineSlotRecipe({
   slots: ["link", "currentLink", "item", "list", "root", "ellipsis", "separator"],
   base: {
@@ -77,9 +74,6 @@ export const breadcrumbSlotRecipe = defineSlotRecipe({
       color: "black",
     },
   },
-  // Chakra's own default sets `textStyle` on `list` under `variants.size.*`
-  // (default "md"), which wins over a base-level fontSize the same way it
-  // did for Input/Alert/Table — neutralize it and restate at the same stage.
   variants: {
     size: {
       sm: { list: { textStyle: "none", fontSize: "sm" } },
@@ -89,8 +83,6 @@ export const breadcrumbSlotRecipe = defineSlotRecipe({
   },
 });
 
-// Pagination. Ships with zero default Chakra styling, so
-// this recipe is authored from scratch.
 const paginationItemBase = {
   minWidth: "8",
   height: "8",
@@ -112,7 +104,6 @@ export const paginationSlotRecipe = defineSlotRecipe({
     ellipsis: paginationItemBase,
     item: {
       ...paginationItemBase,
-      // Current page.
       '&[aria-current="page"]': {
         bg: "{colors.colorPalette.600}",
         color: "white",
@@ -124,7 +115,6 @@ export const paginationSlotRecipe = defineSlotRecipe({
   },
 });
 
-// Avatar. Squircle at small sizes.
 export const avatarSlotRecipe = defineSlotRecipe({
   slots: ["root", "image", "fallback"],
   base: {
@@ -148,7 +138,6 @@ export const avatarSlotRecipe = defineSlotRecipe({
   },
 });
 
-// EmptyState. Left-aligned, not centred, capped ramp field.
 const emptyStatePadding = { paddingInline: "6", paddingBlock: "7" };
 export const emptyStateSlotRecipe = defineSlotRecipe({
   slots: ["root", "content", "indicator", "title", "description"],
@@ -167,8 +156,6 @@ export const emptyStateSlotRecipe = defineSlotRecipe({
       textAlign: "start",
     },
   },
-  // Chakra's own default sets `px`/`py` on `root` under `variants.size.*`
-  // (default "md") — same fix as elsewhere.
   variants: {
     size: {
       sm: { root: emptyStatePadding },
@@ -178,8 +165,6 @@ export const emptyStateSlotRecipe = defineSlotRecipe({
   },
 });
 
-// New to Topo, re-export + recipe (no bespoke restyle called
-// for beyond Chakra's sensible defaults).
 export const fileUploadSlotRecipe = defineSlotRecipe({
   slots: [
     "root",
@@ -205,7 +190,6 @@ export const fileUploadSlotRecipe = defineSlotRecipe({
   },
 });
 
-// Table. No fields, runs on the semantic palette alone.
 const tableCellPadding = {
   paddingBlock: "2.5",
   paddingInlineEnd: "2.5",
@@ -229,10 +213,6 @@ export const tableSlotRecipe = defineSlotRecipe({
       borderColor: "current.border",
     },
   },
-  // Chakra's own default table recipe sets `px`/`py` on `cell`/`columnHeader`
-  // under `variants.size.*` (default "md") — restated here (see forms.ts /
-  // alert.ts for why this needs to be at the same "size" stage with
-  // matching longhand names, not a base-level override).
   variants: {
     size: {
       sm: { columnHeader: tableCellPadding, cell: tableCellPadding },
@@ -242,8 +222,6 @@ export const tableSlotRecipe = defineSlotRecipe({
   },
 });
 
-// Progress. The fill is the one small element that earns a
-// ramp: `linear-gradient(90deg, <deep>, <mid>)`.
 export const progressSlotRecipe = defineSlotRecipe({
   slots: [
     "root",

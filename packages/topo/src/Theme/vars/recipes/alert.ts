@@ -2,8 +2,6 @@ import { defineSlotRecipe } from "@chakra-ui/react";
 
 import { SQUIRCLE_CORNER_SHAPE } from "../cornerShape";
 
-// Alert. Four variants, none generic. `colorPalette` picks
-// the ramp (default set by the wrapper component, see `../../../Atom/Alert`).
 export const alertSlotRecipe = defineSlotRecipe({
   slots: ["root", "title", "description", "indicator", "content"],
   base: {
@@ -18,9 +16,6 @@ export const alertSlotRecipe = defineSlotRecipe({
       lineHeight: "short",
       alignItems: "flex-start",
     },
-    // The icon gets the critical-full-field treatment (no background
-    // gradient of its own) rather than reading as a second coloured square
-    // inside a coloured box.
     indicator: {
       display: "inline-flex",
       alignItems: "center",
@@ -69,8 +64,6 @@ export const alertSlotRecipe = defineSlotRecipe({
       },
     },
     variant: {
-      // The quietest form — a hairline top rule instead of a filled
-      // background, borrowing the section-rule device.
       hairline: {
         root: {
           bg: "transparent",
@@ -83,11 +76,6 @@ export const alertSlotRecipe = defineSlotRecipe({
           color: "{colors.colorPalette.600}",
         },
       },
-      // Critical's layout, on a flat colour — no gradient. Ground is a
-      // semantic 700 stop (e.g. `orange.700` = `#713400`), not the 600 stop
-      // `rail`'s indicator/`hairline`'s rule use — 700 is the deeper of the
-      // two dark-fill/white-text stops, and reads as "grounded" rather than
-      // "accented" the way 600 does elsewhere in this recipe.
       solid: {
         root: {
           bg: "{colors.colorPalette.700}",
@@ -100,16 +88,11 @@ export const alertSlotRecipe = defineSlotRecipe({
           color: "rgba(255,255,255,.84)",
         },
       },
-      // A gradient rail down the leading edge, stopping at the 62% stop —
-      // it never reaches sand. A real vertical gradient strip (the ramp's
-      // own 0/20/40/62% stops, rescaled — `gradient.rail`), not a flat
-      // border in the ramp's mid colour.
       rail: {
         root: {
           bg: "current.bg",
           color: "black",
           position: "relative",
-          // base paddingInline (18px) + the 4px accent bar's own width.
           paddingInlineStart: "calc({spacing.4.5} + {spacing.1})",
           "&::before": {
             content: '""',
@@ -124,9 +107,6 @@ export const alertSlotRecipe = defineSlotRecipe({
           color: "{colors.colorPalette.600}",
         },
       },
-      // The only alert that takes a full field — capped at 6.36 (the
-      // "content sitting inside a field" floor) so white text stays
-      // legible even where the field runs toward the light end.
       critical: {
         root: {
           backgroundImage: "linear-gradient(112deg, {colors.colorPalette.gradient.critical})",

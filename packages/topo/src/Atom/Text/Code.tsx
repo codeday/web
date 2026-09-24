@@ -19,8 +19,6 @@ interface CodeProps {
 }
 
 const Code: ComponentWithAs<"p", CodeProps> = (({ children, ref, ...props }: any) => (
-  // `gray.100` is mode-aware (see Theme/vars/darkColors.ts) — no manual
-  // light/dark switch needed.
   <Text
     {...props}
     fontFamily="mono"

@@ -51,10 +51,6 @@ function ItemRow({
   );
 }
 
-// A vertical list of hairline-separated rows, each keyed by a large
-// gradient-filled figure — originally the micro-internship page's
-// "three things" block, generalized here so any number of items/ramp
-// can reuse the same layout.
 export const NumberWithDetails = React.forwardRef<HTMLDivElement, NumberWithDetailsProps>(
   ({ ramp, items, ...props }, ref) => (
     <Box ref={ref} {...props}>

@@ -1,33 +1,11 @@
 import { create as createRandom } from "random-seed";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
-// ---------------------------------------------------------------------------
-// Grain — deliberately simple, replacing a
-// coloured/heavy-tailed/autoregressive-band-pass generator that went through
-// several rounds of recalibration without landing on the intended look:
-//
-//   1. generate a small monochrome Gaussian source — mean 128, sigma 34, at
-//      1/`DOWNSCALE` the target's own resolution;
-//   2. bicubic-upscale that source back up to the full target size — this
-//      is what gives the field its spatial correlation/"grain size"; there
-//      is no separate band-pass, tail-stretch, or per-channel colour mixing;
-//   3. composite the result via `mix-blend-mode: overlay` at a fixed CSS
-//      `opacity` (not baked into the pixel values the way earlier versions
-//      baked in an amplitude).
-//
-// All the numeric work in `generateGrainField` is plain typed-array math
-// with no DOM/Canvas dependency, so it runs identically under Node (this
-// file's own test) and in the browser. Only the raster-encoding step needs
-// a real `document`.
-// ---------------------------------------------------------------------------
-
 const MEAN = 128;
 const SIGMA = 34;
 
-/** The source is generated at 1/this fraction of the target's own resolution, then bicubic-upscaled back up — the upscale is what produces the grain's spatial size, not a separate blur/filter stage. */
 const DOWNSCALE = 2.2;
 
-/** CSS `opacity` for the `mix-blend-mode: overlay` composite (see `useGrainOverlay`) — a compositing-time constant, not baked into the generated field. */
 export const OVERLAY_OPACITY = 0.38;
 
 function gaussian(random: () => number): number {
@@ -44,12 +22,6 @@ function generateSource(width: number, height: number, random: () => number): Fl
   for (let i = 0; i < count; i += 1) out[i] = MEAN + gaussian(random) * SIGMA;
   return out;
 }
-
-// ---------------------------------------------------------------------------
-// Bicubic upscale — a standard separable cubic convolution (Catmull-Rom,
-// a=-0.5). Deliberately the ONLY thing that sets the grain's spatial size:
-// there's no band-pass or blur beyond what this resampling itself does.
-// ---------------------------------------------------------------------------
 
 function cubicWeight(x: number): number {
   const a = -0.5;
@@ -108,12 +80,6 @@ function bicubicUpscale(
   return out;
 }
 
-/**
- * Generate the grain field at `width`x`height` (monochrome — one value per
- * pixel, not per channel) — a small Gaussian source bicubic-upscaled to
- * full size. Pure typed-array math, no DOM/Canvas dependency, so this runs
- * identically under Node and in the browser (see grain.test.ts).
- */
 export function generateGrainField(width: number, height: number, seed: string): Float32Array {
   const generator = createRandom(seed);
   const random = () => generator.random();
@@ -127,7 +93,6 @@ function clampByte(v: number): number {
   return Math.min(255, Math.max(0, Math.round(v)));
 }
 
-/** Write a generated (monochrome) field into an existing ImageData buffer — same value in R, G, and B. */
 function writeGrainFieldPixels(
   data: Uint8ClampedArray,
   field: Float32Array,
@@ -144,14 +109,6 @@ function writeGrainFieldPixels(
   }
 }
 
-/**
- * Encode a generated field as a standalone grey canvas — for a consumer
- * that wants a real `<canvas>`/raster directly (e.g. a slide-bake pipeline)
- * rather than the `useGrainOverlay` hook below. Browser only (needs a real
- * `document`). Composite it the same way `useGrainOverlay` does: `mix-
- * blend-mode: overlay` at some opacity — `OVERLAY_OPACITY` for parity with
- * the web default, or a different value if the context calls for it.
- */
 export function renderGrainFieldToCanvas(
   field: Float32Array,
   width: number,
@@ -169,54 +126,17 @@ export function renderGrainFieldToCanvas(
 }
 
 export interface GrainOverlay {
-  /** Attach to the element the grain should track the size of (measured via ResizeObserver). */
   containerRef: (node: HTMLElement | null) => void;
-  /** Render as a child of that same element — absolutely positioned, sized to fill it, already blended. `null` until measured (SSR / first paint), so nothing renders until there's a real size to draw at. */
   canvas: React.ReactNode;
 }
 
-/**
- * Capped at 2x even on 3x-DPR devices (most iPhones): the grain is a
- * subtle texture, not content, so it doesn't need to be pixel-perfect at
- * 3x, and the cap alone cuts the backing-store pixel count — and so the
- * cost of everything below that scales with it — by ~2.25x on those
- * devices.
- */
 function devicePixelRatio(): number {
   return typeof window === "undefined" ? 1 : Math.min(2, window.devicePixelRatio || 1);
 }
 
-/**
- * The grain overlay for a web consumer (Wash, Card, StatTile,
- * Badge, EmptyState, Modal) — painted directly onto a `<canvas>` sized to
- * the consuming element's own box, not cropped from one big shared image.
- * `seed` only needs to vary if two components of THE SAME size, right next
- * to each other, would otherwise show visibly identical noise — otherwise
- * leave it as a stable per-component-kind label.
- *
- * Unlike `generateGrainField` (used by the Node-safe test and the
- * standalone `renderGrainFieldToCanvas` baking path), this does NOT run
- * the hand-rolled JS bicubic upscale at full (DPR-scaled) resolution —
- * on a busy page with many grain-bearing components, doing that upscale
- * loop synchronously for each of them was the main source of the
- * paint-blocking jank on iOS. Instead it paints the small Gaussian
- * source onto a tiny offscreen canvas and lets the browser's own
- * (GPU-accelerated) `drawImage` scaling produce the upscale, which keeps
- * the expensive part off the main thread's JS budget entirely — the
- * source generation that IS still JS-side stays cheap because it only
- * ever runs over the small pre-upscale size.
- *
- * Regenerates on resize (ResizeObserver): the box's own current size is
- * always what gets rendered, never a stretched/squeezed asset. Renders
- * nothing on the server or the client's first paint (no size yet, and
- * canvas painting needs a real DOM anyway), so there's no hydration
- * mismatch — the canvas appears as a normal post-hydration update.
- */
 export function useGrainOverlay(seed: string, opacity: number = OVERLAY_OPACITY): GrainOverlay {
   const elRef = useRef<HTMLElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  // CSS pixels (the box's own on-screen size) — the canvas's backing store
-  // is sized up from this by devicePixelRatio below, not used directly.
   const [size, setSize] = useState<{ width: number; height: number } | null>(null);
 
   const containerRef = useCallback((node: HTMLElement | null) => {
@@ -248,14 +168,6 @@ export function useGrainOverlay(seed: string, opacity: number = OVERLAY_OPACITY)
     return () => observer.disconnect();
   }, []);
 
-  // Sizing the canvas's backing store to the box's CSS pixel size — the
-  // natural thing to do — means on any HiDPI/Retina display (2x, 3x, all
-  // common) the browser has to upscale that backing store to fill the
-  // display area: every generated grain feature ends up covering multiple
-  // physical screen pixels, reading as coarser AND softer (the browser's
-  // default image smoothing on the upscale) than intended. Sizing the
-  // backing store up by `devicePixelRatio` — the standard "retina canvas"
-  // pattern — means each backing-store pixel maps 1:1 to a physical pixel.
   const dpr = devicePixelRatio();
   const deviceWidth = size ? Math.max(1, Math.round(size.width * dpr)) : null;
   const deviceHeight = size ? Math.max(1, Math.round(size.height * dpr)) : null;

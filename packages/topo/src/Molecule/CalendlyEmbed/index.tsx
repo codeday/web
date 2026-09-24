@@ -12,7 +12,7 @@ export function CalendlyEmbed({ slug, meeting, calendlyURLParams, ...props }: Ca
   const holder = useRef<HTMLDivElement>(null);
   const [hasCalendlyLoaded, setHasCalendlyLoaded] = useState(false);
 
-  const typeOfWindow = typeof window; // For static analysis
+  const typeOfWindow = typeof window;
   const windowCalendly = typeOfWindow !== "undefined" && (window as any)?.Calendly;
 
   useEffect(() => {

@@ -6,11 +6,6 @@ import React, { useEffect, useState } from "react";
 import type { PublicationType } from "../../lib/research/types";
 import { dmMono } from "./fonts";
 
-// The site header is itself `position: sticky; top: 0`, so a plain
-// `top: 0` here would stick the filter bar directly behind it. The header
-// starts at the very top of the page (nothing scrolls above it), so its
-// resting/stuck screen position is already correct at mount — no need to
-// wait for a scroll event, just measure once and on resize/breakpoint change.
 function useHeaderBottom(): number {
   const [bottom, setBottom] = useState(0);
   useEffect(() => {
@@ -60,35 +55,15 @@ export default function FilterBar({
   const headerBottom = useHeaderBottom();
 
   return (
-    // The gap above the bar needs to be solid on its own, not a window onto
-    // whatever's scrolling underneath — the header's own wrapper is already
-    // fading toward transparent by the time it reaches this far down (see
-    // Page/index.tsx), so leaving the gap to that backdrop let scrolled
-    // content show through. Sticking THIS wrapper flush with the header
-    // (no gap in its own `top`) and painting the gap as solid `current.bg`
-    // `paddingTop` inside it means the gap is opaque (page background, in
-    // either colour mode) in front of everything, every time — the bar
-    // reads as attached to it, not floating over a see-through notch.
     <Box
       position="sticky"
       top={headerBottom ? `${headerBottom}px` : "env(safe-area-inset-top, 0px)"}
-      // Above the header's own sticky wrapper (zIndex 30) — that wrapper's
-      // bottom padding fades out over roughly the same band this bar sticks
-      // into, and at the lower zIndex this bar used to sit BEHIND that
-      // fade instead of in front of it.
       zIndex="31"
       bg="current.bg"
-      // Gap between the header's own bottom edge and this bar once both are
-      // stuck — purely cosmetic breathing room, not needed for the header's
-      // grain canvas or anything functional.
       paddingTop="4"
     >
       <Box
         data-testid="filter-bar"
-        // Plain opaque background — a fade painted INSIDE the box reads as
-        // a shadow inside the bar. A real cast shadow belongs outside the
-        // box, below the bottom rule, the way a sticky toolbar actually
-        // shadows the content scrolling under it.
         bg="{colors.current.bg/94}"
         css={{ backdropFilter: "blur({blurs.md})" }}
         boxShadow="0 8px 12px -8px rgba(20,10,10,.22)"

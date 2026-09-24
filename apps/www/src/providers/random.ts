@@ -18,13 +18,10 @@ export function useShuffled<T>(array: T[]): T[] {
     temporaryValue: T,
     randomIndex: number;
 
-  // While there remain elements to shuffle...
   while (0 !== currentIndex) {
-    // Pick a remaining element...
     randomIndex = rng.intBetween(0, currentIndex);
     currentIndex -= 1;
 
-    // And swap it with the current element.
     temporaryValue = arrayCopy[currentIndex];
     arrayCopy[currentIndex] = arrayCopy[randomIndex];
     arrayCopy[randomIndex] = temporaryValue;

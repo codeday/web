@@ -7,8 +7,6 @@ import {
 } from "./normalize";
 import type { RawExternalPublication, RawSelfPublication } from "./normalize";
 
-// Fixtures pulled from the live `graph.codeday.org` schema (real records —
-// see the DOIs), not invented data.
 const POSTER: RawExternalPublication = {
   title: "Closing The Gap Between Classrooms and Industry With Open-Source Internships",
   authors: ["Alexander Parra", "Mingjie Jiang", "Tyler Menezes"],
@@ -116,9 +114,9 @@ describe("normalizeSelfPublication", () => {
 describe("sortPublications", () => {
   it("sorts descending by year", () => {
     const sorted = sortPublications([
-      normalizeExternalPublication(POSTER), // 2021
-      normalizeExternalPublication(JOURNAL_PAPER), // 2026
-      normalizeExternalPublication(CONFERENCE_PAPER), // 2022
+      normalizeExternalPublication(POSTER),
+      normalizeExternalPublication(JOURNAL_PAPER),
+      normalizeExternalPublication(CONFERENCE_PAPER),
     ]);
     expect(sorted.map((p) => p.year)).toEqual([2026, 2022, 2021]);
   });

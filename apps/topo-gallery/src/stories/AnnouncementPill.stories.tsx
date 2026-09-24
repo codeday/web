@@ -11,8 +11,6 @@ export default meta;
 
 type Story = StoryObj<typeof AnnouncementPill>;
 
-// Demo copy only — on the homepage this text comes from Contentful (or the
-// generated application-deadline fallback).
 export const Default: Story = {
   name: "Default chip, custom chip, long text",
   render: () => (
@@ -31,9 +29,6 @@ export const Default: Story = {
   ),
 };
 
-// The phone treatment kicks in below Chakra's `sm` breakpoint (480px) —
-// constrained here so the story shows truncation without resizing the
-// viewport.
 export const Narrow: Story = {
   name: "Narrow container — text truncates, chip and arrow don't shrink",
   render: () => (

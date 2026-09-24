@@ -125,8 +125,6 @@ export default function Contact({ query, seed, host }: ContactProps) {
   const { domainName, contactDefaultType, contactDefaultValue, mailingAddress } =
     localizationConfigs?.items?.[0];
 
-  // `CmsLegalEntity` has no `officeAddress` field — this always fell back
-  // to `mailingAddress` even before this migration.
   const officeAddress = mailingAddress;
 
   const email = `team@${host || host.startsWith("localhost") ? domainName : host}`;

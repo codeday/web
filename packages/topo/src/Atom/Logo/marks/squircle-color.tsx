@@ -1,14 +1,6 @@
 import { type IconProps, Icon } from "@chakra-ui/react";
 import React, { useId } from "react";
 
-// The squircle brand mark, full colour — for use on a white/light ground,
-// never over a colour/gradient field (see `squircle-white.tsx` for that
-// case, and `../SquircleLogo.tsx` for the component that picks between the
-// two automatically). Fixed, hand-tuned fills throughout — not
-// `currentColor` — this mark's two variants are a fixed pair, not a single
-// recolorable icon. `clipPath`/`filter` ids are generated per-instance via
-// `useId()` so multiple copies on one page (header + footer + a card, say)
-// never collide.
 export const SquircleLogoColor = (props: IconProps) => {
   const rid = useId().replace(/:/g, "");
   const clipId = `${rid}-clip`;

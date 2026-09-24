@@ -3,8 +3,6 @@ import React from "react";
 
 import { useGrainOverlay } from "../../Theme/vars/grain";
 
-// EmptyState's field gets the same grain treatment as any other field
-// (Card/StatTile), which a static recipe can't add.
 export const EmptyStateRoot = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<typeof ChakraEmptyState.Root>
