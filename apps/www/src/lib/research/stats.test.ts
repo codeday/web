@@ -18,12 +18,12 @@ function paper(venue: string, authors: Publication["authors"]): Publication {
   };
 }
 
-const MENEZES = { name: "Tyler Menezes", codeDayAffiliated: true };
-const EXTERNAL_A = { name: "Anita Sarma", codeDayAffiliated: false };
-const EXTERNAL_B = { name: "Igor Steinmacher", codeDayAffiliated: false };
+const MENEZES = { name: "Tyler Menezes" };
+const EXTERNAL_A = { name: "Anita Sarma" };
+const EXTERNAL_B = { name: "Igor Steinmacher" };
 
 describe("computeResearchStats", () => {
-  it("counts papers, collapses repeated venues across years, counts distinct external coauthors", () => {
+  it("counts papers, collapses repeated venues across years, counts distinct authors", () => {
     const stats = computeResearchStats([
       paper("SIGCSE TS 2024", [MENEZES, EXTERNAL_A]),
       { ...paper("SIGCSE TS 2026", [MENEZES, EXTERNAL_A]) }, // same venue family, different year
@@ -31,9 +31,9 @@ describe("computeResearchStats", () => {
       { ...paper("Some Talk", [MENEZES]), type: "talk", kind: "talk" },
     ]);
 
-    expect(stats.peerReviewed).toBe(3);
-    expect(stats.venues).toBe(2); // "SIGCSE TS" once, "Koli Calling" once
-    expect(stats.coauthors).toBe(2); // Sarma, Steinmacher — Menezes excluded
+    expect(stats.count).toBe(4);
+    expect(stats.venues).toBe(3); // "SIGCSE TS" once, "Koli Calling", "Some Talk"
+    expect(stats.coauthors).toBe(3);
     expect(stats.talks).toBe(1);
   });
 });

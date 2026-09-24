@@ -17,3 +17,4 @@ export * from "./FlexScatter";
 export * from "./MarqueeRow";
 export * from "./Section";
 export * from "./Wash";
+export * from "./AnnouncementPill";

@@ -1,6 +1,6 @@
 import * as m from "@codeday/i18n/messages";
 import { Box, Grid, Text, Heading } from "@codeday/topo/Atom";
-import { Band, Content, Section, Wash } from "@codeday/topo/Molecule";
+import { AnnouncementPill, Band, Content, Section, Wash } from "@codeday/topo/Molecule";
 import { FormatCards, RowList, StatementBlock } from "@codeday/topo/Organism";
 import { apiFetch } from "@codeday/topo/utils";
 import { Broadcast } from "@codeday/topocons";
@@ -13,6 +13,7 @@ import React from "react";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 
+import { useHomepageAnnouncement } from "../components/Index/Announcement";
 import Credits from "../components/Index/Credits";
 import History from "../components/Index/History";
 import Impact, { ImpactAggregate } from "../components/Index/Impact";
@@ -40,19 +41,22 @@ const IndexQuery = graphql(`
     ...IndexStatsComponent
     ...IndexImpactComponent
     ...IndexHistoryComponent
+    ...IndexAnnouncementComponent
   }
 `);
 
 interface HomeProps {
   query: ResultOf<typeof IndexQuery>;
   seed: number;
+  now: string;
 }
 
-export default function Home({ query, seed }: HomeProps) {
+export default function Home({ query, seed, now }: HomeProps) {
   const yearsSince2009Words = toWords(DateTime.now().year - 2009);
   const heroHeadingYears =
     yearsSince2009Words.charAt(0).toUpperCase() + yearsSince2009Words.slice(1);
   const twitch = useTwitch();
+  const announcement = useHomepageAnnouncement(query, now);
 
   // One sentence per alum employer shown in `LogoWall` below, concatenated
   // into a SINGLE paragraph (unlike the sponsor disclaimers, which stay one
@@ -85,18 +89,36 @@ export default function Home({ query, seed }: HomeProps) {
       logoHeadingLevel="span"
     >
       <Band tone="page">
-        <Section ramp="hibiscus" spacing="compact" paddingTop="8">
+        {/* With a pill, the top padding steps down one notch (32->28px base,
+            56->48px xl) so the headline moves down by about the pill's own
+            height. xl has to be restated either way: `compact` spacing's xl
+            `paddingBlock` otherwise overrides a bare `paddingTop` there. */}
+        <Section ramp="hibiscus" spacing="compact" paddingTop={announcement ? "0" : "8"}>
           <Grid templateColumns={{ base: "1fr", lg: "3fr 2fr" }} gap={8} alignItems="center">
-            <StatementBlock
-              size="hero"
-              as="h1"
-              ramp="hibiscus"
-              heading={
-                <Message message={m.www_home_hero_heading} inputs={{ years: heroHeadingYears }} />
-              }
-              body={[m.www_home_hero_body()]}
-              actions={[{ label: m.www_home_hero_action(), href: "#formats" }]}
-            />
+            <Box>
+              {announcement && (
+                // A flex wrapper, not a block one — an inline-flex pill in a
+                // block box would sit on a line box and pick up descender
+                // space under it, on top of the margin.
+                <Box display="flex" marginBlockEnd={{ base: "5", sm: "7" }}>
+                  <AnnouncementPill
+                    href={announcement.href}
+                    text={announcement.text}
+                    chip={announcement.chip}
+                  />
+                </Box>
+              )}
+              <StatementBlock
+                size="hero"
+                as="h1"
+                ramp="hibiscus"
+                heading={
+                  <Message message={m.www_home_hero_heading} inputs={{ years: heroHeadingYears }} />
+                }
+                body={[m.www_home_hero_body()]}
+                actions={[{ label: m.www_home_hero_action(), href: "#formats" }]}
+              />
+            </Box>
             <Box display={{ base: "none", lg: "block" }}>
               {twitch?.username ? (
                 <Box>
@@ -406,6 +428,7 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       query: await apiFetch(IndexQuery, {}, {}),
       seed: Math.random(),
+      now: DateTime.utc().toISO(),
     },
     revalidate: 300,
   };

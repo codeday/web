@@ -61,7 +61,7 @@ const PRESENTATION: RawSelfPublication = {
   doiSuffix: "20640.1608",
   publicationDate: "2026-07-07T12:00:00.000-07:00",
   description: "Presentation delivered at FSE2026.",
-  contributors: [{ name: "Tyler Menezes", affiliation: null }],
+  contributors: [{ name: "Tyler Menezes" }],
   topic: ["Open source", "GenAI"],
 };
 
@@ -72,10 +72,7 @@ const DATASET: RawSelfPublication = {
   doiSuffix: "dkr1ysunc72wyzsdgtlrykdn",
   publicationDate: "2025-10-18T14:17:00.000-07:00",
   description: "This dataset includes anonymized hiring manager agreements.",
-  contributors: [
-    { name: "Utsab Saha", affiliation: "Computing Talent Initiative" },
-    { name: "Tyler Menezes", affiliation: null },
-  ],
+  contributors: [{ name: "Utsab Saha" }, { name: "Tyler Menezes" }],
   topic: ["Hiring"],
 };
 
@@ -99,14 +96,6 @@ describe("normalizeExternalPublication", () => {
     expect(pub.kind).toBe("journal");
     expect(pub.links).toContainEqual({ label: "arXiv", url: "https://arxiv.org/abs/2508.04921" });
   });
-
-  it("flags only the statically-known CodeDay author", () => {
-    const pub = normalizeExternalPublication(CONFERENCE_PAPER);
-    const byName = Object.fromEntries(pub.authors.map((a) => [a.name, a.codeDayAffiliated]));
-    expect(byName["Tyler Menezes"]).toBe(true);
-    expect(byName["Emilia Gan"]).toBe(false);
-    expect(byName["Benjamin Mako Hill"]).toBe(false);
-  });
 });
 
 describe("normalizeSelfPublication", () => {
@@ -117,11 +106,9 @@ describe("normalizeSelfPublication", () => {
     expect(pub.doi).toBe("10.60507/20640.1608");
   });
 
-  it("uses contributor affiliation to decide CodeDay authorship", () => {
+  it("maps contributors to authors in order", () => {
     const pub = normalizeSelfPublication(DATASET, "10.60507");
-    const byName = Object.fromEntries(pub.authors.map((a) => [a.name, a.codeDayAffiliated]));
-    expect(byName["Utsab Saha"]).toBe(false);
-    expect(byName["Tyler Menezes"]).toBe(true);
+    expect(pub.authors.map((a) => a.name)).toEqual(["Utsab Saha", "Tyler Menezes"]);
     expect(pub.type).toBe("dataset");
   });
 });

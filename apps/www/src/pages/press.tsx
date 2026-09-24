@@ -50,9 +50,6 @@ export const PressFragment = graphql(`
 
       programs(where: { type: "primary", archived_not: true }) {
         items {
-          logo {
-            url
-          }
           name
           shortDescription
         }
@@ -98,7 +95,6 @@ export default function Press({ query, seed }: PressProps) {
             {programs?.items?.map((program: any) => (
               <Box key={program.name}>
                 <Text fontWeight="bold" mb={0}>
-                  <Image src={program.logo.url} height="1em" display="inline-block" mr={2} alt="" />
                   {program.name}
                 </Text>
                 <Text>{program.shortDescription}</Text>

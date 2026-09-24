@@ -1,4 +1,4 @@
-import { Box, Grid, Text, Image, List, ListItem, Button } from "@codeday/topo/Atom";
+import { Box, Grid, Text, List, ListItem, Button } from "@codeday/topo/Atom";
 import { ContentfulRichText } from "@codeday/topo/Molecule";
 import React from "react";
 
@@ -16,9 +16,6 @@ export const ProgramInfoFragment = graphql(`
           name
           webname
           shortDescription
-          logo {
-            url
-          }
           virtual
           volunteerUrl
           volunteerDetails {
@@ -66,7 +63,7 @@ export default function ProgramInfo({ program }: ProgramInfoProps) {
       <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={8}>
         <Box>
           <Box fontSize="3xl" fontWeight="bold" mb={4}>
-            <Image src={program.logo.url} height="1em" alt="" display="inline" /> {program.name}
+            {program.name}
           </Box>
           {program.upcoming.length > 0 && (
             <Box mb={4}>

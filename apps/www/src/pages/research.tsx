@@ -49,7 +49,6 @@ export const ResearchFragment = graphql(`
           description
           contributors {
             name
-            affiliation
           }
           topic
         }

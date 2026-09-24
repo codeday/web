@@ -1,4 +1,4 @@
-import { Box, Text, Image, List, ListItem, Checkbox } from "@codeday/topo/Atom";
+import { Box, Text, List, ListItem, Checkbox } from "@codeday/topo/Atom";
 import { ContentfulRichText } from "@codeday/topo/Molecule";
 import React, { useState } from "react";
 
@@ -34,7 +34,7 @@ export default function ProgramInfoCheck({ program, disabled }: ProgramInfoCheck
       >
         <Box mt={-3} ml={4}>
           <Box fontSize="3xl" fontWeight="bold" mb={4}>
-            <Image src={program.logo.url} height="1em" alt="" display="inline" /> {program.name}
+            {program.name}
             {program.virtual && (
               <Box fontWeight="bold" color="red.700" fontSize="md">
                 Online volunteer opportunity.

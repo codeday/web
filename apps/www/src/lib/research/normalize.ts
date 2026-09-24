@@ -1,11 +1,6 @@
 import { DateTime } from "luxon";
 
-import {
-  isCodeDayAuthor,
-  type Publication,
-  type PublicationKind,
-  type PublicationType,
-} from "./types";
+import type { Publication, PublicationKind, PublicationType } from "./types";
 
 // Raw shapes matching exactly the fields queried from `cms.externalPublications`
 // and `cms.publications` (see `apps/www/src/pages/research.tsx`) — kept as
@@ -32,7 +27,7 @@ export interface RawSelfPublication {
   doiSuffix: string;
   publicationDate: string;
   description: string | null;
-  contributors: { name: string; affiliation: string | null }[];
+  contributors: { name: string }[];
   topic: (string | null)[] | null;
 }
 
@@ -79,7 +74,7 @@ export function normalizeExternalPublication(raw: RawExternalPublication): Publi
     year,
     date: type === "preprint" ? humanDate(raw.publicationDate) : undefined,
     title: raw.title,
-    authors: raw.authors.map((name) => ({ name, codeDayAffiliated: isCodeDayAuthor(name) })),
+    authors: raw.authors.map((name) => ({ name })),
     venue: raw.venue || raw.venueLong || "",
     venueLong: raw.venueLong || raw.venue || "",
     where: isPoster ? undefined : raw.venueDetails || undefined,
@@ -111,10 +106,7 @@ export function normalizeSelfPublication(raw: RawSelfPublication, doiPrefix: str
     year,
     date: type === "talk" || type === "preprint" ? humanDate(raw.publicationDate) : undefined,
     title: raw.title,
-    authors: raw.contributors.map((c) => ({
-      name: c.name,
-      codeDayAffiliated: !c.affiliation || c.affiliation === "CodeDay" || isCodeDayAuthor(c.name),
-    })),
+    authors: raw.contributors.map((c) => ({ name: c.name })),
     venue: raw.venue || "",
     venueLong: raw.venue || "",
     doi,

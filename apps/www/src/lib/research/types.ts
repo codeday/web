@@ -16,8 +16,6 @@ export interface PublicationLink {
 
 export interface PublicationAuthor {
   name: string;
-  /** Known to be CodeDay staff/alumni — renders in ink, bold; everyone else renders muted. */
-  codeDayAffiliated: boolean;
 }
 
 export interface Publication {
@@ -36,13 +34,4 @@ export interface Publication {
   summary?: string;
   topics: string[];
   links: PublicationLink[];
-}
-
-// Authors confirmed to be CodeDay staff/alumni — deliberately small and only
-// added when we can verify affiliation, since misattributing a co-author's
-// employer on a public page is worse than leaving a name unhighlighted.
-export const CODEDAY_AUTHORS = new Set<string>(["Tyler Menezes"]);
-
-export function isCodeDayAuthor(name: string): boolean {
-  return CODEDAY_AUTHORS.has(name);
 }

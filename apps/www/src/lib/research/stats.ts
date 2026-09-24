@@ -16,9 +16,7 @@ function venueKey(venue: string): string {
 export function computeResearchStats(publications: Publication[]): ResearchStats {
   const venues = new Set(publications.map((p) => venueKey(p.venue)).filter(Boolean));
 
-  const coauthors = new Set(
-    publications.flatMap((p) => p.authors.filter((a) => !a.codeDayAffiliated).map((a) => a.name)),
-  );
+  const coauthors = new Set(publications.flatMap((p) => p.authors.map((a) => a.name)));
 
   return {
     count: publications.length,

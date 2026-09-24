@@ -120,6 +120,21 @@ export default function Credits({ data }: CreditsProps) {
           >
             <Image src="/charity-navigator.png" alt="Charity Navigator" height="32" />
           </Box>
+
+          <Box
+            as="a"
+            {...({
+              href: "https://www.accbd.org/promising-practices/?search=codeday&wpessid=29538#searchsection",
+              target: "_blank",
+              rel: "noopener",
+            } as any)}
+          >
+            <Image
+              src="/ccba-promising-practice-400.png"
+              alt="CCBA Promising Practice"
+              height="32"
+            />
+          </Box>
         </Box>
       </Box>
       <Box>

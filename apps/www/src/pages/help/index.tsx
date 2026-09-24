@@ -1,8 +1,7 @@
-import { Grid, Image, Text, Heading } from "@codeday/topo/Atom";
+import { Grid, Text, Heading } from "@codeday/topo/Atom";
 import {
   Content,
   IconBox,
-  IconBoxIcon as HeaderIcon,
   IconBoxText as HeaderText,
   IconBoxBody as BoxBody,
 } from "@codeday/topo/Molecule";
@@ -24,9 +23,6 @@ export const HelpIndexFragment = graphql(`
           name
           webname
           shortDescription
-          logo {
-            url(transform: { width: 300, height: 100 })
-          }
           linkedFrom {
             faqs(limit: 1) {
               items {
@@ -71,9 +67,6 @@ export default function Help({ query }: HelpProps) {
               key={program.webname}
               {...({ href: `/help/${program.webname}` } as any)}
             >
-              <HeaderIcon>
-                <Image src={program.logo.url} h={12} alt="" />
-              </HeaderIcon>
               <HeaderText>{program.name}</HeaderText>
               <BoxBody>{program.shortDescription}</BoxBody>
             </IconBox>
