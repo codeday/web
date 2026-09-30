@@ -13,10 +13,9 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { ReactNode, useRef } from "react";
 
+import DisclaimerFooter from "@/components/Page/DisclaimerFooter";
 import { graphql } from "@/gql";
 import { FragmentType, useFragment } from "@/gql/fragment-masking";
-
-import DisclaimerFooter from "./DisclaimerFooter";
 
 export const PageFragment = graphql(`
   fragment PageComponent on Query {

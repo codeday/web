@@ -4,7 +4,7 @@ import { CalendlyEmbed as Calendly } from "@codeday/topo/Molecule";
 import { GetStaticProps, GetStaticPaths } from "next";
 import React from "react";
 
-import Page from "../../components/Page";
+import Page from "@/components/Page";
 
 interface CalendlyPageProps {
   slug: string[];

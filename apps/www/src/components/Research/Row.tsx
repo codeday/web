@@ -2,9 +2,9 @@ import * as m from "@codeday/i18n/messages";
 import { Box } from "@codeday/topo/Atom";
 import React, { useState } from "react";
 
-import type { Publication } from "../../lib/research/types";
-import CitePanel from "./CitePanel";
-import { dmMono } from "./fonts";
+import CitePanel from "@/components/Research/CitePanel";
+import { dmMono } from "@/components/Research/fonts";
+import type { Publication } from "@/lib/research/types";
 
 function rowLabel(pub: Publication): string {
   if (pub.type === "paper") {

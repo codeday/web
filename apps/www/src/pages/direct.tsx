@@ -10,14 +10,13 @@ import { DateTime } from "luxon";
 import { GetStaticProps } from "next";
 import React, { useEffect, useState } from "react";
 
+import { Message } from "@/components/Message";
+import Checklist from "@/components/MicroInternship/Checklist";
+import PartnerPill from "@/components/MicroInternship/PartnerPill";
+import Questions from "@/components/MicroInternship/Questions";
+import RegistrationCountdown from "@/components/MicroInternship/RegistrationCountdown";
+import Page from "@/components/Page";
 import { graphql } from "@/gql";
-
-import { Message } from "../components/Message";
-import Checklist from "../components/MicroInternship/Checklist";
-import PartnerPill from "../components/MicroInternship/PartnerPill";
-import Questions from "../components/MicroInternship/Questions";
-import RegistrationCountdown from "../components/MicroInternship/RegistrationCountdown";
-import Page from "../components/Page";
 
 const MicroInternshipRegisterQuery = graphql(`
   query MicroInternshipRegisterQuery($now: CmsDateTime!) {

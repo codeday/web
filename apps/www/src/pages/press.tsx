@@ -7,12 +7,11 @@ import { DateTime } from "luxon";
 import { GetStaticProps } from "next";
 import React from "react";
 
+import Page from "@/components/Page";
+import PhotoGallery from "@/components/Press/PhotoGallery";
+import PreviousCoverageLogos from "@/components/PreviousCoverageLogos";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
-
-import Page from "../components/Page";
-import PhotoGallery from "../components/Press/PhotoGallery";
-import PreviousCoverageLogos from "../components/PreviousCoverageLogos";
 
 export const PressFragment = graphql(`
   fragment PressComponent on Query {

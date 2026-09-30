@@ -10,10 +10,9 @@ import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
+import SubscribeBox from "@/components/EventInfo/SubscribeBox";
+import Page from "@/components/Page";
 import { graphql } from "@/gql";
-
-import SubscribeBox from "../../../../components/EventInfo/SubscribeBox";
-import Page from "../../../../components/Page";
 
 export const EventInfoFragment = graphql(`
   fragment EventInfo on CalendarCalendarEvent {

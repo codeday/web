@@ -6,9 +6,8 @@ import { ResultOf } from "@graphql-typed-document-node/core";
 import { GetStaticProps } from "next";
 import React from "react";
 
+import Page from "@/components/Page";
 import { graphql } from "@/gql";
-
-import Page from "../components/Page";
 
 const Error404Query = graphql(`
   query Error404Query {

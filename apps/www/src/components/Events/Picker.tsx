@@ -22,8 +22,8 @@ import {
   statusDateLabel,
   statusLabel,
   STATUS_COLOR,
-} from "./data";
-import { ChevronDownIcon, ChevronRightIcon, ExternalLinkIcon } from "./icons";
+} from "@/components/Events/data";
+import { ChevronDownIcon, ChevronRightIcon, ExternalLinkIcon } from "@/components/Events/icons";
 
 const TEXT = "{colors.black}";
 const BODY = "{colors.gray.700}";

@@ -1,4 +1,4 @@
-import type { Publication } from "./types";
+import type { Publication } from "@/lib/research/types";
 
 export interface ResearchStats {
   count: number;

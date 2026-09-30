@@ -4,10 +4,10 @@ import { CONTENT_INSET, Content } from "@codeday/topo/Molecule";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 
-import type { Publication, PublicationType } from "../../lib/research/types";
-import FilterBar, { type TypeFilter } from "./FilterBar";
-import { dmMono } from "./fonts";
-import Row from "./Row";
+import FilterBar, { type TypeFilter } from "@/components/Research/FilterBar";
+import { dmMono } from "@/components/Research/fonts";
+import Row from "@/components/Research/Row";
+import type { Publication, PublicationType } from "@/lib/research/types";
 
 export interface ResearchIndexProps {
   publications: Publication[];

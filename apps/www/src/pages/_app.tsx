@@ -10,7 +10,7 @@ import { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import { Fragment, StrictMode, useEffect, useMemo } from "react";
 
-import { MarketingProvider, FundraiseProvider } from "../providers";
+import { MarketingProvider, FundraiseProvider } from "@/providers";
 
 const DEBUG = debug(["www", "pages", "_app"]);
 

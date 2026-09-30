@@ -2,7 +2,7 @@ import * as m from "@codeday/i18n/messages";
 import { Box, Button } from "@codeday/topo/Atom";
 import React, { useEffect, useState } from "react";
 
-import { getEmailTemplates } from "../../lib/schoolPartnership/templates";
+import { getEmailTemplates } from "@/lib/schoolPartnership/templates";
 
 async function copyToClipboard(text: string): Promise<void> {
   if (navigator.clipboard?.writeText) {

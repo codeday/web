@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import LinkedInTag from "react-linkedin-insight";
 
-import { useAfterMountEffect } from "../../utils/useAfterMountEffect";
+import { useAfterMountEffect } from "@/utils/useAfterMountEffect";
 
 export default function RemindMe(props: any) {
   const { error } = useToasts();

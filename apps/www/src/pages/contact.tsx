@@ -12,13 +12,12 @@ import shuffle from "knuth-shuffle-seeded";
 import { GetServerSideProps } from "next";
 import React from "react";
 
+import Employees, { EmployeesFragment } from "@/components/Contact/Employees";
+import FullProfile from "@/components/Contact/FullProfile";
+import TextOnly from "@/components/Contact/TextOnly";
+import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
-
-import Employees, { EmployeesFragment } from "../components/Contact/Employees";
-import FullProfile from "../components/Contact/FullProfile";
-import TextOnly from "../components/Contact/TextOnly";
-import Page from "../components/Page";
 
 export const ContactFragment = graphql(`
   fragment ContactComponent on Query {

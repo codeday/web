@@ -3,11 +3,10 @@ import { Content } from "@codeday/topo/Molecule";
 import shuffle from "knuth-shuffle-seeded";
 import React, { useState } from "react";
 
+import Photo, { PhotoFragment } from "@/components/Press/Photo";
+import PhotoTagPicker from "@/components/Press/PhotoTagPicker";
 import { graphql } from "@/gql";
 import { FragmentType, useFragment } from "@/gql/fragment-masking";
-
-import Photo, { PhotoFragment } from "./Photo";
-import PhotoTagPicker from "./PhotoTagPicker";
 
 export const PhotoGalleryFragment = graphql(`
   fragment PressPhotoGalleryComponent on Query {

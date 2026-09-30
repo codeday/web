@@ -6,9 +6,8 @@ import { GetStaticProps, GetStaticPaths } from "next";
 import { notFound } from "next/navigation";
 import React from "react";
 
+import Page from "@/components/Page";
 import { graphql } from "@/gql";
-
-import Page from "../../components/Page";
 
 const LegalPathsQuery = graphql(`
   query LegalPathsQuery {

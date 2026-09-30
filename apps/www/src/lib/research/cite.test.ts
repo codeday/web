@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { acmReference, bibtex, formatAuthorsACM } from "./cite";
-import type { Publication } from "./types";
+import { acmReference, bibtex, formatAuthorsACM } from "@/lib/research/cite";
+import type { Publication } from "@/lib/research/types";
 
 const POSTER: Publication = {
   id: "poster",

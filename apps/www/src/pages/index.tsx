@@ -10,22 +10,21 @@ import { GetStaticProps } from "next";
 import { toWords } from "number-to-words";
 import React from "react";
 
+import { useHomepageAnnouncement } from "@/components/Index/Announcement";
+import Credits from "@/components/Index/Credits";
+import History from "@/components/Index/History";
+import Impact, { ImpactAggregate } from "@/components/Index/Impact";
+import Live from "@/components/Index/Live";
+import LogoWall, { LogoWallFragment } from "@/components/Index/LogoWall";
+import Quote from "@/components/Index/Quote";
+import Stats from "@/components/Index/Stats";
+import Teaser from "@/components/Index/Teaser";
+import ThenNow from "@/components/Index/ThenNow";
+import { Message } from "@/components/Message";
+import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
-
-import { useHomepageAnnouncement } from "../components/Index/Announcement";
-import Credits from "../components/Index/Credits";
-import History from "../components/Index/History";
-import Impact, { ImpactAggregate } from "../components/Index/Impact";
-import Live from "../components/Index/Live";
-import LogoWall, { LogoWallFragment } from "../components/Index/LogoWall";
-import Quote from "../components/Index/Quote";
-import Stats from "../components/Index/Stats";
-import Teaser from "../components/Index/Teaser";
-import ThenNow from "../components/Index/ThenNow";
-import { Message } from "../components/Message";
-import Page from "../components/Page";
-import useTwitch from "../useTwitch";
+import useTwitch from "@/useTwitch";
 
 const IndexQuery = graphql(`
   query IndexQuery {

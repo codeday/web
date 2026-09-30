@@ -5,7 +5,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { ServerClient } from "postmark";
 
 import { graphql } from "@/gql";
-
 import {
   renderBannedVolunteer,
   renderCodeDayExistingRegion,
@@ -13,7 +12,7 @@ import {
   renderEmailRM,
   renderEmailRMToStudent,
   renderUnknown,
-} from "../../utils/volunteerOnboardingEmails";
+} from "@/utils/volunteerOnboardingEmails";
 
 const ApplyAsVolunteerQuery = graphql(`
   query ApplyAsVolunteerQuery($webname: String!) {

@@ -3,7 +3,7 @@ import { Box, Button, Eyebrow } from "@codeday/topo/Atom";
 import { Wash } from "@codeday/topo/Molecule";
 import React from "react";
 
-import type { Publication } from "../../lib/research/types";
+import type { Publication } from "@/lib/research/types";
 
 export interface FeaturedBlockProps {
   publication: Publication;

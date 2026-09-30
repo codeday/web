@@ -3,8 +3,8 @@ import { Box, Button, Eyebrow, Text } from "@codeday/topo/Atom";
 import { MapNav } from "@codeday/topocons";
 import React from "react";
 
-import { City, statusDateLabel, statusLabel, STATUS_COLOR } from "./data";
-import { ExternalLinkIcon } from "./icons";
+import { City, statusDateLabel, statusLabel, STATUS_COLOR } from "@/components/Events/data";
+import { ExternalLinkIcon } from "@/components/Events/icons";
 
 const INK = "{colors.black}";
 const BODY = "{colors.gray.700}";

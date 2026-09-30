@@ -3,8 +3,7 @@
   "compilerOptions": {
     "typeRoots": ["./src/@types"],
     "paths": {
-      "@/gql": ["./src/gql"],
-      "@/gql/*": ["./src/gql/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

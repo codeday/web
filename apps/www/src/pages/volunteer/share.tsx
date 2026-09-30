@@ -6,13 +6,12 @@ import { ResultOf } from "@graphql-typed-document-node/core";
 import { GetStaticProps } from "next";
 import React from "react";
 
+import Page from "@/components/Page";
+import VideoTestimonialThumbnail from "@/components/VideoTestimonialThumbnail";
+import ProgramInfo, { ProgramInfoFragment } from "@/components/Volunteer/ProgramInfo";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
-
-import Page from "../../components/Page";
-import VideoTestimonialThumbnail from "../../components/VideoTestimonialThumbnail";
-import ProgramInfo, { ProgramInfoFragment } from "../../components/Volunteer/ProgramInfo";
-import { upcomingEvents } from "../../utils/time";
+import { upcomingEvents } from "@/utils/time";
 
 export const VolunteerShareFragment = graphql(`
   fragment VolunteerShareComponent on Query {

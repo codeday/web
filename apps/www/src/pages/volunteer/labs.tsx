@@ -2,9 +2,9 @@ import { apiFetch } from "@codeday/topo/utils";
 import { DateTime } from "luxon";
 import { GetStaticProps } from "next";
 
-import { VolunteerQuery } from "./index";
+import { VolunteerQuery } from "@/pages/volunteer/index";
 
-export { default } from "./index";
+export { default } from "@/pages/volunteer/index";
 
 export const getStaticProps: GetStaticProps = async () => {
   const query = await apiFetch(VolunteerQuery, { now: DateTime.now().minus({ months: 6 }) }, {});

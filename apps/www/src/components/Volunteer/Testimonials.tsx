@@ -3,8 +3,7 @@ import shuffle from "knuth-shuffle-seeded";
 
 import { graphql } from "@/gql";
 import { FragmentType, useFragment } from "@/gql/fragment-masking";
-
-import { useSlideshow } from "../../providers";
+import { useSlideshow } from "@/providers";
 
 const QUOTE_DURATION = 10000;
 

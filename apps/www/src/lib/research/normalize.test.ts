@@ -4,8 +4,8 @@ import {
   normalizeExternalPublication,
   normalizeSelfPublication,
   sortPublications,
-} from "./normalize";
-import type { RawExternalPublication, RawSelfPublication } from "./normalize";
+} from "@/lib/research/normalize";
+import type { RawExternalPublication, RawSelfPublication } from "@/lib/research/normalize";
 
 const POSTER: RawExternalPublication = {
   title: "Closing The Gap Between Classrooms and Industry With Open-Source Internships",

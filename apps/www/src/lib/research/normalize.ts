@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 
-import type { Publication, PublicationKind, PublicationType } from "./types";
+import type { Publication, PublicationKind, PublicationType } from "@/lib/research/types";
 
 export interface RawExternalPublication {
   title: string;

@@ -2,11 +2,10 @@ import { Box, Grid, Text, List, ListItem, Button } from "@codeday/topo/Atom";
 import { ContentfulRichText } from "@codeday/topo/Molecule";
 import React from "react";
 
+import ProgramShareBlurb from "@/components/Volunteer/ProgramShareBlurb";
+import { VOLUNTEER_ROLES } from "@/components/Volunteer/wizardConfig";
 import { graphql } from "@/gql";
-
-import { formatInterval } from "../../utils/time";
-import ProgramShareBlurb from "./ProgramShareBlurb";
-import { VOLUNTEER_ROLES } from "./wizardConfig";
+import { formatInterval } from "@/utils/time";
 
 export const ProgramInfoFragment = graphql(`
   fragment VolunteerProgramInfoComponent on Query {

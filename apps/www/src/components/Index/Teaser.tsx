@@ -1,6 +1,6 @@
 import React from "react";
 
-import MuxAutoplayVideo from "../MuxAutoplayVideo";
+import MuxAutoplayVideo from "@/components/MuxAutoplayVideo";
 
 // eslint-disable-next-line no-secrets/no-secrets
 export default function Teaser() {

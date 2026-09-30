@@ -17,10 +17,9 @@ import { ResultOf } from "@graphql-typed-document-node/core";
 import { GetStaticProps, GetStaticPaths } from "next";
 import React from "react";
 
+import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
-
-import Page from "../../../components/Page";
 
 export const HelpProgramIndexFragment = graphql(`
   fragment HelpProgramIndexComponent on Query {

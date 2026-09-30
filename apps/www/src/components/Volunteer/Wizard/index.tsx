@@ -5,12 +5,12 @@ import { debug } from "@codeday/utils";
 import { usePostHog } from "@posthog/react";
 import React, { useState, useReducer, useEffect, RefObject } from "react";
 
-import { useMarketing } from "../../../providers";
-import { useAfterMountEffect } from "../../../utils/useAfterMountEffect";
-import BackgroundStep from "./BackgroundStep";
-import ConfirmationStep from "./ConfirmationStep";
-import ContactStep from "./ContactStep";
-import RegionStep from "./RegionStep";
+import BackgroundStep from "@/components/Volunteer/Wizard/BackgroundStep";
+import ConfirmationStep from "@/components/Volunteer/Wizard/ConfirmationStep";
+import ContactStep from "@/components/Volunteer/Wizard/ContactStep";
+import RegionStep from "@/components/Volunteer/Wizard/RegionStep";
+import { useMarketing } from "@/providers";
+import { useAfterMountEffect } from "@/utils/useAfterMountEffect";
 
 const DEBUG = debug(["www", "components", "Volunteer", "Wizard"]);
 

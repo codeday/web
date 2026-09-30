@@ -5,13 +5,12 @@ import { apiFetch } from "@codeday/topo/utils";
 import { ResultOf } from "@graphql-typed-document-node/core";
 import { GetStaticProps } from "next";
 
+import EmploymentChart from "@/components/Donate/EmploymentChart";
+import StoryList from "@/components/Donate/StoryList";
+import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
-
-import EmploymentChart from "../components/Donate/EmploymentChart";
-import StoryList from "../components/Donate/StoryList";
-import Page from "../components/Page";
-import { useFundraise } from "../providers";
+import { useFundraise } from "@/providers";
 
 export const DonateFragment = graphql(`
   fragment DonateComponent on Query {

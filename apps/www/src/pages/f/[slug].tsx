@@ -6,11 +6,10 @@ import { GetStaticProps, GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 import React from "react";
 
+import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
-
-import Page from "../../components/Page";
-import Error404 from "../404";
+import Error404 from "@/pages/404";
 
 const ListFormsQuery = graphql(`
   query ListFormsQuery {

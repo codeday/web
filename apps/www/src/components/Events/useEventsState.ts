@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { City, distanceTo, findNearestCity } from "./data";
+import { City, distanceTo, findNearestCity } from "@/components/Events/data";
 
 export interface GeoPoint {
   lat: number;

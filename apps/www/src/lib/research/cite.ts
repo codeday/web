@@ -1,4 +1,4 @@
-import type { Publication } from "./types";
+import type { Publication } from "@/lib/research/types";
 
 function initialsName(fullName: string): string {
   const parts = fullName.trim().split(/\s+/);

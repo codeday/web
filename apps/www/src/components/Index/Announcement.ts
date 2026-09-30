@@ -3,8 +3,7 @@ import { DateTime } from "luxon";
 
 import { graphql } from "@/gql";
 import { FragmentType, useFragment } from "@/gql/fragment-masking";
-
-import { selectHomepageAnnouncement } from "../../lib/homepageAnnouncement";
+import { selectHomepageAnnouncement } from "@/lib/homepageAnnouncement";
 
 export const AnnouncementFragment = graphql(`
   fragment IndexAnnouncementComponent on Query {

@@ -4,8 +4,8 @@ import { Band, Content, Section } from "@codeday/topo/Molecule";
 import { StatementBlock } from "@codeday/topo/Organism";
 import React from "react";
 
-import Page from "../../components/Page";
-import EmailSample from "../../components/SchoolPartnership/EmailSample";
+import Page from "@/components/Page";
+import EmailSample from "@/components/SchoolPartnership/EmailSample";
 
 export default function SchoolPartnership() {
   return (

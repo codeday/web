@@ -7,15 +7,14 @@ import { ResultOf } from "@graphql-typed-document-node/core";
 import { GetStaticProps } from "next";
 import React from "react";
 
+import Impact from "@/components/Index/Impact";
+import Checklist from "@/components/MicroInternship/Checklist";
+import Evidence from "@/components/MicroInternship/Evidence";
+import HeroField from "@/components/MicroInternship/HeroField";
+import HowItWorks from "@/components/MicroInternship/HowItWorks";
+import PartnerPill from "@/components/MicroInternship/PartnerPill";
+import Page from "@/components/Page";
 import { graphql } from "@/gql";
-
-import Impact from "../../components/Index/Impact";
-import Checklist from "../../components/MicroInternship/Checklist";
-import Evidence from "../../components/MicroInternship/Evidence";
-import HeroField from "../../components/MicroInternship/HeroField";
-import HowItWorks from "../../components/MicroInternship/HowItWorks";
-import PartnerPill from "../../components/MicroInternship/PartnerPill";
-import Page from "../../components/Page";
 
 const MicroInternshipQuery = graphql(`
   query MicroInternshipQuery {

@@ -6,20 +6,19 @@ import { ResultOf } from "@graphql-typed-document-node/core";
 import { GetStaticProps } from "next";
 import React from "react";
 
+import Page from "@/components/Page";
+import FeaturedBlock from "@/components/Research/FeaturedBlock";
+import ResearchIndexSection from "@/components/Research/Index";
+import Stats from "@/components/Research/Stats";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
-
-import Page from "../components/Page";
-import FeaturedBlock from "../components/Research/FeaturedBlock";
-import ResearchIndexSection from "../components/Research/Index";
-import Stats from "../components/Research/Stats";
 import {
   normalizeExternalPublication,
   normalizeSelfPublication,
   sortPublications,
-} from "../lib/research/normalize";
-import { computeResearchStats } from "../lib/research/stats";
-import type { Publication } from "../lib/research/types";
+} from "@/lib/research/normalize";
+import { computeResearchStats } from "@/lib/research/stats";
+import type { Publication } from "@/lib/research/types";
 
 export const ResearchFragment = graphql(`
   fragment ResearchIndexComponent on Query {

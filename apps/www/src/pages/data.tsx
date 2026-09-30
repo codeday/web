@@ -6,11 +6,10 @@ import { ResultOf } from "@graphql-typed-document-node/core";
 import { DateTime } from "luxon";
 import { GetStaticProps } from "next";
 
+import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
-
-import Page from "../components/Page";
-import Error404 from "./404";
+import Error404 from "@/pages/404";
 
 export const DataFragment = graphql(`
   fragment DataComponent on Query {

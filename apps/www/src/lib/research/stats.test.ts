@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { computeResearchStats } from "./stats";
-import type { Publication } from "./types";
+import { computeResearchStats } from "@/lib/research/stats";
+import type { Publication } from "@/lib/research/types";
 
 function paper(venue: string, authors: Publication["authors"]): Publication {
   return {

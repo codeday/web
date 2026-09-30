@@ -3,8 +3,8 @@ import { Box } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
 import React, { useEffect, useState } from "react";
 
-import type { PublicationType } from "../../lib/research/types";
-import { dmMono } from "./fonts";
+import { dmMono } from "@/components/Research/fonts";
+import type { PublicationType } from "@/lib/research/types";
 
 function useHeaderBottom(): number {
   const [bottom, setBottom] = useState(0);

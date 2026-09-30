@@ -9,11 +9,10 @@ import { useRouter } from "next/router";
 import { useMemo } from "react";
 import xmlbuilder from "xmlbuilder";
 
+import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
-
-import Page from "../../../../components/Page";
-import { PublicationQuery, ListPublicationsQuery } from "../../[...doi]/index";
+import { PublicationQuery, ListPublicationsQuery } from "@/pages/doi/[...doi]/index";
 
 export const DoiCrossrefFragment = graphql(`
   fragment DoiCrossrefComponent on Query {

@@ -3,7 +3,7 @@ import { Box } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
 import React from "react";
 
-import type { ResearchStats } from "../../lib/research/stats";
+import type { ResearchStats } from "@/lib/research/stats";
 
 function Tile({ figure, caption }: { figure: number; caption: string }) {
   return (

@@ -7,16 +7,15 @@ import { GetStaticProps } from "next";
 import { NextSeo } from "next-seo";
 import React, { useMemo } from "react";
 
+import { buildCities } from "@/components/Events/data";
+import NearestCityCard from "@/components/Events/NearestCityCard";
+import Picker, { StatusLegend } from "@/components/Events/Picker";
+import ProjectCardsField, { HeroProject } from "@/components/Events/ProjectCardsField";
+import Steps from "@/components/Events/Steps";
+import { useEventsState } from "@/components/Events/useEventsState";
+import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
-
-import { buildCities } from "../components/Events/data";
-import NearestCityCard from "../components/Events/NearestCityCard";
-import Picker, { StatusLegend } from "../components/Events/Picker";
-import ProjectCardsField, { HeroProject } from "../components/Events/ProjectCardsField";
-import Steps from "../components/Events/Steps";
-import { useEventsState } from "../components/Events/useEventsState";
-import Page from "../components/Page";
 
 const BODY = "{colors.gray.700}";
 const CAPTION = "{colors.gray.600}";

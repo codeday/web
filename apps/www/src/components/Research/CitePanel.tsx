@@ -3,9 +3,9 @@ import { Box } from "@codeday/topo/Atom";
 import { Wash } from "@codeday/topo/Molecule";
 import React, { useState } from "react";
 
-import { acmReference, bibtex } from "../../lib/research/cite";
-import type { Publication } from "../../lib/research/types";
-import { dmMono } from "./fonts";
+import { dmMono } from "@/components/Research/fonts";
+import { acmReference, bibtex } from "@/lib/research/cite";
+import type { Publication } from "@/lib/research/types";
 
 async function copyToClipboard(text: string): Promise<void> {
   if (navigator.clipboard?.writeText) {

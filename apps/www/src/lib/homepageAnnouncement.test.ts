@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { describe, expect, it } from "vitest";
 
-import { type AnnouncementCandidate, selectHomepageAnnouncement } from "./homepageAnnouncement";
+import { type AnnouncementCandidate, selectHomepageAnnouncement } from "@/lib/homepageAnnouncement";
 
 const NOW = DateTime.fromISO("2026-09-24T12:00:00Z", { zone: "utc" });
 const iso = (d: DateTime) => d.toISO()!;

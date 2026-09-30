@@ -6,9 +6,8 @@ import { DateTime } from "luxon";
 import { GetStaticProps, GetStaticPaths } from "next";
 import React from "react";
 
+import Page from "@/components/Page";
 import { graphql } from "@/gql";
-
-import Page from "../../../components/Page";
 
 const HelpArticleQuery = graphql(`
   query HelpArticleQuery($article: String!) {

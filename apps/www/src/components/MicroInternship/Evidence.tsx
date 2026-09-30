@@ -8,8 +8,7 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import { graphql } from "@/gql";
 import { FragmentType, useFragment } from "@/gql/fragment-masking";
-
-import { useSlideshow } from "../../providers";
+import { useSlideshow } from "@/providers";
 
 const QUOTE_DURATION_MS = 14_000;
 const FADE_MS = 500;

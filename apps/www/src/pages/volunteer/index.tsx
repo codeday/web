@@ -20,19 +20,14 @@ import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
 import React, { useState, useRef } from "react";
 
+import MuxAutoplayVideo from "@/components/MuxAutoplayVideo";
+import Page from "@/components/Page";
+import PhotoGallery, { VolunteerPhotoGalleryFragment } from "@/components/Volunteer/PhotoGallery";
+import RemindMe from "@/components/Volunteer/RemindMe";
+import Testimonials, { VolunteerTestimonialsFragment } from "@/components/Volunteer/Testimonials";
+import Wizard from "@/components/Volunteer/Wizard";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
-
-import MuxAutoplayVideo from "../../components/MuxAutoplayVideo";
-import Page from "../../components/Page";
-import PhotoGallery, {
-  VolunteerPhotoGalleryFragment,
-} from "../../components/Volunteer/PhotoGallery";
-import RemindMe from "../../components/Volunteer/RemindMe";
-import Testimonials, {
-  VolunteerTestimonialsFragment,
-} from "../../components/Volunteer/Testimonials";
-import Wizard from "../../components/Volunteer/Wizard";
 
 export const VolunteerFragment = graphql(`
   fragment VolunteerComponent on Query {

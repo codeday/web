@@ -4,9 +4,8 @@ import { apiFetch } from "@codeday/topo/utils";
 import { GetServerSideProps } from "next";
 import React from "react";
 
+import Page from "@/components/Page";
 import { graphql } from "@/gql";
-
-import Page from "../../components/Page";
 
 const EmbedBySlugQuery = graphql(`
   query EmbedBySlugQuery($slug: String!) {
