@@ -4,9 +4,11 @@ import {
   CloseButton,
   Spinner,
 } from "@chakra-ui/react";
+import NextLink from "next/link";
 import React from "react";
 
 import { useGrainOverlay } from "../../Theme/vars/grain";
+import { useNextLinkHref } from "../Link/useNextLinkHref";
 
 export type ButtonVariant =
   | "primary"
@@ -43,20 +45,34 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant, children, ...props }, forwardedRef) => {
     const isGradient = variant === undefined || variant === "primary" || variant === "icon";
     const { containerRef, canvas } = useGrainOverlay("button");
+    const { as, href, ...rest } = props as ChakraButtonProps & { href?: string };
+    const nextHref = useNextLinkHref(as === "a" ? href : undefined);
 
+    const buttonProps = {
+      colorPalette: "hibiscus",
+      spinner: loadingSpinner,
+      variant: variant as any,
+      ref: (node: HTMLButtonElement | null) => {
+        if (isGradient) containerRef(node);
+        if (typeof forwardedRef === "function") forwardedRef(node);
+        else if (forwardedRef)
+          (forwardedRef as React.RefObject<HTMLButtonElement | null>).current = node;
+      },
+      ...(rest as any),
+    };
+
+    if (nextHref !== undefined) {
+      return (
+        <ChakraButton {...buttonProps} asChild>
+          <NextLink href={nextHref}>
+            {children}
+            {isGradient && canvas}
+          </NextLink>
+        </ChakraButton>
+      );
+    }
     return (
-      <ChakraButton
-        colorPalette="hibiscus"
-        spinner={loadingSpinner}
-        variant={variant as any}
-        ref={(node: HTMLButtonElement | null) => {
-          if (isGradient) containerRef(node);
-          if (typeof forwardedRef === "function") forwardedRef(node);
-          else if (forwardedRef)
-            (forwardedRef as React.RefObject<HTMLButtonElement | null>).current = node;
-        }}
-        {...(props as any)}
-      >
+      <ChakraButton as={as} {...(href !== undefined ? ({ href } as any) : {})} {...buttonProps}>
         {children}
         {isGradient && canvas}
       </ChakraButton>

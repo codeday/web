@@ -8,7 +8,8 @@
   "plugins": ["typescript", "unicorn", "oxc"],
   "jsPlugins": [
     "./.oxlint/no-section-lead-in-component.mjs",
-    "./.oxlint/no-raw-chakra-color-var.mjs"
+    "./.oxlint/no-raw-chakra-color-var.mjs",
+    "./.oxlint/no-unlocalized-link.mjs"
   ],
   "categories": {
     "correctness": "error"
@@ -16,6 +17,9 @@
   "rules": {
     "codeday/no-section-lead-in-component": "error",
     "codeday-colors/no-raw-chakra-color-var": "error",
+    "codeday-links/no-raw-internal-anchor": "error",
+    "codeday-links/no-next-link-import": "error",
+    "codeday-links/no-chakra-link-primitive-import": "error",
     "no-redundant-type-constituents": "off",
     "restrict-template-expressions": "off",
     "no-for-in-array": "off",
