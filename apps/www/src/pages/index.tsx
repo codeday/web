@@ -1,6 +1,6 @@
 import * as m from "@codeday/i18n/messages";
 import { Box, Grid, Text, Heading } from "@codeday/topo/Atom";
-import { AnnouncementPill, Band, Content, Section, Wash } from "@codeday/topo/Molecule";
+import { ActionLink, AnnouncementPill, Band, Content, Section, Wash } from "@codeday/topo/Molecule";
 import { FormatCards, RowList, StatementBlock } from "@codeday/topo/Organism";
 import { apiFetch } from "@codeday/topo/utils";
 import { Broadcast } from "@codeday/topocons";
@@ -25,7 +25,10 @@ import Teaser from "../components/Index/Teaser";
 import ThenNow from "../components/Index/ThenNow";
 import { Message } from "../components/Message";
 import Page from "../components/Page";
+import { buildPublications } from "../lib/research/normalize";
+import { computeResearchStats } from "../lib/research/stats";
 import useTwitch from "../useTwitch";
+import { ResearchFragment } from "./research";
 
 const IndexQuery = graphql(`
   query IndexQuery {
@@ -38,6 +41,7 @@ const IndexQuery = graphql(`
     ...IndexImpactComponent
     ...IndexHistoryComponent
     ...IndexAnnouncementComponent
+    ...ResearchIndexComponent
   }
 `);
 
@@ -47,12 +51,23 @@ interface HomeProps {
   now: string;
 }
 
+const DOI_PREFIX = process.env.NEXT_PUBLIC_DOI_PREFIX || "";
+
 export default function Home({ query, seed, now }: HomeProps) {
   const yearsSince2009Words = toWords(DateTime.now().year - 2009);
   const heroHeadingYears =
     yearsSince2009Words.charAt(0).toUpperCase() + yearsSince2009Words.slice(1);
   const twitch = useTwitch();
   const announcement = useHomepageAnnouncement(query, now);
+
+  const { cms: researchCms } = useFragment(ResearchFragment, query) || {};
+  const researchStats = computeResearchStats(
+    buildPublications(
+      (researchCms?.externalPublications?.items || []).filter(Boolean) as any[],
+      (researchCms?.publications?.items || []).filter(Boolean) as any[],
+      DOI_PREFIX,
+    ),
+  );
 
   const { cms: logoWallCms } = useFragment(LogoWallFragment, query);
   const alumEmployerDisclaimer = (logoWallCms.logoWallEmployers?.items || [])
@@ -125,7 +140,31 @@ export default function Home({ query, seed, now }: HomeProps) {
         </Section>
 
         <Section ramp="chilioil">
+          <Content maxWidth="container.lg" marginX="auto">
+            <Heading as="h3" mb={8}>
+              {m.www_home_stats_heading()}
+            </Heading>
+          </Content>
           <Stats data={query} />
+          <Content
+            maxWidth="container.lg"
+            marginX="auto"
+            marginTop="6"
+            display="flex"
+            flexWrap="wrap"
+            justifyContent="flex-end"
+            alignItems="center"
+            columnGap="3"
+            rowGap="1"
+          >
+            <Text fontSize="sm" color="gray.700" margin="0">
+              {m.www_home_stats_research_summary({
+                studies: researchStats.count,
+                authors: researchStats.coauthors,
+              })}
+            </Text>
+            <ActionLink label={m.www_home_stats_link()} href="/research" />
+          </Content>
         </Section>
 
         <Section id="then-now" ramp="chilioil">
