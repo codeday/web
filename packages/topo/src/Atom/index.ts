@@ -18,6 +18,7 @@ export * from "./Link";
 export * from "./List";
 export * from "./Logo";
 export * from "./Modal";
+export * from "./PageLoadingBar";
 export * from "./Pagination";
 export * from "./Popover";
 export * from "./Progress";

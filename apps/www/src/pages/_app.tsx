@@ -1,5 +1,5 @@
 import { overwriteGetLocale, baseLocale, type Locale } from "@codeday/i18n/runtime";
-import { Toaster } from "@codeday/topo/Atom";
+import { PageLoadingBar, Toaster } from "@codeday/topo/Atom";
 import { RegionProvider, getRegionFromHostname } from "@codeday/topo/Region";
 import { ThemeProvider } from "@codeday/topo/Theme";
 
@@ -41,6 +41,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <ThemeProvider brandColor="hibiscus" useSystemColorMode cookies={pageProps.cookies}>
           <MarketingProvider>
             <FundraiseProvider>
+              <PageLoadingBar />
               <Component {...pageProps} />
               <Toaster toaster={_toaster} />
             </FundraiseProvider>
