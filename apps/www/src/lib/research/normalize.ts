@@ -115,3 +115,14 @@ export function normalizeSelfPublication(raw: RawSelfPublication, doiPrefix: str
 export function sortPublications(publications: Publication[]): Publication[] {
   return [...publications].sort((a, b) => b.year - a.year);
 }
+
+export function buildPublications(
+  external: RawExternalPublication[],
+  self: RawSelfPublication[],
+  doiPrefix: string,
+): Publication[] {
+  return sortPublications([
+    ...external.map((p) => normalizeExternalPublication(p)),
+    ...self.map((p) => normalizeSelfPublication(p, doiPrefix)),
+  ]);
+}

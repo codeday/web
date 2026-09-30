@@ -12,11 +12,7 @@ import ResearchIndexSection from "@/components/Research/Index";
 import Stats from "@/components/Research/Stats";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
-import {
-  normalizeExternalPublication,
-  normalizeSelfPublication,
-  sortPublications,
-} from "@/lib/research/normalize";
+import { buildPublications } from "@/lib/research/normalize";
 import { computeResearchStats } from "@/lib/research/stats";
 import type { Publication } from "@/lib/research/types";
 
@@ -74,10 +70,7 @@ export default function Research({ query }: ResearchProps) {
   const external = (cms?.externalPublications?.items || []).filter(Boolean) as any[];
   const self = (cms?.publications?.items || []).filter(Boolean) as any[];
 
-  const publications: Publication[] = sortPublications([
-    ...external.map((p) => normalizeExternalPublication(p)),
-    ...self.map((p) => normalizeSelfPublication(p, DOI_PREFIX)),
-  ]);
+  const publications: Publication[] = buildPublications(external, self, DOI_PREFIX);
 
   const stats = computeResearchStats(publications);
   const featured = publications.find((p) => p.type === "paper");
