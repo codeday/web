@@ -7,5 +7,4 @@ export {
   type HeadingProps,
 } from "@chakra-ui/react";
 export * from "./Code";
-export * from "./Link";
 export * from "./CopyText";

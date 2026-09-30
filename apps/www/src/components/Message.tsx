@@ -1,5 +1,4 @@
-import { GradientText, Highlight, Text } from "@codeday/topo/Atom";
-import { Link } from "@codeday/topo/Next/Atom";
+import { GradientText, Highlight, Link, Text } from "@codeday/topo/Atom";
 import { type GradientName } from "@codeday/topo/Theme";
 import {
   ParaglideMessage,

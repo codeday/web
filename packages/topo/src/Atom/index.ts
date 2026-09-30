@@ -14,6 +14,7 @@ export * from "./Form";
 export * from "./GradientText";
 export * from "./Image";
 export * from "./Input";
+export * from "./Link";
 export * from "./List";
 export * from "./Logo";
 export * from "./Modal";

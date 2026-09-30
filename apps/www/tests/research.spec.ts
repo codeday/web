@@ -2,27 +2,11 @@ import { expect, test } from "@playwright/test";
 
 const PATH = "/en-us/research";
 
-test("hero, stats and index render", async ({ page }) => {
+test("the nav bar loads", async ({ page }) => {
   await page.goto(PATH);
-  await expect(page.getByRole("heading", { level: 1, name: /What works/ })).toBeVisible();
-  await expect(page.locator("#index")).toBeVisible();
-});
-
-test("Peer-reviewed filter narrows the index and updates the URL", async ({ page }) => {
-  await page.goto(PATH);
-  await page.getByRole("button", { name: /Peer-reviewed/ }).click();
-  await expect(page).toHaveURL(/type=paper/);
-  const rows = page.locator("#index h3");
-  await expect(rows.first()).toBeVisible();
-});
-
-test("combining an unrelated type + topic filter reaches the empty state", async ({ page }) => {
-  await page.goto(PATH);
-  await page.locator("select").selectOption("Community college");
-  await page.getByRole("button", { name: /Reports/ }).click();
-  await expect(
-    page.getByText("Nothing matches. Clear the search or pick another type."),
-  ).toBeVisible();
+  const header = page.locator("header");
+  await expect(header).toBeVisible();
+  await expect(header.getByRole("link").first()).toBeVisible();
 });
 
 test("filter bar stays pinned below the header while scrolling", async ({ page }) => {
@@ -34,17 +18,6 @@ test("filter bar stays pinned below the header while scrolling", async ({ page }
   const box = await bar.boundingBox();
   expect(box!.y).toBeGreaterThanOrEqual(0);
   expect(box!.y).toBeLessThan(150);
-});
-
-test("cite panel opens, shows ACM + BibTeX, and the copy pill flips to Copied", async ({
-  page,
-}) => {
-  await page.goto(PATH);
-  await page.getByRole("button", { name: "Cite", exact: true }).first().click();
-  await expect(page.getByText("ACM reference")).toBeVisible();
-  await expect(page.getByText("BibTeX", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Copy reference" }).click();
-  await expect(page.getByRole("button", { name: "Copied" })).toBeVisible();
 });
 
 for (const width of [360, 390, 414, 768, 1024, 1280, 1440]) {

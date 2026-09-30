@@ -1,11 +1,5 @@
-import {
-  Dialog as ChakraDialog,
-  Portal,
-  useBreakpointValue,
-  Box,
-  type BoxProps,
-} from "@chakra-ui/react";
-import { Button } from "@codeday/topo/Atom";
+import { Dialog as ChakraDialog, Portal, useBreakpointValue } from "@chakra-ui/react";
+import { Box, type BoxProps, Button } from "@codeday/topo/Atom";
 import { UiMenu, UiX, UiArrowDown } from "@codeday/topocons";
 import React, { useEffect, useRef, useState } from "react";
 

@@ -1,4 +1,4 @@
-import { Heading, Text, List, ListItem, Box } from "@codeday/topo/Atom";
+import { Heading, Text, List, ListItem, Box, Link } from "@codeday/topo/Atom";
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -43,6 +43,7 @@ const Markdown = ({ baseHeadingLevel, allowHtml, ...props }: MarkdownProps) => {
     h4: h(4),
     h5: h(5),
     h6: h(6),
+    a: ({ node: _node, ...props }: any) => <Link {...props} />,
     tr: (props: any) => <Box as="tr" {...props} style={{ verticalAlign: "top" }} />,
     p: (props: any) => <Text mb={4} {...props} />,
     ol: (props: any) => <List mb={6} listStyleType="decimal" {...props} />,

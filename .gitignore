@@ -10,3 +10,5 @@ schema.graphql
 .turbo
 .env.local
 .pnpm-store/
+test-results/
+playwright-report/
