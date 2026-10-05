@@ -69,62 +69,24 @@ function PortraitCard({ person }: { person: PortraitWallPerson }) {
   );
 }
 
-interface CardTransition {
-  fromId: string;
-  toId: string;
-  // "start": both cards are already mounted at their pre-transition opacity
-  // (from=1, to=0) so the browser has something to transition FROM. "run":
-  // the actual crossfade target (from=0, to=1) — set one frame later, since
-  // setting both in the same tick as mounting would let the browser
-  // coalesce them into a single paint and skip the animation entirely.
-  phase: "start" | "run";
-}
-
 function PortraitSlot({ slot }: { slot: PortraitWallSlot }) {
-  const [activeId, setActiveId] = React.useState(slot.activeId);
-  const [transition, setTransition] = React.useState<CardTransition | null>(null);
-  const activeIdRef = React.useRef(slot.activeId);
-
-  React.useEffect(() => {
-    if (slot.activeId === activeIdRef.current) return undefined;
-    const fromId = activeIdRef.current;
-    const toId = slot.activeId;
-    activeIdRef.current = toId;
-    setTransition({ fromId, toId, phase: "start" });
-    const raf = requestAnimationFrame(() => setTransition({ fromId, toId, phase: "run" }));
-    const cleanup = setTimeout(() => {
-      setActiveId(toId);
-      setTransition(null);
-    }, FADE_MS);
-    return () => {
-      cancelAnimationFrame(raf);
-      clearTimeout(cleanup);
-    };
-  }, [slot.activeId]);
-
   return (
     <Box position="relative" aspectRatio="2/3">
       {slot.people.map((person) => {
-        let opacity = 0;
-        let display = "none";
-        if (transition && person.id === transition.fromId) {
-          display = "block";
-          opacity = transition.phase === "start" ? 1 : 0;
-        } else if (transition && person.id === transition.toId) {
-          display = "block";
-          opacity = transition.phase === "start" ? 0 : 1;
-        } else if (!transition && person.id === activeId) {
-          display = "block";
-          opacity = 1;
-        }
+        const active = person.id === slot.activeId;
         return (
           <Box
             key={person.id}
             position="absolute"
             inset="0"
-            display={display}
-            opacity={opacity}
-            transition={`opacity ${FADE_MS}ms ease-in-out`}
+            opacity={active ? 1 : 0}
+            visibility={active ? "visible" : "hidden"}
+            aria-hidden={!active}
+            transition={
+              active
+                ? `opacity ${FADE_MS}ms ease-in-out`
+                : `opacity ${FADE_MS}ms ease-in-out, visibility 0s linear ${FADE_MS}ms`
+            }
           >
             <PortraitCard person={person} />
           </Box>

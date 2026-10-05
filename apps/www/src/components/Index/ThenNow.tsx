@@ -11,8 +11,7 @@ import { FragmentType, useFragment } from "@/gql/fragment-masking";
 
 const SWAP_INTERVAL_MS = 10_000;
 const SLOT_COUNT = 4;
-const TYPICAL_PER_SLOT = 3;
-const UNUSUAL_PER_SLOT = 1;
+const MAX_TYPICAL_RUN = 2;
 
 export const ThenNowAlumFieldsFragment = graphql(`
   fragment IndexThenNowAlumFields on CmsAlum {
@@ -45,7 +44,7 @@ export const ThenNowFragment = graphql(`
           journeyNow_exists: true
           journeyStartProgram_exists: true
         }
-        limit: 12
+        limit: 24
         order: [sys_firstPublishedAt_DESC]
       ) {
         items {
@@ -104,11 +103,8 @@ function shuffled<T>(items: T[]): T[] {
   return copy;
 }
 
-// Deals `pool` out to `slotCount` buckets round-robin, capped at
-// `capPerSlot` each — every card lands in at most one bucket, so slots
-// never end up showing the same photo. When the pool runs short, later
-// buckets simply come up empty or short by one rather than reusing a card
-// another slot already has.
+// Deals `pool` out to `slotCount` buckets round-robin — every card lands in
+// exactly one bucket, so slots never end up showing the same photo.
 //
 // Deliberately unshuffled (`pool` is dealt in its incoming order): this
 // feeds the slots' initial paint, which is computed during render and so
@@ -116,16 +112,28 @@ function shuffled<T>(items: T[]): T[] {
 // `Math.random()` call here would make the two disagree and produce a
 // hydration mismatch. Rotation order gets its randomness later, from inside
 // an effect, where that's safe.
-function deal<T>(pool: T[], slotCount: number, capPerSlot: number): T[][] {
+function deal<T>(pool: T[], slotCount: number): T[][] {
   const buckets: T[][] = Array.from({ length: slotCount }, (): T[] => []);
-  let i = 0;
-  for (let round = 0; round < capPerSlot && i < pool.length; round += 1) {
-    for (let slot = 0; slot < slotCount && i < pool.length; slot += 1) {
-      buckets[slot].push(pool[i]);
-      i += 1;
-    }
-  }
+  pool.forEach((item, i) => buckets[i % slotCount].push(item));
   return buckets;
+}
+
+// Spreads `typical` evenly into the gaps after each `unusual` card. Callers
+// cap `typical` at `MAX_TYPICAL_RUN` per unusual card, so the rotation (which
+// wraps around) never shows more than that many typical cards in a row.
+function interleave(unusual: AlumCard[], typical: AlumCard[]): AlumCard[] {
+  return unusual.flatMap((card, i) => [
+    card,
+    ...typical.slice(
+      Math.floor((i * typical.length) / unusual.length),
+      Math.floor(((i + 1) * typical.length) / unusual.length),
+    ),
+  ]);
+}
+
+interface Slot {
+  unusual: AlumCard[];
+  typical: AlumCard[];
 }
 
 interface ThenNowProps {
@@ -144,15 +152,24 @@ export default function ThenNow({ data }: ThenNowProps) {
     [cms.thenNowTypical],
   );
 
-  const slotLists = useMemo((): AlumCard[][] => {
-    const targetSlotCount = Math.min(SLOT_COUNT, unusualCards.length + typicalCards.length);
-    if (targetSlotCount === 0) return [];
-    const unusualDeal = deal(unusualCards, targetSlotCount, UNUSUAL_PER_SLOT);
-    const typicalDeal = deal(typicalCards, targetSlotCount, TYPICAL_PER_SLOT);
-    return unusualDeal
-      .map((unusual, i) => [...unusual, ...typicalDeal[i]])
-      .filter((list) => list.length > 0);
+  const slots = useMemo((): Slot[] => {
+    const slotCount = Math.min(SLOT_COUNT, unusualCards.length || typicalCards.length);
+    if (slotCount === 0) return [];
+    const unusualDeal = deal(unusualCards, slotCount);
+    const typicalDeal = deal(typicalCards, slotCount);
+    return unusualDeal.map((unusual, i) => ({
+      unusual,
+      typical:
+        unusual.length > 0
+          ? typicalDeal[i].slice(0, unusual.length * MAX_TYPICAL_RUN)
+          : typicalDeal[i],
+    }));
   }, [unusualCards, typicalCards]);
+
+  const slotLists = useMemo(
+    (): AlumCard[][] => slots.map((slot) => [...slot.unusual, ...slot.typical]),
+    [slots],
+  );
 
   const portraitPeopleBySlot = useMemo(
     (): PortraitWallPerson[][] =>
@@ -183,11 +200,14 @@ export default function ThenNow({ data }: ThenNowProps) {
       slotLists.map((_, i) => (i * SWAP_INTERVAL_MS) / slotLists.length),
     );
     cursors.current = slotLists.map(() => 0);
-    plan.current = slotLists.map((list, index) => ({
-      order: [list[0], ...shuffled(list.slice(1))],
+    plan.current = slots.map(({ unusual, typical }, index) => ({
+      order:
+        unusual.length > 0
+          ? interleave([unusual[0], ...shuffled(unusual.slice(1))], shuffled(typical))
+          : [typical[0], ...shuffled(typical.slice(1))],
       remainingMs: staggerOffsetsMs[index],
     }));
-  }, [slotLists]);
+  }, [slots, slotLists]);
 
   const { ref: viewRef, inView } = useInView();
   const [hovered, setHovered] = useState(false);

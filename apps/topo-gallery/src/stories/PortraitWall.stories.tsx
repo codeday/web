@@ -45,3 +45,39 @@ export const FourPeople: Story = {
     </Box>
   ),
 };
+
+function RotatingWall() {
+  const slots = Array.from({ length: 4 }, (_, s) => ({
+    id: `slot-${s}`,
+    people: Array.from({ length: 3 }, (_, p) => ({
+      id: `s${s}p${p}`,
+      name: fakeMessage("[Name]"),
+      // oxlint-disable-next-line unicorn/no-thenable -- `then` is PortraitWallPerson's spec-mandated prop name, not a real thenable
+      then: fakeMessage(`[year], first Weekend in [city].`),
+      now: fakeMessage(`Third year contributing to [Project].`),
+      photo: placeholder(s * 40 + p * 120),
+      alt: fakeMessage("[Name] today"),
+    })),
+  }));
+  const [tick, setTick] = React.useState(0);
+  React.useEffect(() => {
+    const id = setInterval(() => setTick((t) => t + 1), 2000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <PortraitWall
+      maxWidth="container.lg"
+      marginX="auto"
+      slots={slots.map((slot) => ({ ...slot, activeId: slot.people[tick % 3].id }))}
+    />
+  );
+}
+
+export const Rotating: Story = {
+  name: "Rotating — each slot crossfades to its next person every 2s",
+  render: () => (
+    <Box maxWidth="7xl" marginX="auto" padding="6">
+      <RotatingWall />
+    </Box>
+  ),
+};
