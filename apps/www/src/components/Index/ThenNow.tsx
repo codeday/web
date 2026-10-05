@@ -81,9 +81,9 @@ interface AlumCard {
 function toCard(item: any): AlumCard | null {
   if (!item?.photoCutout?.url || !item?.name || !item?.journeyNow) return null;
   const thenLabel = item.journeyStartYear ? String(item.journeyStartYear) : "Then";
-  const thenDetail = item.journeyStartRegion?.name
-    ? `${item.journeyStartProgram?.name} in ${item.journeyStartRegion.name}`
-    : item.journeyStartProgram?.name;
+  const thenDetail = ["CodeDay", item.journeyStartRegion?.name, item.journeyStartProgram?.name]
+    .filter(Boolean)
+    .join(" ");
   return {
     id: item.sys.id,
     name: item.name,

@@ -49,11 +49,11 @@ function PortraitCard({ person }: { person: PortraitWallPerson }) {
         <Box fontSize="sm" fontWeight="700" color="black" letterSpacing="normal">
           {person.name}
         </Box>
-        <Box marginTop="2" fontSize="xs" color="black" css={CLAMP_THREE_LINES}>
-          {person.now}
-        </Box>
-        <Box marginTop="1" fontSize="xs" color="gray.700" css={CLAMP_THREE_LINES}>
+        <Box marginTop="2" fontSize="xs" color="gray.700" css={CLAMP_THREE_LINES}>
           {person.then}
+        </Box>
+        <Box marginTop="1" fontSize="xs" color="black" css={CLAMP_THREE_LINES}>
+          {person.now}
         </Box>
       </Box>
       <Box position="relative" flex="1" minHeight="0">
