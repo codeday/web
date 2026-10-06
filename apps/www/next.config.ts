@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     localeDetection: false,
   },
   // Tailscale's CGNAT range (100.64.0.0/10) and MagicDNS hostnames.
-  allowedDevOrigins: [...Array.from({ length: 64 }, (_, i) => `100.${64 + i}.*.*`), "**.ts.net"],
+  allowedDevOrigins: ["**.*"],
   turbopack: {},
   webpack: (config: any, { isServer }: any) => {
     const originalEntry = config.entry;

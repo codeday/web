@@ -35,7 +35,7 @@ export default function History({ data }: HistoryProps) {
         !!item?.title && !!item?.date,
     )
     .map((item) => {
-      const date = DateTime.fromISO(item.date);
+      const date = DateTime.fromISO(item.date, { zone: "utc" });
       return { id: item.sys.id, year: date.year, month: date.month, title: item.title };
     });
 

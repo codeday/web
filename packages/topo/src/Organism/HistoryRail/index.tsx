@@ -1,7 +1,7 @@
 import { getLocale } from "@codeday/i18n/runtime";
 import { Box, type BoxProps } from "@codeday/topo/Atom";
 import { UiArrowLeft, UiArrowRight } from "@codeday/topocons";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { type GradientName } from "../../Theme/vars/colors";
 import { usePrefersReducedMotion } from "../../utils";
@@ -64,9 +64,14 @@ function monthsBetween(
   return (toYear - fromYear) * 12 + (toMonth - fromMonth);
 }
 
-function buildTicks(startYear: number, startMonth: number, events: HistoryEvent[]): MonthTick[] {
-  const now = new Date();
-  const span = monthsBetween(startYear, startMonth, now.getFullYear(), now.getMonth() + 1);
+function buildTicks(
+  startYear: number,
+  startMonth: number,
+  endYear: number,
+  endMonth: number,
+  events: HistoryEvent[],
+): MonthTick[] {
+  const span = monthsBetween(startYear, startMonth, endYear, endMonth);
   const eventsByOffset = new Map<number, HistoryEvent>();
   for (const event of events) {
     const offset = monthsBetween(startYear, startMonth, event.year, event.month);
@@ -171,9 +176,28 @@ export const HistoryRail = React.forwardRef<HTMLDivElement, HistoryRailProps>(
       return [year, month] as const;
     }, [startYear, startMonth, comparisons]);
 
+    const [currentMonth, setCurrentMonth] = useState<readonly [number, number] | null>(null);
+    useEffect(() => {
+      const now = new Date();
+      setCurrentMonth([now.getFullYear(), now.getMonth() + 1]);
+    }, []);
+
+    const [railEndYear, railEndMonth] = useMemo(() => {
+      let end = [railStartYear, railStartMonth] as const;
+      const dates = [
+        ...events.map((e) => [e.year, e.month] as const),
+        ...comparisons.map((c) => [c.year, c.month ?? 1] as const),
+        ...(currentMonth ? [currentMonth] : []),
+      ];
+      for (const date of dates) {
+        if (monthsBetween(end[0], end[1], date[0], date[1]) > 0) end = date;
+      }
+      return end;
+    }, [railStartYear, railStartMonth, events, comparisons, currentMonth]);
+
     const ticks = useMemo(
-      () => buildTicks(railStartYear, railStartMonth, events),
-      [railStartYear, railStartMonth, events],
+      () => buildTicks(railStartYear, railStartMonth, railEndYear, railEndMonth, events),
+      [railStartYear, railStartMonth, railEndYear, railEndMonth, events],
     );
     const yearLabels = useMemo(() => buildYearLabels(ticks), [ticks]);
     const markedTicks = useMemo(() => ticks.filter((t) => t.event), [ticks]);
