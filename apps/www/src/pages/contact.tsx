@@ -1,8 +1,8 @@
 import * as m from "@codeday/i18n/messages";
 import { getLocaleFromContext } from "@codeday/i18n/next-pages";
-import { Box, Grid, Text, Heading, Link, Image, Divider } from "@codeday/topo/Atom";
+import { Box, Grid, Text, Heading, Link, Divider } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
-import { getRegionFromContext } from "@codeday/topo/Region";
+import { DEFAULT_REGION, useRegion } from "@codeday/topo/Region";
 import { apiFetch } from "@codeday/topo/utils";
 import { Email as EmailIcon } from "@codeday/topocons";
 import { fixLocaleCasing } from "@codeday/utils";
@@ -10,9 +10,9 @@ import { ResultOf } from "@graphql-typed-document-node/core";
 import { sign } from "jsonwebtoken";
 import shuffle from "knuth-shuffle-seeded";
 import { GetStaticProps } from "next";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-import Employees, { EmployeesFragment } from "@/components/Contact/Employees";
+import Employees from "@/components/Contact/Employees";
 import FullProfile from "@/components/Contact/FullProfile";
 import TextOnly from "@/components/Contact/TextOnly";
 import Page from "@/components/Page";
@@ -69,8 +69,9 @@ export const ContactFragment = graphql(`
     }
 
     cms {
-      localizationConfigs(where: { id: $region }, locale: $locale) {
+      localizationConfigs(locale: $locale, limit: 100) {
         items {
+          id
           contactDefaultType
           contactDefaultValue
           domainName
@@ -90,15 +91,11 @@ export const ContactFragment = graphql(`
 `);
 
 const ContactQuery = graphql(`
-  query ContactQuery($region: String!, $locale: String!) {
+  query ContactQuery($locale: String!) {
     ...ContactComponent
     ...ContactEmployeesComponent
   }
 `);
-
-function nl2br(str: string): string {
-  return str.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, "$1<br />$2");
-}
 
 function toTitleCase(str: string): string {
   return str.replace(
@@ -110,10 +107,9 @@ function toTitleCase(str: string): string {
 interface ContactProps {
   query: ResultOf<typeof ContactQuery>;
   seed: number;
-  host: string;
 }
 
-export default function Contact({ query, seed, host }: ContactProps) {
+export default function Contact({ query, seed }: ContactProps) {
   const {
     cms: { localizationConfigs },
     account: { employees, otherTeam, volunteers, board, contractors, emeritus, boardEmeritus },
@@ -121,12 +117,19 @@ export default function Contact({ query, seed, host }: ContactProps) {
     clear,
   } = useFragment(ContactFragment, query);
 
+  const clientRegion = useRegion();
+  const [region, setRegion] = useState(DEFAULT_REGION);
+  useEffect(() => setRegion(clientRegion), [clientRegion]);
+
+  const configs = localizationConfigs.items;
   const { domainName, contactDefaultType, contactDefaultValue, mailingAddress } =
-    localizationConfigs?.items?.[0];
+    configs.find((c) => c.id === region) ||
+    configs.find((c) => c.id === DEFAULT_REGION) ||
+    configs[0];
 
   const officeAddress = mailingAddress;
 
-  const email = `team@${host || host.startsWith("localhost") ? domainName : host}`;
+  const email = `team@${domainName}`;
 
   const employeeIds = employees.map((e: any) => e.id);
   const otherIds = [...employees, ...otherTeam, ...board, ...contractors, ...emeritus].map(
@@ -343,11 +346,7 @@ export default function Contact({ query, seed, host }: ContactProps) {
 }
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  const hostname = ctx.req.headers["x-forwarded-host"] || ctx.req.headers["host"];
-  const host = typeof hostname === "string" ? hostname : "";
-
   const locale = fixLocaleCasing(getLocaleFromContext(ctx));
-  const region = getRegionFromContext(ctx);
 
   const token = sign({ scopes: "read:users" }, process.env.ACCOUNT_SECRET!, { expiresIn: "3m" });
   const labsToken = sign({ typ: "a", aud: "urn:gql.labs.codeday.org" }, process.env.LABS_SECRET!, {
@@ -358,10 +357,9 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   });
   return {
     props: {
-      host,
       query: await apiFetch(
         ContactQuery,
-        { locale, region },
+        { locale },
         {
           Authorization: `Bearer ${token}`,
           "X-Labs-Authorization": `Bearer ${labsToken}`,
