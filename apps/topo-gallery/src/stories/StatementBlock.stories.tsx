@@ -75,3 +75,18 @@ export const Closing: Story = {
     </Box>
   ),
 };
+
+export const LongHeroHeading: Story = {
+  name: "Hero — a heading over 60 characters steps the size down one stop",
+  render: () => (
+    <Box maxWidth="4xl" padding="6" display="flex" flexDirection="column" gap="10">
+      <StatementBlock size="hero" heading={fakeMessage("Tell us about your next hire.")} />
+      <StatementBlock
+        size="hero"
+        heading={fakeMessage(
+          "AI changed entry-level hiring. Meet the early-career engineers approaching mid-level.",
+        )}
+      />
+    </Box>
+  ),
+};

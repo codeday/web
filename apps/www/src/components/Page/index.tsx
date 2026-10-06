@@ -100,6 +100,7 @@ export default function Page({
   const router = useRouter();
   const isResearchActive = router.pathname === "/research";
   const isMicroInternshipActive = router.pathname.startsWith("/micro-internship");
+  const isTalentActive = router.pathname === "/talent";
   const isEventsActive = router.pathname === "/events";
   const isContactActive = router.pathname === "/contact";
   const isVolunteerActive = router.pathname.startsWith("/volunteer");
@@ -180,8 +181,8 @@ export default function Page({
               {m.www_navmenu_microinternship()}
             </HeaderLink>
             <HeaderLink
-              href="/research"
-              active={isResearchActive}
+              href="/talent"
+              active={isTalentActive}
               _before={{
                 content: '""',
                 position: "absolute",
@@ -192,6 +193,9 @@ export default function Page({
                 opacity: 0.6,
               }}
             >
+              {m.www_navmenu_talent()}
+            </HeaderLink>
+            <HeaderLink href="/research" active={isResearchActive}>
               {m.www_navmenu_research()}
             </HeaderLink>
             <HeaderLink href="/contact" active={isContactActive}>

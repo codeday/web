@@ -16,6 +16,7 @@ export interface StatementBlockAction {
 
 interface SizeSpec {
   headingFontSize: string;
+  longHeadingFontSize?: string;
   headingMeasure: string;
   bodyFontSize: string;
   bodyColor: string;
@@ -26,6 +27,7 @@ interface SizeSpec {
 const SIZES: Record<StatementBlockSize, SizeSpec> = {
   hero: {
     headingFontSize: "clamp({fontSizes.5xl}, 6.4vw, {fontSizes.6xl})",
+    longHeadingFontSize: "clamp({fontSizes.4xl}, 5.12vw, {fontSizes.5xl})",
     headingMeasure: "20ch",
     bodyFontSize: "lg",
     bodyColor: "gray.700",
@@ -49,6 +51,25 @@ const SIZES: Record<StatementBlockSize, SizeSpec> = {
     defaultActionStyle: "button",
   },
 };
+
+const LONG_HEADING_CHARACTERS = 60;
+
+function textLength(node: React.ReactNode): number {
+  if (typeof node === "string" || typeof node === "number") return String(node).length;
+  if (Array.isArray(node)) return node.reduce((sum: number, child) => sum + textLength(child), 0);
+  if (
+    React.isValidElement<{
+      children?: React.ReactNode;
+      message?: (inputs?: unknown) => string;
+      inputs?: unknown;
+    }>(node)
+  ) {
+    const { children, message, inputs } = node.props;
+    if (typeof message === "function") return message(inputs).length;
+    return textLength(children);
+  }
+  return 0;
+}
 
 export interface StatementBlockProps extends Omit<BoxProps, "children"> {
   size: StatementBlockSize;
@@ -133,7 +154,11 @@ export const StatementBlock = React.forwardRef<HTMLElement, StatementBlockProps>
       <Heading
         as={as}
         margin="0"
-        fontSize={spec.headingFontSize}
+        fontSize={
+          spec.longHeadingFontSize && textLength(heading) > LONG_HEADING_CHARACTERS
+            ? spec.longHeadingFontSize
+            : spec.headingFontSize
+        }
         fontWeight="700"
         maxWidth={spec.headingMeasure}
         textAlign="left"

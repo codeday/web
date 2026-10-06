@@ -15,7 +15,7 @@ import Credits from "@/components/Index/Credits";
 import History from "@/components/Index/History";
 import Impact, { ImpactAggregate } from "@/components/Index/Impact";
 import Live from "@/components/Index/Live";
-import LogoWall, { LogoWallFragment } from "@/components/Index/LogoWall";
+import LogoWall, { useLogoWallDisclaimer } from "@/components/Index/LogoWall";
 import Quote from "@/components/Index/Quote";
 import Stats from "@/components/Index/Stats";
 import Teaser from "@/components/Index/Teaser";
@@ -68,16 +68,7 @@ export default function Home({ query, seed, now }: HomeProps) {
     ),
   );
 
-  const { cms: logoWallCms } = useFragment(LogoWallFragment, query);
-  const alumEmployerDisclaimer = (logoWallCms.logoWallEmployers?.items || [])
-    .filter((employer: any) => employer.name && employer.legalName)
-    .map((employer: any) =>
-      m.www_home_logowall_disclaimer({
-        name: employer.name,
-        legalName: employer.legalName.replace(/\.$/, ""),
-      }),
-    )
-    .join(" ");
+  const alumEmployerDisclaimer = useLogoWallDisclaimer(query);
 
   return (
     <Page

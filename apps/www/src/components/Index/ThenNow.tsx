@@ -3,7 +3,7 @@ import {
   type PortraitWallPerson,
   type PortraitWallSlot,
 } from "@codeday/topo/Organism";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 import { graphql } from "@/gql";
@@ -70,7 +70,7 @@ export const ThenNowFragment = graphql(`
   }
 `);
 
-interface AlumCard {
+export interface AlumCard {
   id: string;
   name: string;
   then: string;
@@ -78,7 +78,7 @@ interface AlumCard {
   photo: string;
 }
 
-function toCard(item: any): AlumCard | null {
+export function toCard(item: any): AlumCard | null {
   if (!item?.photoCutout?.url || !item?.name || !item?.journeyNow) return null;
   const thenLabel = item.journeyStartYear ? String(item.journeyStartYear) : "Then";
   const thenDetail = ["CodeDay", item.journeyStartRegion?.name, item.journeyStartProgram?.name]
@@ -136,6 +136,100 @@ interface Slot {
   typical: AlumCard[];
 }
 
+interface ThenNowWallProps {
+  slots: AlumCard[][];
+  buildOrders?: () => AlumCard[][];
+}
+
+export function ThenNowWall({ slots, buildOrders }: ThenNowWallProps) {
+  const portraitPeopleBySlot = useMemo(
+    (): PortraitWallPerson[][] =>
+      slots.map((list) =>
+        list.map(
+          (card): PortraitWallPerson => ({
+            id: card.id,
+            name: card.name,
+            // oxlint-disable-next-line unicorn/no-thenable -- `then` is PortraitWallPerson's spec-mandated prop name, not a real thenable
+            then: card.then,
+            now: card.now,
+            photo: card.photo,
+            alt: `${card.name} today`,
+          }),
+        ),
+      ),
+    [slots],
+  );
+
+  const [activeIds, setActiveIds] = useState<string[]>(() => slots.map((list) => list[0]?.id));
+
+  const cursors = useRef<number[]>(slots.map(() => 0));
+
+  const plan = useRef<{ order: AlumCard[]; remainingMs: number }[]>([]);
+
+  useEffect(() => {
+    const staggerOffsetsMs = shuffled(slots.map((_, i) => (i * SWAP_INTERVAL_MS) / slots.length));
+    cursors.current = slots.map(() => 0);
+    plan.current = (buildOrders ? buildOrders() : slots).map((order, index) => ({
+      order,
+      remainingMs: staggerOffsetsMs[index],
+    }));
+  }, [slots, buildOrders]);
+
+  const { ref: viewRef, inView } = useInView();
+  const [hovered, setHovered] = useState(false);
+  const paused = !inView || hovered;
+
+  useEffect(() => {
+    if (paused) return undefined;
+
+    const timeoutIds: ReturnType<typeof setTimeout>[] = [];
+    const deadlines: number[] = [];
+
+    plan.current.forEach((slot, index) => {
+      if (slot.order.length <= 1) return;
+      const schedule = (delayMs: number) => {
+        deadlines[index] = Date.now() + delayMs;
+        timeoutIds[index] = setTimeout(() => {
+          cursors.current[index] = (cursors.current[index] + 1) % slot.order.length;
+          const card = slot.order[cursors.current[index]];
+          setActiveIds((prev) => prev.map((id, i) => (i === index ? card.id : id)));
+          schedule(SWAP_INTERVAL_MS);
+        }, delayMs);
+      };
+      schedule(slot.remainingMs);
+    });
+
+    return () => {
+      timeoutIds.forEach((id) => clearTimeout(id));
+      const now = Date.now();
+      plan.current.forEach((slot, index) => {
+        if (deadlines[index] !== undefined) {
+          slot.remainingMs = Math.max(0, deadlines[index] - now);
+        }
+      });
+    };
+  }, [slots, paused]);
+
+  if (activeIds.length === 0) return null;
+
+  return (
+    <PortraitWall
+      ref={viewRef}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      maxWidth="container.lg"
+      marginX="auto"
+      slots={portraitPeopleBySlot.map(
+        (people, index): PortraitWallSlot => ({
+          id: `slot-${index}`,
+          people,
+          activeId: activeIds[index],
+        }),
+      )}
+    />
+  );
+}
+
 interface ThenNowProps {
   data: FragmentType<typeof ThenNowFragment>;
 }
@@ -171,95 +265,15 @@ export default function ThenNow({ data }: ThenNowProps) {
     [slots],
   );
 
-  const portraitPeopleBySlot = useMemo(
-    (): PortraitWallPerson[][] =>
-      slotLists.map((list) =>
-        list.map(
-          (card): PortraitWallPerson => ({
-            id: card.id,
-            name: card.name,
-            // oxlint-disable-next-line unicorn/no-thenable -- `then` is PortraitWallPerson's spec-mandated prop name, not a real thenable
-            then: card.then,
-            now: card.now,
-            photo: card.photo,
-            alt: `${card.name} today`,
-          }),
-        ),
-      ),
-    [slotLists],
-  );
-
-  const [activeIds, setActiveIds] = useState<string[]>(() => slotLists.map((list) => list[0]?.id));
-
-  const cursors = useRef<number[]>(slotLists.map(() => 0));
-
-  const plan = useRef<{ order: AlumCard[]; remainingMs: number }[]>([]);
-
-  useEffect(() => {
-    const staggerOffsetsMs = shuffled(
-      slotLists.map((_, i) => (i * SWAP_INTERVAL_MS) / slotLists.length),
-    );
-    cursors.current = slotLists.map(() => 0);
-    plan.current = slots.map(({ unusual, typical }, index) => ({
-      order:
+  const buildOrders = useCallback(
+    (): AlumCard[][] =>
+      slots.map(({ unusual, typical }) =>
         unusual.length > 0
           ? interleave([unusual[0], ...shuffled(unusual.slice(1))], shuffled(typical))
           : [typical[0], ...shuffled(typical.slice(1))],
-      remainingMs: staggerOffsetsMs[index],
-    }));
-  }, [slots, slotLists]);
-
-  const { ref: viewRef, inView } = useInView();
-  const [hovered, setHovered] = useState(false);
-  const paused = !inView || hovered;
-
-  useEffect(() => {
-    if (paused) return undefined;
-
-    const timeoutIds: ReturnType<typeof setTimeout>[] = [];
-    const deadlines: number[] = [];
-
-    plan.current.forEach((slot, index) => {
-      if (slot.order.length <= 1) return;
-      const schedule = (delayMs: number) => {
-        deadlines[index] = Date.now() + delayMs;
-        timeoutIds[index] = setTimeout(() => {
-          cursors.current[index] = (cursors.current[index] + 1) % slot.order.length;
-          const card = slot.order[cursors.current[index]];
-          setActiveIds((prev) => prev.map((id, i) => (i === index ? card.id : id)));
-          schedule(SWAP_INTERVAL_MS);
-        }, delayMs);
-      };
-      schedule(slot.remainingMs);
-    });
-
-    return () => {
-      timeoutIds.forEach((id) => clearTimeout(id));
-      const now = Date.now();
-      plan.current.forEach((slot, index) => {
-        if (deadlines[index] !== undefined) {
-          slot.remainingMs = Math.max(0, deadlines[index] - now);
-        }
-      });
-    };
-  }, [slotLists, paused]);
-
-  if (activeIds.length === 0) return null;
-
-  return (
-    <PortraitWall
-      ref={viewRef}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      maxWidth="container.lg"
-      marginX="auto"
-      slots={portraitPeopleBySlot.map(
-        (people, index): PortraitWallSlot => ({
-          id: `slot-${index}`,
-          people,
-          activeId: activeIds[index],
-        }),
-      )}
-    />
+      ),
+    [slots],
   );
+
+  return <ThenNowWall slots={slotLists} buildOrders={buildOrders} />;
 }

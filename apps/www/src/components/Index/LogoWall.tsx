@@ -1,3 +1,4 @@
+import * as m from "@codeday/i18n/messages";
 import { Box, Grid, Image } from "@codeday/topo/Atom";
 import { darkColors, legacyThemeData, useColorMode } from "@codeday/topo/Theme";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -57,6 +58,19 @@ function toLogo(item: any): EmployerLogo | null {
     light: item.logo.url,
     dark: item.darkLogo?.url || null,
   };
+}
+
+export function useLogoWallDisclaimer(data: FragmentType<typeof LogoWallFragment>): string {
+  const { cms } = useFragment(LogoWallFragment, data);
+  return (cms.logoWallEmployers?.items || [])
+    .filter((employer) => employer?.name && employer.legalName)
+    .map((employer) =>
+      m.www_home_logowall_disclaimer({
+        name: employer!.name!,
+        legalName: employer!.legalName!.replace(/\.$/, ""),
+      }),
+    )
+    .join(" ");
 }
 
 function deal<T>(pool: T[], slotCount: number): T[][] {
