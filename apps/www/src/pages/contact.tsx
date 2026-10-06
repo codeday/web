@@ -9,7 +9,7 @@ import { fixLocaleCasing } from "@codeday/utils";
 import { ResultOf } from "@graphql-typed-document-node/core";
 import { sign } from "jsonwebtoken";
 import shuffle from "knuth-shuffle-seeded";
-import { GetServerSideProps } from "next";
+import { GetStaticProps } from "next";
 import React from "react";
 
 import Employees, { EmployeesFragment } from "@/components/Contact/Employees";
