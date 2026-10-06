@@ -233,9 +233,7 @@ export default function Talent({ query }: TalentProps) {
           alignItems="center"
         >
           <Box display="flex" flexDirection="column" gap="5" minWidth="0">
-            <Eyebrow ramp="hibiscus" fontFamily="mono" fontSize="xs">
-              {m.www_talent_hero_eyebrow()}
-            </Eyebrow>
+            <Eyebrow ramp="hibiscus">{m.www_talent_hero_eyebrow()}</Eyebrow>
             <StatementBlock
               size="hero"
               as="h2"

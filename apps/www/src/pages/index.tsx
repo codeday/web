@@ -157,7 +157,7 @@ export default function Home({ query, seed, now }: HomeProps) {
           </Content>
         </Section>
 
-        <Section id="then-now" ramp="chilioil">
+        <Section id="then-now" ramp="chilioil" mt={-12}>
           <Content maxWidth="container.lg" marginX="auto">
             <Heading
               as="h2"
@@ -366,9 +366,7 @@ export default function Home({ query, seed, now }: HomeProps) {
                   id: "companies",
                   lead: m.www_home_waysin_companies_lead(),
                   body: m.www_home_waysin_companies_body(),
-                  actions: [
-                    { label: m.www_home_waysin_companies_action(), href: "/s/companies-deck" },
-                  ],
+                  actions: [{ label: m.www_home_waysin_companies_action(), href: "/talent" }],
                 },
                 {
                   id: "foundations",

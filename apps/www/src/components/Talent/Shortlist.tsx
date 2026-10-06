@@ -116,7 +116,7 @@ export default function Shortlist() {
                   {candidate.meta()}
                 </Box>
               </Box>
-              <Box fontSize="sm" fontWeight="600" lineHeight="short">
+              <Box fontSize="sm" lineHeight="short">
                 {candidate.achievement()}
               </Box>
               <Box display="flex" flexWrap="wrap" gap="1.5">
