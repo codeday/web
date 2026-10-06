@@ -162,13 +162,6 @@ export default function Contact({ query, seed, host }: ContactProps) {
   return (
     <Page slug="/contact" title="Contact">
       <Content>
-        <Image
-          src="https://img.codeday.org/o/1/9/191yum8oauq3rnagx6aakycvrxxmw4vdg46vei71sfaxessdj3qdn2inwx58derbbi.jpg"
-          alt=""
-          mt={-8}
-          mb={8}
-          rounded="md"
-        />
         <Heading as="h2" fontSize="5xl" mb={12}>
           {m.www_contact_lets_talk()}
         </Heading>
@@ -349,7 +342,7 @@ export default function Contact({ query, seed, host }: ContactProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = async (ctx) => {
   const hostname = ctx.req.headers["x-forwarded-host"] || ctx.req.headers["host"];
   const host = typeof hostname === "string" ? hostname : "";
 
@@ -377,5 +370,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       ),
       seed: Math.random(),
     },
+    revalidate: 300,
   };
 };
