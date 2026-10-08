@@ -2,6 +2,7 @@ import { Box, type BoxProps, Image } from "@codeday/topo/Atom";
 import React from "react";
 
 import { SQUIRCLE_CORNER_SHAPE } from "../../Theme/vars/cornerShape";
+import { OVERLAY_OPACITY, useGrainOverlay } from "../../Theme/vars/grain";
 
 export interface PortraitWallPerson {
   id: string;
@@ -32,6 +33,11 @@ const CLAMP_THREE_LINES = {
 const FADE_MS = 900;
 
 function PortraitCard({ person }: { person: PortraitWallPerson }) {
+  const { containerRef: grainRef, canvas: grainCanvas } = useGrainOverlay(
+    `portrait-${person.id}`,
+    OVERLAY_OPACITY * 0.8,
+  );
+
   return (
     <Box
       position="relative"
@@ -56,14 +62,29 @@ function PortraitCard({ person }: { person: PortraitWallPerson }) {
           {person.now}
         </Box>
       </Box>
-      <Box position="relative" flex="1" minHeight="0">
+      <Box
+        ref={grainRef as any}
+        position="relative"
+        flex="1"
+        minHeight="0"
+        css={{
+          "& > canvas": {
+            maskImage: `url("${person.photo}")`,
+            maskSize: "cover",
+            maskPosition: "top",
+            maskRepeat: "no-repeat",
+          },
+        }}
+      >
         <Image
           src={person.photo}
           alt={person.alt}
           width="full"
           height="full"
+          filter="grayscale(1) contrast(1.15)"
           css={{ objectFit: "cover", objectPosition: "top", display: "block" }}
         />
+        {grainCanvas}
       </Box>
     </Box>
   );
