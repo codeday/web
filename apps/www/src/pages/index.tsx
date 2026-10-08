@@ -1,6 +1,13 @@
 import * as m from "@codeday/i18n/messages";
 import { Box, Grid, Text, Heading } from "@codeday/topo/Atom";
-import { ActionLink, AnnouncementPill, Band, Content, Section, Wash } from "@codeday/topo/Molecule";
+import {
+  ActionLink,
+  AnnouncementPill,
+  Band,
+  Content,
+  SECTION_IMAGE_ANCHOR,
+  Section,
+} from "@codeday/topo/Molecule";
 import { FormatCards, RowList, StatementBlock } from "@codeday/topo/Organism";
 import { apiFetch } from "@codeday/topo/utils";
 import { Broadcast } from "@codeday/topocons";
@@ -269,18 +276,25 @@ export default function Home({ query, seed, now }: HomeProps) {
           </Content>
         </Box>
 
-        <Wash ramp="hibiscus" shape="tint">
-          <Section ramp="hotsauce">
+        <Section
+          ramp="hotsauce"
+          backgroundColor="hibiscus.50"
+          imgSrc={{ base: null, md: "/images/cliff-ink.png" }}
+          imgSide="right"
+          imgPosition="left"
+          imgSize="contain"
+          imgMask="linear-gradient(to right, transparent, black {sizes.32})"
+        >
+          <Box maxWidth="container.lg" marginX="auto" display="flex">
             <StatementBlock
               size="section"
               ramp="hotsauce"
-              maxWidth="container.lg"
-              marginX="auto"
+              anchorName={SECTION_IMAGE_ANCHOR}
               heading={m.www_home_whymatters_heading()}
               body={[<Message key="body" message={m.www_home_whymatters_body} />]}
             />
-          </Section>
-        </Wash>
+          </Box>
+        </Section>
 
         <Section ramp="chilioil">
           <Box maxWidth="container.lg" marginX="auto">
@@ -336,11 +350,21 @@ export default function Home({ query, seed, now }: HomeProps) {
       </Band>
 
       <Band tone="tinted">
-        <Section ramp="chilioil">
-          <Box maxWidth="container.lg" marginX="auto">
+        <Section
+          ramp="chilioil"
+          backgroundColor="hibiscus.50"
+          imgSrc={{ base: null, md: "/images/study-classroom.png" }}
+          imgSide="left"
+          imgOverlap="{spacing.4}"
+          imgPosition="right"
+          imgSize="contain"
+          imgMask="linear-gradient(to left, transparent, black {sizes.32})"
+        >
+          <Box maxWidth="container.lg" marginX="auto" display="flex" justifyContent="flex-end">
             <StatementBlock
               size="section"
               ramp="chilioil"
+              anchorName={SECTION_IMAGE_ANCHOR}
               heading={m.www_home_evidence_heading()}
               body={[<Message key="body1" message={m.www_home_evidence_body1} />]}
               actions={[{ label: m.www_home_evidence_action(), href: "/research" }]}

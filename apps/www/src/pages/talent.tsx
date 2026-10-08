@@ -176,8 +176,8 @@ const TRAITS: Trait[] = [
 const STEPS: Step[] = [
   { id: "bar", title: m.www_talent_how_bar_title, body: m.www_talent_how_bar_body },
   { id: "meet", title: m.www_talent_how_meet_title, body: m.www_talent_how_meet_body },
-  { id: "train", title: m.www_talent_how_train_title, body: m.www_talent_how_train_body },
   { id: "hire", title: m.www_talent_how_hire_title, body: m.www_talent_how_hire_body },
+  { id: "train", title: m.www_talent_how_train_title, body: m.www_talent_how_train_body },
 ];
 
 interface TalentProps {
