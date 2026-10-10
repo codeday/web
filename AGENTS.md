@@ -133,7 +133,7 @@ Pages router under `src/pages`. Notable dynamic routes:
 
 `src/proxy.ts` runs on every request except `/_next`, API routes, and files with an extension — it only handles locale-prefix redirection.
 
-**Ink illustrations** (dark ink on light paper, drawn with topo's `InkIllustration`) keep their source scans in `public/images/ink/`. `scripts/generate-ink-masks.mjs` runs before `dev` and `build` (or alone via `pnpm --filter @codeday/www ink-masks`) and turns each one into an alpha mask at `public/images/ink-masks/<name>.avif`, detecting the paper's brightness per image. The masks are gitignored build output — never commit or hand-edit them. To add or update a drawing, drop it into `public/images/ink/` and pass `src="/images/ink-masks/<name>.avif"`.
+**Ink illustrations** (dark ink on light paper, drawn with topo's `InkIllustration`) keep their source scans in `public/images/ink/`. `scripts/generate-ink-masks.mjs` runs before `dev` and `build` (or alone via `pnpm --filter @codeday/www ink-masks`) and turns each one into an alpha mask at `public/images/ink-masks/<name>.png`, detecting the paper's brightness per image. The masks are gitignored build output — never commit or hand-edit them. To add or update a drawing, drop it into `public/images/ink/` and pass `src="/images/ink-masks/<name>.png"`.
 
 ### Icons (`packages/topocons`)
 

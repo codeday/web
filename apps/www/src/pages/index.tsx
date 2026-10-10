@@ -69,7 +69,7 @@ const INK_SECTION_PROPS: Omit<SectionProps, "ramp"> = {
   flexDirection: "column",
   justifyContent: "center",
   gap: { base: "6", md: "0" },
-  paddingBottom: { mdDown: "0" },
+  paddingTop: { mdDown: "0" },
   minHeight: { md: `calc(${INK_ILLUSTRATION_DESKTOP_SIZE} + {spacing.12})` },
 };
 
@@ -107,7 +107,7 @@ export default function Home({ query, seed, now }: HomeProps) {
       <Band tone="page">
         <Section ramp="hibiscus" spacing="compact" paddingTop={announcement ? "0" : "8"}>
           <Grid templateColumns={{ base: "1fr", lg: "3fr 2fr" }} gap={8} alignItems="center">
-            <Box>
+            <Box minWidth="0">
               {announcement && (
                 <Box display="flex" marginBlockEnd={{ base: "5", sm: "7" }}>
                   <AnnouncementPill
@@ -234,7 +234,7 @@ export default function Home({ query, seed, now }: HomeProps) {
           </Content>
         </Section>
         <Box mb={24}>
-          <Content paddingX={12} maxWidth="container.xl">
+          <Content paddingX="5" maxWidth="container.xl">
             <FormatCards
               ramp="blackberry"
               cards={[
@@ -297,9 +297,8 @@ export default function Home({ query, seed, now }: HomeProps) {
 
         <Section ramp="hotsauce" {...INK_SECTION_PROPS}>
           <InkIllustration
-            src="/images/ink-masks/cliff-ink.avif"
+            src="/images/ink-masks/cliff-ink.png"
             side="right"
-            order={{ base: 1, md: 0 }}
           />
           <Box
             position="relative"
@@ -374,10 +373,9 @@ export default function Home({ query, seed, now }: HomeProps) {
       <Band tone="tinted">
         <Section ramp="chilioil" {...INK_SECTION_PROPS}>
           <InkIllustration
-            src="/images/ink-masks/study-classroom.avif"
+            src="/images/ink-masks/study-classroom.png"
             side="left"
             textFade="7%"
-            order={{ base: 1, md: 0 }}
           />
           <Box
             position="relative"

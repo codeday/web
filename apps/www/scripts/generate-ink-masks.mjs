@@ -1,6 +1,6 @@
 /**
  * Turns every ink drawing in public/images/ink/ into an alpha mask in
- * public/images/ink-masks/<name>.avif for `InkIllustration`: ink becomes
+ * public/images/ink-masks/<name>.png for `InkIllustration`: ink becomes
  * opaque, paper becomes fully transparent. The paper's brightness is detected
  * per image from its histogram, so rescanned or redrawn sources need no tuning.
  *
@@ -72,7 +72,7 @@ async function generateMask(source, output) {
     rgba[i * 4 + 3] = Math.round(Math.min(1, Math.max(0, ink)) * 255);
   }
   await sharp(rgba, { raw: { width: info.width, height: info.height, channels: 4 } })
-    .avif({ quality: 55, effort: 7 })
+    .png({ palette: true, compressionLevel: 9, effort: 10 })
     .toFile(output);
   return whitePoint;
 }
@@ -82,7 +82,7 @@ async function main() {
   const sources = (await readdir(SOURCE_DIR)).filter((file) =>
     SOURCE_EXTENSIONS.has(path.extname(file).toLowerCase()),
   );
-  const expected = new Set(sources.map((file) => `${path.parse(file).name}.avif`));
+  const expected = new Set(sources.map((file) => `${path.parse(file).name}.png`));
 
   for (const file of await readdir(OUTPUT_DIR)) {
     if (!expected.has(file)) await rm(path.join(OUTPUT_DIR, file));
@@ -90,7 +90,7 @@ async function main() {
 
   for (const file of sources) {
     const source = path.join(SOURCE_DIR, file);
-    const output = path.join(OUTPUT_DIR, `${path.parse(file).name}.avif`);
+    const output = path.join(OUTPUT_DIR, `${path.parse(file).name}.png`);
     if (await isFresh(source, output)) continue;
     const whitePoint = await generateMask(source, output);
     console.log(`ink mask: ${file} → ${path.basename(output)} (paper ≥ ${whitePoint})`);

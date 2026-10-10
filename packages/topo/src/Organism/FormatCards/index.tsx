@@ -97,9 +97,10 @@ function RouteRow({ route }: { route: FormatRoute }) {
   return (
     <Box
       display="flex"
-      alignItems="baseline"
+      flexDirection={{ base: "column", lg: "row" }}
+      alignItems={{ base: "flex-start", lg: "baseline" }}
       justifyContent="space-between"
-      gap="3"
+      gap={{ base: "1.5", lg: "3" }}
       paddingBlock="2.5"
       borderTop="sm"
       borderTopColor="colorPalette.300"

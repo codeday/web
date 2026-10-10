@@ -59,14 +59,14 @@ export const InkIllustration = React.forwardRef<HTMLDivElement, InkIllustrationP
       OVERLAY_OPACITY * 0.3,
     );
 
-    const mobileMask = fadeMask({ top: "18%", right: "5%", bottom: "5%", left: "5%" });
+    const mobileMask = fadeMask({ top: "5%", right: "5%", bottom: "18%", left: "5%" });
     const desktopMask = fadeMask({
       top: "5%",
       bottom: "9%",
       left: side === "right" ? textFade : "0%",
       right: side === "left" ? textFade : "0%",
     });
-    const mobileGlowMask = easedFadeMask({ top: 32, right: 24, bottom: 24, left: 24 });
+    const mobileGlowMask = easedFadeMask({ top: 24, right: 24, bottom: 32, left: 24 });
     const desktopGlowMask = easedFadeMask({
       top: 26,
       bottom: 26,
@@ -116,9 +116,8 @@ export const InkIllustration = React.forwardRef<HTMLDivElement, InkIllustrationP
         </Box>
         <Box
           ref={containerRef as any}
-          position="relative"
-          width="full"
-          height="full"
+          position="absolute"
+          inset="0"
           colorPalette="hibiscus"
           backgroundImage={{
             base: "radial-gradient(125% 135% at 20% 12%, {colors.colorPalette.gradient.critical})",

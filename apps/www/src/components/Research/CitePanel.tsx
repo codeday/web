@@ -3,7 +3,6 @@ import { Box } from "@codeday/topo/Atom";
 import { Wash } from "@codeday/topo/Molecule";
 import React, { useState } from "react";
 
-import { dmMono } from "@/components/Research/fonts";
 import { acmReference, bibtex } from "@/lib/research/cite";
 import type { Publication } from "@/lib/research/types";
 
@@ -37,7 +36,7 @@ function CopyPill({ text, label }: { text: string; label: string }) {
         setTimeout(() => setCopied(false), 1400);
       }}
       {...({ type: "button" } as any)}
-      fontFamily={dmMono.style.fontFamily}
+      fontFamily="mono"
       fontSize="xs"
       letterSpacing="wider"
       paddingInline="2.5"
@@ -62,7 +61,7 @@ export default function CitePanel({ publication }: { publication: Publication })
   return (
     <Wash ramp="chilioil" shape="tint" borderRadius="xl" paddingBlock="4" paddingInline="5">
       <Box
-        fontFamily={dmMono.style.fontFamily}
+        fontFamily="mono"
         fontSize="2xs"
         letterSpacing="0.14em"
         textTransform="uppercase"
@@ -75,7 +74,7 @@ export default function CitePanel({ publication }: { publication: Publication })
       </Box>
 
       <Box
-        fontFamily={dmMono.style.fontFamily}
+        fontFamily="mono"
         fontSize="2xs"
         letterSpacing="0.14em"
         textTransform="uppercase"
@@ -86,7 +85,7 @@ export default function CitePanel({ publication }: { publication: Publication })
       </Box>
       <Box
         as="pre"
-        fontFamily={dmMono.style.fontFamily}
+        fontFamily="mono"
         fontSize="xs"
         lineHeight="moderate"
         marginBlockStart="1.5"

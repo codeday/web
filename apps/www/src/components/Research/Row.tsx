@@ -3,7 +3,6 @@ import { Box } from "@codeday/topo/Atom";
 import React, { useState } from "react";
 
 import CitePanel from "@/components/Research/CitePanel";
-import { dmMono } from "@/components/Research/fonts";
 import type { Publication } from "@/lib/research/types";
 
 function rowLabel(pub: Publication): string {
@@ -40,7 +39,7 @@ function Pill({
       display="inline-flex"
       alignItems="center"
       gap="1"
-      fontFamily={dmMono.style.fontFamily}
+      fontFamily="mono"
       fontSize="xs"
       letterSpacing="wider"
       paddingInline="2.5"
@@ -95,7 +94,7 @@ export default function Row({ publication, first }: { publication: Publication; 
         >
           <Box
             as="span"
-            fontFamily={dmMono.style.fontFamily}
+            fontFamily="mono"
             fontSize="2xs"
             letterSpacing="0.14em"
             textTransform="uppercase"

@@ -168,7 +168,7 @@ const Footer = ({
                 {nonprofit}{" "}
                 {localization?.legalEntity && (
                   <CopyText
-                    fontFamily="monospace"
+                    fontFamily="mono"
                     label={`${localization?.name} ${localization?.legalEntity?.identifierName}: `}
                     children={localization?.legalEntity?.identifier}
                   />

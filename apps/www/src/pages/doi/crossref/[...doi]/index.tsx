@@ -263,7 +263,7 @@ export default function Crossref({ query: pageQuery }: CrossrefProps) {
   return (
     <Page slug={`/doi/crossref/${query.doi}`}>
       <Content>
-        <Textarea fontFamily="monospace" fontSize="2xs" width="full" height="5xl" value={content} />
+        <Textarea fontFamily="mono" fontSize="2xs" width="full" height="5xl" value={content} />
         <Button
           onClick={() => {
             const link = document.createElement("a");

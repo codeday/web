@@ -3,7 +3,6 @@ import { Box } from "@codeday/topo/Atom";
 import { Content } from "@codeday/topo/Molecule";
 import React, { useEffect, useState } from "react";
 
-import { dmMono } from "@/components/Research/fonts";
 import type { PublicationType } from "@/lib/research/types";
 
 function useHeaderBottom(): number {
@@ -107,7 +106,7 @@ export default function FilterBar({
                   cursor="pointer"
                 >
                   {label()}
-                  <Box as="span" fontFamily={dmMono.style.fontFamily} fontSize="xs" opacity={0.75}>
+                  <Box as="span" fontFamily="mono" fontSize="xs" opacity={0.75}>
                     {typeCounts[value]}
                   </Box>
                 </Box>

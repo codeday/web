@@ -27,10 +27,10 @@ function Demo({ side }: { side: "left" | "right" }) {
       flexDirection="column"
       justifyContent="center"
       gap={{ base: "6", md: "0" }}
-      paddingBottom={{ mdDown: "0" }}
+      paddingTop={{ mdDown: "0" }}
       minHeight={{ md: `calc(${INK_ILLUSTRATION_DESKTOP_SIZE} + {spacing.12})` }}
     >
-      <InkIllustration src={INK_MASK} side={side} order={{ base: 1, md: 0 }} />
+      <InkIllustration src={INK_MASK} side={side} />
       <Box
         position="relative"
         maxWidth="container.lg"
@@ -48,7 +48,7 @@ function Demo({ side }: { side: "left" | "right" }) {
 }
 
 export const BothSides: Story = {
-  name: "Attached to either page edge, stacked below the text on phones",
+  name: "Attached to either page edge, stacked above the text on phones",
   render: () => (
     <Box>
       <Demo side="right" />

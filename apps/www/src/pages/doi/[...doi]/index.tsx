@@ -298,7 +298,7 @@ export default function Home({ query: pageQuery }: HomeProps) {
                             <Link as="p" fontSize="sm" fontWeight="bold" mb={0}>
                               {f.title}
                             </Link>
-                            <Text fontSize="xs" fontFamily="monospace" mb={0}>
+                            <Text fontSize="xs" fontFamily="mono" mb={0}>
                               {f.fileName}
                             </Text>
                           </Box>
@@ -320,7 +320,7 @@ export default function Home({ query: pageQuery }: HomeProps) {
                   href: `https://doi.org/${process.env.NEXT_PUBLIC_DOI_PREFIX}/${doiSuffix}`,
                 } as any)}
                 fontSize="2xs"
-                fontFamily="monospace"
+                fontFamily="mono"
                 mb={2}
               >
                 doi.org/{process.env.NEXT_PUBLIC_DOI_PREFIX}/{doiSuffix}
@@ -329,7 +329,7 @@ export default function Home({ query: pageQuery }: HomeProps) {
               <Heading fontSize="sm" mb={0}>
                 Published
               </Heading>
-              <Text fontSize="2xs" fontFamily="monospace" mb={2}>
+              <Text fontSize="2xs" fontFamily="mono" mb={2}>
                 {DateTime.fromISO(publicationDate).toFormat("yyyy-MM-dd")}
               </Text>
               <Divider mb={2} />
@@ -338,7 +338,7 @@ export default function Home({ query: pageQuery }: HomeProps) {
                   <Heading fontSize="sm" mb={0}>
                     Venue
                   </Heading>
-                  <Text fontSize="2xs" fontFamily="monospace" mb={2}>
+                  <Text fontSize="2xs" fontFamily="mono" mb={2}>
                     {venue}
                   </Text>
                   <Divider mb={2} />
@@ -347,7 +347,7 @@ export default function Home({ query: pageQuery }: HomeProps) {
               <Heading fontSize="sm" mb={0}>
                 License
               </Heading>
-              <Text fontSize="2xs" fontFamily="monospace" mb={2}>
+              <Text fontSize="2xs" fontFamily="mono" mb={2}>
                 {license}
               </Text>
               <Divider mb={2} />
@@ -356,7 +356,7 @@ export default function Home({ query: pageQuery }: HomeProps) {
                   <Heading fontSize="sm" mb={0}>
                     Funder
                   </Heading>
-                  <Text fontSize="2xs" fontFamily="monospace" mb={2}>
+                  <Text fontSize="2xs" fontFamily="mono" mb={2}>
                     {funderName}
                   </Text>
                   <Divider mb={2} />
@@ -365,7 +365,7 @@ export default function Home({ query: pageQuery }: HomeProps) {
               <Heading fontSize="sm" mb={0}>
                 Citation
               </Heading>
-              <Text fontSize="2xs" fontFamily="monospace" mb={2}>
+              <Text fontSize="2xs" fontFamily="mono" mb={2}>
                 {getCitation(cms.publications.items[0])}
               </Text>
             </Box>

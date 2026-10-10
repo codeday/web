@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 
 import FilterBar, { type TypeFilter } from "@/components/Research/FilterBar";
-import { dmMono } from "@/components/Research/fonts";
 import Row from "@/components/Research/Row";
 import type { Publication, PublicationType } from "@/lib/research/types";
 
@@ -35,7 +34,7 @@ function YearGroup({
       scrollMarginTop="20"
     >
       <Box display="flex" alignItems="baseline" gap="2" marginBlockEnd={{ base: "2", md: "0" }}>
-        <Box as="span" fontFamily={dmMono.style.fontFamily} fontSize="sm" letterSpacing="wider">
+        <Box as="span" fontFamily="mono" fontSize="sm" letterSpacing="wider">
           {year}
         </Box>
         <Box as="span" fontSize="2xs" textTransform="uppercase" color="gray.600">
