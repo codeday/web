@@ -24,22 +24,24 @@ export interface ButtonProps extends Omit<ChakraButtonProps, "variant"> {
   variant?: ButtonVariant;
 }
 
-const loadingSpinner = (
-  <Spinner
-    width="4"
-    height="4"
-    borderWidth="2px"
-    animationDuration="0.7s"
-    css={{
-      borderColor: "rgba(255,255,255,.35)",
-      borderTopColor: "#fff",
-      animationTimingFunction: "linear",
-      "@media (prefers-reduced-motion: reduce)": {
-        animation: "none",
-      },
-    }}
-  />
-);
+function loadingSpinner(onGradient: boolean) {
+  return (
+    <Spinner
+      width="4"
+      height="4"
+      borderWidth="2px"
+      animationDuration="0.7s"
+      css={{
+        borderColor: onGradient ? "rgba(255,255,255,.35)" : "colorPalette.200",
+        borderTopColor: onGradient ? "#fff" : "currentColor",
+        animationTimingFunction: "linear",
+        "@media (prefers-reduced-motion: reduce)": {
+          animationDuration: "1.6s",
+        },
+      }}
+    />
+  );
+}
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant, children, ...props }, forwardedRef) => {
@@ -50,7 +52,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const buttonProps = {
       colorPalette: "hibiscus",
-      spinner: loadingSpinner,
+      spinner: loadingSpinner(isGradient),
       variant: variant as any,
       ref: (node: HTMLButtonElement | null) => {
         if (isGradient) containerRef(node);

@@ -40,6 +40,12 @@ export const States: Story = {
   render: () => (
     <Box display="flex" flexWrap="wrap" gap={4} alignItems="flex-start">
       <Button loading>Loading</Button>
+      <Button variant="secondary" loading>
+        Loading
+      </Button>
+      <Button variant="ghost" loading>
+        Loading
+      </Button>
       <Button disabled>Disabled</Button>
     </Box>
   ),

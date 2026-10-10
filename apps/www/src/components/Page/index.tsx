@@ -35,7 +35,7 @@ export const PageFragment = graphql(`
   }
 `);
 
-const DOMAIN = "https://www.codeday.org";
+export const DOMAIN = "https://www.codeday.org";
 
 // The specific embedded-button ID FundraiseUp's own script looks for —
 // distinct from the account-level widget ID in `Fundraise.tsx`. Their
@@ -76,6 +76,7 @@ interface PageProps {
   slug?: string;
   seo?: any;
   description?: string;
+  image?: string;
   data?: FragmentType<typeof PageFragment>;
   logoHeadingLevel?: "h1" | "span";
   onWash?: boolean;
@@ -90,6 +91,7 @@ export default function Page({
   slug,
   seo,
   description,
+  image,
   logoHeadingLevel = "h1",
   onWash = true,
   data,
@@ -134,6 +136,7 @@ export default function Page({
             locale: "en_US",
             site_name: m.www_page_site_name(),
             url: `${DOMAIN}${slug}`,
+            images: image ? [{ url: image }] : undefined,
           }}
           twitter={{
             handle: "@codeday",

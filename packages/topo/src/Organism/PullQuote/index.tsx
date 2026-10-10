@@ -67,29 +67,31 @@ export const PullQuote = React.forwardRef<HTMLElement, PullQuoteProps>(
           >
             {quote}
           </Box>
-          <Box as="figcaption" marginTop="3.5" fontSize="sm" color="gray.600">
-            <Box as="span" fontWeight="600" color="black">
-              {name}
-            </Box>
-            {role && <>, {role}</>}
-            {project &&
-              (href ? (
-                <>
-                  {" "}
-                  ·{" "}
-                  <Box as="a" color="inherit" textDecoration="underline" {...({ href } as any)}>
-                    {project}
-                  </Box>
-                </>
-              ) : (
-                <> · {project}</>
-              ))}
-            {tag && (
-              <Box marginTop="0.5" color="gray.500">
-                {tag}
+          {name && (
+            <Box as="figcaption" marginTop="3.5" fontSize="sm" color="gray.600">
+              <Box as="span" fontWeight="600" color="black">
+                {name}
               </Box>
-            )}
-          </Box>
+              {role && <>, {role}</>}
+              {project &&
+                (href ? (
+                  <>
+                    {" "}
+                    ·{" "}
+                    <Box as="a" color="inherit" textDecoration="underline" {...({ href } as any)}>
+                      {project}
+                    </Box>
+                  </>
+                ) : (
+                  <> · {project}</>
+                ))}
+              {tag && (
+                <Box marginTop="0.5" color="gray.500">
+                  {tag}
+                </Box>
+              )}
+            </Box>
+          )}
         </Box>
       );
     }
