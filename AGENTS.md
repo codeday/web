@@ -143,6 +143,7 @@ Icon source SVGs live in the `packages/topocons/svg` git submodule (`git@github.
 
 - **Import order** is enforced by `oxfmt` (run `pnpm format:fix` rather than hand-ordering) — three blank-line-separated groups: external packages (alphabetized by package name), then `@/`-aliased imports, then relative (`./`, `../`) imports.
 - **Use comments very rarely.** Comments should only be used where information cannot be easily inferred from the code.
+- **Commit messages** must follow [Conventional Commits](https://www.conventionalcommits.org/) (`type(scope): subject`, e.g. `fix(i18n): Rate limit translations`). A husky `commit-msg` hook (installed by `pnpm install`) runs commitlint on every commit. Rules are `@commitlint/config-conventional` minus subject casing and body/footer line length (see `commitlint` in the root `package.json`).
 - Avoid `any`/untyped props on new code — the pre-migration components still using `[key: string]: any`-style props are legacy, not the pattern to copy.
 
 ## Testing
