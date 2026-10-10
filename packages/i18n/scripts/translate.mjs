@@ -20,10 +20,12 @@ import { createHash } from "node:crypto";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 
 const ROOT = path.join(import.meta.dirname, "..");
 const PROJECT = path.join(ROOT, "project.inlang");
 const FINGERPRINTS = path.join(ROOT, "messages/.fingerprints.json");
+const RATE_LIMIT = pathToFileURL(path.join(import.meta.dirname, "deepl-rate-limit.mjs")).href;
 
 const settings = JSON.parse(await readFile(path.join(PROJECT, "settings.json"), "utf8"));
 const { baseLocale, locales } = settings;
@@ -117,7 +119,16 @@ function machineTranslate(project, targets) {
       "--quiet",
       "--nobar",
     ],
-    { stdio: "inherit", cwd: ROOT },
+    {
+      stdio: "inherit",
+      cwd: ROOT,
+      env: {
+        ...process.env,
+        NODE_OPTIONS: [process.env.NODE_OPTIONS, `--import ${RATE_LIMIT}`]
+          .filter(Boolean)
+          .join(" "),
+      },
+    },
   );
   return status === 0;
 }
