@@ -1,0 +1,30 @@
+{
+  "fr-fr": {
+    "topo_announcement_learn_more": "f1b93b9c4cabcfe4",
+    "topo_announcement_pill_chip_default": "e9f7cceb39860c56",
+    "topo_cognitoform_loading_problem": "9a741d850eea28d2",
+    "topo_cognitoform_open_newtab": "b2d75d076011f782",
+    "topo_datacollection_more_info": "3893ecf8ff95d518",
+    "topo_datacollection_payment_notice": "facb19c3f60786c8",
+    "topo_datacollection_pii_notice": "04d2149012578d97",
+    "topo_footer_ccpa": "b82b0a0e20e97647",
+    "topo_footer_cookie_policy": "0e90f7d03d3b19c7",
+    "topo_footer_copyright": "58db5525b87e18d1",
+    "topo_footer_custom_links": "90a23feda18934e0",
+    "topo_footer_disclaimer": "53fa1b5b6487d12f",
+    "topo_footer_maintained_by": "96a06602844d15b3",
+    "topo_footer_nonprofit": "7cba7a64b4f3d671",
+    "topo_footer_privacy_policy": "0afb547bbe92b243",
+    "topo_footer_privacy_settings": "34107bd23714e490",
+    "topo_footer_resources": "9deac3e17aae64bc",
+    "topo_footer_terms_of_service": "29e6fa122da88e0e",
+    "topo_mailinglist_error": "b90cdd20dbd79918",
+    "topo_mailinglist_subscribe": "bbce327a0c77d5eb"
+  },
+  "fr-ca": {},
+  "de-de": {},
+  "it-it": {},
+  "es-mx": {},
+  "ja-jp": {},
+  "zh-cn": {}
+}
