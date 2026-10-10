@@ -22,7 +22,14 @@ import { parseArgs } from "node:util";
 import { createClient } from "contentful-management";
 
 import "./deepl-fetch.mjs";
-import { deepLApiKey, deepLRequest, deepLTargets, toDeepLTarget } from "./deepl.mjs";
+import {
+  deepLApiKey,
+  deepLRequest,
+  deepLTargets,
+  escapeXml,
+  toDeepLTarget,
+  unescapeXml,
+} from "./deepl.mjs";
 
 const { values: args } = parseArgs({
   options: {
@@ -58,19 +65,6 @@ const MARKDOWN_PREFIX = /^(\s*(?:(?:[-*+]|\d+[.)]|#{1,6}|>)\s+)*)/;
 const isEmpty = (value) =>
   value === undefined || value === null || value === "" || (Array.isArray(value) && !value.length);
 const hasWords = (text) => /\p{L}/u.test(text);
-const escapeXml = (text) => text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-const unescapeXml = (text) =>
-  text
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&apos;/g, "'")
-    .replace(/&#(x[0-9a-f]+|[0-9]+);/gi, (_, code) =>
-      String.fromCodePoint(
-        code[0].toLowerCase() === "x" ? parseInt(code.slice(1), 16) : parseInt(code, 10),
-      ),
-    )
-    .replace(/&amp;/g, "&");
 
 // Plain strings go to DeepL as XML, with anything that must survive verbatim
 // (code, HTML, link targets, URLs, {placeholders}) swapped for <x i="n"/>.

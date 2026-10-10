@@ -48,3 +48,19 @@ export function toDeepLTarget(locale, supported) {
     .map((candidate) => supported.get(candidate))
     .find(Boolean);
 }
+
+export const escapeXml = (text) =>
+  text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+export const unescapeXml = (text) =>
+  text
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&#(x[0-9a-f]+|[0-9]+);/gi, (_, code) =>
+      String.fromCodePoint(
+        code[0].toLowerCase() === "x" ? parseInt(code.slice(1), 16) : parseInt(code, 10),
+      ),
+    )
+    .replace(/&amp;/g, "&");
