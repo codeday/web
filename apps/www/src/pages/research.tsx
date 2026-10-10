@@ -15,11 +15,12 @@ import { useFragment } from "@/gql/fragment-masking";
 import { buildPublications } from "@/lib/research/normalize";
 import { computeResearchStats } from "@/lib/research/stats";
 import type { Publication } from "@/lib/research/types";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 export const ResearchFragment = graphql(`
   fragment ResearchIndexComponent on Query {
     cms {
-      externalPublications(limit: 100, order: [publicationDate_DESC]) {
+      externalPublications(limit: 100, order: [publicationDate_DESC], locale: $locale) {
         items {
           title
           authors
@@ -34,7 +35,7 @@ export const ResearchFragment = graphql(`
           topic
         }
       }
-      publications(limit: 100, order: [publicationDate_DESC]) {
+      publications(limit: 100, order: [publicationDate_DESC], locale: $locale) {
         items {
           title
           type
@@ -53,7 +54,7 @@ export const ResearchFragment = graphql(`
 `);
 
 export const ResearchIndexQuery = graphql(`
-  query ResearchIndexQuery {
+  query ResearchIndexQuery($locale: String!) {
     ...ResearchIndexComponent
   }
 `);
@@ -213,10 +214,10 @@ export default function Research({ query }: ResearchProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
     props: {
-      query: await apiFetch(ResearchIndexQuery, {}, {}),
+      query: await apiFetch(ResearchIndexQuery, { locale: cmsLocale(locale) }, {}),
     },
     revalidate: 300,
   };

@@ -12,17 +12,18 @@ import PhotoGallery from "@/components/Press/PhotoGallery";
 import PreviousCoverageLogos from "@/components/PreviousCoverageLogos";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 export const PressFragment = graphql(`
   fragment PressComponent on Query {
     cms {
-      mission: strings(where: { key: "common.mission" }, limit: 1) {
+      mission: strings(where: { key: "common.mission" }, limit: 1, locale: $locale) {
         items {
           value
         }
       }
 
-      pressDetails: strings(where: { key: "press.details" }, limit: 1) {
+      pressDetails: strings(where: { key: "press.details" }, limit: 1, locale: $locale) {
         items {
           richValue {
             json
@@ -30,7 +31,7 @@ export const PressFragment = graphql(`
         }
       }
 
-      pressContact: strings(where: { key: "press.contact" }, limit: 1) {
+      pressContact: strings(where: { key: "press.contact" }, limit: 1, locale: $locale) {
         items {
           richValue {
             json
@@ -38,7 +39,7 @@ export const PressFragment = graphql(`
         }
       }
 
-      previousCoverage: newsCoverages(order: date_DESC, limit: 12) {
+      previousCoverage: newsCoverages(order: date_DESC, limit: 12, locale: $locale) {
         items {
           title
           date
@@ -47,7 +48,7 @@ export const PressFragment = graphql(`
         }
       }
 
-      programs(where: { type: "primary", archived_not: true }) {
+      programs(where: { type: "primary", archived_not: true }, locale: $locale) {
         items {
           name
           shortDescription
@@ -58,7 +59,7 @@ export const PressFragment = graphql(`
 `);
 
 const PressQuery = graphql(`
-  query PressQuery {
+  query PressQuery($locale: String!) {
     ...PressComponent
     ...PressPhotoGalleryComponent
     ...PreviousCoverageLogosComponent
@@ -215,8 +216,8 @@ export default function Press({ query, seed }: PressProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  const query = await apiFetch(PressQuery, {}, {});
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  const query = await apiFetch(PressQuery, { locale: cmsLocale(locale) }, {});
 
   return {
     props: {

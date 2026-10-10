@@ -8,7 +8,12 @@ import { FragmentType, useFragment } from "@/gql/fragment-masking";
 export const PreviousCoverageLogosFragment = graphql(`
   fragment PreviousCoverageLogosComponent on Query {
     cms {
-      coverageLogos: newsCoverages(where: { featured: true }, order: date_DESC, limit: 20) {
+      coverageLogos: newsCoverages(
+        where: { featured: true }
+        order: date_DESC
+        limit: 20
+        locale: $locale
+      ) {
         items {
           publicationName
           publicationLogo {

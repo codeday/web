@@ -14,7 +14,7 @@ export const TALENT_ALUM_COLUMNS: string[][] = [
 export const TalentThenNowFragment = graphql(`
   fragment TalentThenNowComponent on Query {
     cms {
-      talentAlums: alums(where: { name_in: $talentAlumNames }, limit: 50) {
+      talentAlums: alums(where: { name_in: $talentAlumNames }, limit: 50, locale: $locale) {
         items {
           ...IndexThenNowAlumFields
         }

@@ -16,7 +16,7 @@ export const StatsFragment = graphql(`
       economicEstimatedCompare
     }
     cms {
-      regions(limit: 1) {
+      regions(limit: 1, locale: $locale) {
         total
       }
     }

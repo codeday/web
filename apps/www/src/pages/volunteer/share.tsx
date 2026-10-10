@@ -11,12 +11,16 @@ import VideoTestimonialThumbnail from "@/components/VideoTestimonialThumbnail";
 import ProgramInfo, { ProgramInfoFragment } from "@/components/Volunteer/ProgramInfo";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
+import { cmsLocale } from "@/utils/cmsLocale";
 import { upcomingEvents } from "@/utils/time";
 
 export const VolunteerShareFragment = graphql(`
   fragment VolunteerShareComponent on Query {
     cms {
-      testimonials: testimonials(where: { featured: true, type_in: ["Volunteer", "Mentor"] }) {
+      testimonials: testimonials(
+        where: { featured: true, type_in: ["Volunteer", "Mentor"] }
+        locale: $locale
+      ) {
         items {
           firstName
           lastName
@@ -33,7 +37,7 @@ export const VolunteerShareFragment = graphql(`
 `);
 
 const VolunteerShareQuery = graphql(`
-  query VolunteerShareQuery {
+  query VolunteerShareQuery($locale: String!) {
     ...VolunteerShareComponent
     ...VolunteerProgramInfoComponent
   }
@@ -111,8 +115,8 @@ export default function Volunteer({ query }: VolunteerProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  const query = await apiFetch(VolunteerShareQuery, {}, {});
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  const query = await apiFetch(VolunteerShareQuery, { locale: cmsLocale(locale) }, {});
   return {
     props: {
       query,

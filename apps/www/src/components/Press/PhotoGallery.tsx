@@ -11,7 +11,7 @@ import { FragmentType, useFragment } from "@/gql/fragment-masking";
 export const PhotoGalleryFragment = graphql(`
   fragment PressPhotoGalleryComponent on Query {
     cms {
-      pressPhotos {
+      pressPhotos(locale: $locale) {
         items {
           tags
           ...PressPhotoComponent

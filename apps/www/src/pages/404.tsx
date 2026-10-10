@@ -8,9 +8,10 @@ import React from "react";
 
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 const Error404Query = graphql(`
-  query Error404Query {
+  query Error404Query($locale: String!) {
     ...PageComponent
   }
 `);
@@ -44,10 +45,10 @@ export default function Home({ query }: HomeProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
     props: {
-      query: await apiFetch(Error404Query, {}, {}),
+      query: await apiFetch(Error404Query, { locale: cmsLocale(locale) }, {}),
     },
     revalidate: 300,
   };

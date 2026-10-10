@@ -26,6 +26,7 @@ export const EvidenceFragment = graphql(`
       maintainerTestimonials: testimonials(
         where: { featured: true, type_in: ["Maintainer"] }
         limit: 10
+        locale: $locale
       ) {
         items {
           quote
@@ -41,6 +42,7 @@ export const EvidenceFragment = graphql(`
       employerTestimonials: testimonials(
         where: { featured: true, type_in: ["Employer"] }
         limit: 10
+        locale: $locale
       ) {
         items {
           quote

@@ -17,14 +17,16 @@ import Questions from "@/components/MicroInternship/Questions";
 import RegistrationCountdown from "@/components/MicroInternship/RegistrationCountdown";
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 const MicroInternshipRegisterQuery = graphql(`
-  query MicroInternshipRegisterQuery($now: CmsDateTime!) {
+  query MicroInternshipRegisterQuery($now: CmsDateTime!, $locale: String!) {
     cms {
       events(
         where: { program: { webname: "direct" }, registrationsCloseAt_gt: $now }
         order: registrationsCloseAt_ASC
         limit: 1
+        locale: $locale
       ) {
         items {
           id
@@ -364,10 +366,14 @@ export default function MicroInternshipRegister({ query }: MicroInternshipRegist
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
     props: {
-      query: await apiFetch(MicroInternshipRegisterQuery, { now: new Date().toISOString() }, {}),
+      query: await apiFetch(
+        MicroInternshipRegisterQuery,
+        { locale: cmsLocale(locale), now: new Date().toISOString() },
+        {},
+      ),
     },
     revalidate: 300,
   };

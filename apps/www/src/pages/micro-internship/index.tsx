@@ -15,9 +15,10 @@ import HowItWorks from "@/components/MicroInternship/HowItWorks";
 import PartnerPill from "@/components/MicroInternship/PartnerPill";
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 const MicroInternshipQuery = graphql(`
-  query MicroInternshipQuery {
+  query MicroInternshipQuery($locale: String!) {
     ...PageComponent
     ...IndexImpactComponent
     ...MicroInternshipEvidenceComponent
@@ -337,10 +338,10 @@ export default function MicroInternship({ query, seed }: MicroInternshipProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
     props: {
-      query: await apiFetch(MicroInternshipQuery, {}, {}),
+      query: await apiFetch(MicroInternshipQuery, { locale: cmsLocale(locale) }, {}),
       seed: Math.random(),
     },
     revalidate: 300,

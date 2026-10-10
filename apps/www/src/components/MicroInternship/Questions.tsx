@@ -13,6 +13,7 @@ export const QuestionsFragment = graphql(`
         where: { program: { webname: "labs" }, audience_contains_some: ["Parent", "Student"] }
         order: [featured_DESC]
         limit: 20
+        locale: $locale
       ) {
         items {
           title

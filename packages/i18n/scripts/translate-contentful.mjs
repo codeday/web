@@ -21,7 +21,7 @@ import { parseArgs } from "node:util";
 
 import { createClient } from "contentful-management";
 
-import "./deepl-rate-limit.mjs";
+import "./deepl-fetch.mjs";
 import { deepLApiKey, deepLRequest, deepLTargets, toDeepLTarget } from "./deepl.mjs";
 
 const { values: args } = parseArgs({
@@ -65,6 +65,11 @@ const unescapeXml = (text) =>
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&apos;/g, "'")
+    .replace(/&#(x[0-9a-f]+|[0-9]+);/gi, (_, code) =>
+      String.fromCodePoint(
+        code[0].toLowerCase() === "x" ? parseInt(code.slice(1), 16) : parseInt(code, 10),
+      ),
+    )
     .replace(/&amp;/g, "&");
 
 // Plain strings go to DeepL as XML, with anything that must survive verbatim

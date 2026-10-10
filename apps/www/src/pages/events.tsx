@@ -16,6 +16,7 @@ import { useEventsState } from "@/components/Events/useEventsState";
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 const BODY = "{colors.gray.700}";
 const CAPTION = "{colors.gray.600}";
@@ -64,7 +65,7 @@ export const EventsPageFragment = graphql(`
       }
     }
     cms {
-      regions(limit: 300) {
+      regions(limit: 300, locale: $locale) {
         items {
           name
           webname
@@ -103,7 +104,7 @@ export const EventsPageFragment = graphql(`
 `);
 
 export const EventsPageQuery = graphql(`
-  query EventsPageQuery {
+  query EventsPageQuery($locale: String!) {
     ...EventsPageComponent
     ...PageComponent
   }
@@ -343,8 +344,8 @@ export default function EventsPage({ query }: EventsPageProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  const query = await apiFetch(EventsPageQuery, {});
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  const query = await apiFetch(EventsPageQuery, { locale: cmsLocale(locale) });
   return {
     props: { query },
     revalidate: 300,

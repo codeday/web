@@ -21,6 +21,7 @@ import { useFragment } from "@/gql/fragment-masking";
 import { buildPublications } from "@/lib/research/normalize";
 import { computeResearchStats } from "@/lib/research/stats";
 import { ResearchFragment } from "@/pages/research";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 const BOOKING_URL =
   process.env.NEXT_PUBLIC_TALENT_BOOKING_URL ||
@@ -29,7 +30,7 @@ const DOI_PREFIX = process.env.NEXT_PUBLIC_DOI_PREFIX || "";
 const CANONICAL_URL = "https://www.codeday.org/talent";
 
 const TalentQuery = graphql(`
-  query TalentQuery($talentAlumNames: [String]) {
+  query TalentQuery($talentAlumNames: [String], $locale: String!) {
     ...PageComponent
     ...TalentThenNowComponent
     ...IndexLogoWallComponent
@@ -39,10 +40,14 @@ const TalentQuery = graphql(`
       eventCount
     }
     cms {
-      regions(limit: 1) {
+      regions(limit: 1, locale: $locale) {
         total
       }
-      talentQuote: testimonials(where: { sys: { id: "3ZSsSRztLYWoW2NObWYZ3s" } }, limit: 1) {
+      talentQuote: testimonials(
+        where: { sys: { id: "3ZSsSRztLYWoW2NObWYZ3s" } }
+        limit: 1
+        locale: $locale
+      ) {
         items {
           quote
           firstName
@@ -502,10 +507,14 @@ export default function Talent({ query }: TalentProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
     props: {
-      query: await apiFetch(TalentQuery, { talentAlumNames: TALENT_ALUM_COLUMNS.flat() }, {}),
+      query: await apiFetch(
+        TalentQuery,
+        { locale: cmsLocale(locale), talentAlumNames: TALENT_ALUM_COLUMNS.flat() },
+        {},
+      ),
     },
     revalidate: 300,
   };

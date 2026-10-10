@@ -10,7 +10,7 @@ import { formatInterval } from "@/utils/time";
 export const ProgramInfoFragment = graphql(`
   fragment VolunteerProgramInfoComponent on Query {
     cms {
-      volunteerPrograms: programs(limit: 15, where: { archived_not: true }) {
+      volunteerPrograms: programs(limit: 15, where: { archived_not: true }, locale: $locale) {
         items {
           name
           webname

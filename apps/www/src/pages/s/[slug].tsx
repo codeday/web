@@ -6,11 +6,12 @@ import React from "react";
 
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 const EmbedBySlugQuery = graphql(`
-  query EmbedBySlugQuery($slug: String!) {
+  query EmbedBySlugQuery($slug: String!, $locale: String!) {
     cms {
-      embeds(where: { slug: $slug }, limit: 1) {
+      embeds(where: { slug: $slug }, limit: 1, locale: $locale) {
         items {
           title
           type
@@ -108,9 +109,9 @@ export default function EmbedPage({ slug, title, type, embed, file }: EmbedPageP
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params, locale }) => {
   const slug = params?.slug as string;
-  const resp = await apiFetch(EmbedBySlugQuery, { slug }, {});
+  const resp = await apiFetch(EmbedBySlugQuery, { locale: cmsLocale(locale), slug }, {});
   const embed = resp?.cms?.embeds?.items?.[0];
 
   if (!embed) {

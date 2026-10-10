@@ -12,6 +12,7 @@ export const AnnouncementFragment = graphql(`
         where: { visibility: "Public" }
         order: displayAt_DESC
         limit: 20
+        locale: $locale
       ) {
         items {
           oneline
@@ -25,6 +26,7 @@ export const AnnouncementFragment = graphql(`
         where: { program: { webname: "direct" } }
         order: registrationsCloseAt_DESC
         limit: 10
+        locale: $locale
       ) {
         items {
           registrationsCloseAt

@@ -1,17 +1,23 @@
 import * as m from "@codeday/i18n/messages";
+import { getLocale } from "@codeday/i18n/runtime";
 import { Box, type BoxProps } from "@codeday/topo/Atom";
 import React, { useEffect, useState } from "react";
 
-const pad = (n: number) => String(n).padStart(2, "0");
+const UNIT_SECONDS = { day: 86400, hour: 3600, minute: 60, second: 1 } as const;
 
-function remaining(closesAt: number, now: number) {
-  const total = Math.max(0, Math.floor((closesAt - now) / 1000));
-  return {
-    days: Math.floor(total / 86400),
-    hours: pad(Math.floor((total % 86400) / 3600)),
-    minutes: pad(Math.floor((total % 3600) / 60)),
-    seconds: pad(total % 60),
-  };
+function formatRemaining(closesAt: number, now: number, locale: string) {
+  let remaining = Math.max(0, Math.floor((closesAt - now) / 1000));
+  const parts = Object.entries(UNIT_SECONDS).map(([unit, seconds]) => {
+    const value = Math.floor(remaining / seconds);
+    remaining -= value * seconds;
+    return new Intl.NumberFormat(locale, {
+      style: "unit",
+      unit,
+      unitDisplay: "narrow",
+      minimumIntegerDigits: unit === "day" ? 1 : 2,
+    }).format(value);
+  });
+  return new Intl.ListFormat(locale, { type: "unit", style: "narrow" }).format(parts);
 }
 
 export interface RegistrationCountdownProps extends Omit<BoxProps, "children"> {
@@ -27,7 +33,6 @@ export default function RegistrationCountdown({ closesAt, ...props }: Registrati
   }, []);
 
   const closesAtMs = new Date(closesAt).getTime();
-  const parts = remaining(closesAtMs, now ?? closesAtMs);
 
   return (
     <Box display="inline-flex" alignItems="center" gap="2.5" {...props}>
@@ -51,7 +56,7 @@ export default function RegistrationCountdown({ closesAt, ...props }: Registrati
         fontVariantNumeric="tabular-nums"
         color="orange.600"
       >
-        {m.www_microinternship_individual_title_countdown(parts)}
+        {formatRemaining(closesAtMs, now ?? closesAtMs, getLocale())}
       </Box>
     </Box>
   );

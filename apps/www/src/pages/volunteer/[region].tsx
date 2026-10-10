@@ -3,6 +3,7 @@ import { DateTime } from "luxon";
 import { GetStaticProps, GetStaticPaths } from "next";
 
 import { VolunteerQuery } from "@/pages/volunteer/index";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 export { default } from "@/pages/volunteer/index";
 
@@ -13,9 +14,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const region = params?.region as string;
-  const query = await apiFetch(VolunteerQuery, { now: DateTime.now().minus({ months: 6 }) }, {});
+  const query = await apiFetch(
+    VolunteerQuery,
+    { locale: cmsLocale(locale), now: DateTime.now().minus({ months: 6 }) },
+    {},
+  );
 
   return {
     props: {

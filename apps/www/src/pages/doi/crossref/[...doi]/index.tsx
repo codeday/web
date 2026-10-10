@@ -13,11 +13,12 @@ import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 import { PublicationQuery, ListPublicationsQuery } from "@/pages/doi/[...doi]/index";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 export const DoiCrossrefFragment = graphql(`
   fragment DoiCrossrefComponent on Query {
     cms {
-      publications(where: { doiSuffix: $doiSuffix }, limit: 1) {
+      publications(where: { doiSuffix: $doiSuffix }, limit: 1, locale: $locale) {
         items {
           type
           title
@@ -294,14 +295,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const doi = params?.doi as string[];
   const token = sign({ scopes: "read:users" }, process.env.ACCOUNT_SECRET!, { expiresIn: "3m" });
   return {
     props: {
       query: await apiFetch(
         PublicationQuery,
-        { doiSuffix: doi.slice(1).join("/") },
+        { locale: cmsLocale(locale), doiSuffix: doi.slice(1).join("/") },
         {
           Authorization: `Bearer ${token}`,
         },

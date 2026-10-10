@@ -21,12 +21,12 @@ import { FragmentType, useFragment } from "@/gql/fragment-masking";
 export const PageFragment = graphql(`
   fragment PageComponent on Query {
     cms {
-      mission: strings(where: { key: "common.mission" }) {
+      mission: strings(where: { key: "common.mission" }, locale: $locale) {
         items {
           value
         }
       }
-      globalSponsors(where: { legalDisclaimer_exists: true }) {
+      globalSponsors(where: { legalDisclaimer_exists: true }, locale: $locale) {
         items {
           legalDisclaimer
         }

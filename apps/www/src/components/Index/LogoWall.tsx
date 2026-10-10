@@ -19,6 +19,7 @@ export const LogoWallFragment = graphql(`
         where: { logo_exists: true, name_exists: true }
         order: [sort_ASC]
         limit: 100
+        locale: $locale
       ) {
         items {
           sys {

@@ -13,11 +13,12 @@ import React from "react";
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 export const HelpIndexFragment = graphql(`
   fragment HelpIndexComponent on Query {
     cms {
-      programs(where: { archived_not: true }) {
+      programs(where: { archived_not: true }, locale: $locale) {
         items {
           name
           webname
@@ -38,7 +39,7 @@ export const HelpIndexFragment = graphql(`
 `);
 
 const HelpIndexQuery = graphql(`
-  query HelpIndexQuery {
+  query HelpIndexQuery($locale: String!) {
     ...HelpIndexComponent
   }
 `);
@@ -76,8 +77,8 @@ export default function Help({ query }: HelpProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  const query = await apiFetch(HelpIndexQuery, {}, {});
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  const query = await apiFetch(HelpIndexQuery, { locale: cmsLocale(locale) }, {});
 
   return {
     props: {

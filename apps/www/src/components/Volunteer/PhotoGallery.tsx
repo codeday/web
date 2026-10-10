@@ -6,7 +6,10 @@ import { FragmentType, useFragment } from "@/gql/fragment-masking";
 export const VolunteerPhotoGalleryFragment = graphql(`
   fragment VolunteerPhotoGallery on Query {
     cms {
-      volunteerPhotoGallery: pressPhotos(where: { tags_contains_some: ["volunteer"] }) {
+      volunteerPhotoGallery: pressPhotos(
+        where: { tags_contains_some: ["volunteer"] }
+        locale: $locale
+      ) {
         items {
           photo {
             url(transform: { width: 600, height: 400, resizeStrategy: FILL })

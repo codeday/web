@@ -28,6 +28,7 @@ import Testimonials, { VolunteerTestimonialsFragment } from "@/components/Volunt
 import Wizard from "@/components/Volunteer/Wizard";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 export const VolunteerFragment = graphql(`
   fragment VolunteerComponent on Query {
@@ -47,7 +48,7 @@ export const VolunteerFragment = graphql(`
 `);
 
 export const VolunteerQuery = graphql(`
-  query VolunteerQuery($now: ClearDateTime!) {
+  query VolunteerQuery($now: ClearDateTime!, $locale: String!) {
     ...VolunteerComponent
     ...VolunteerTestimonials
     ...VolunteerPhotoGallery
@@ -257,8 +258,12 @@ export default function Volunteer({
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  const query = await apiFetch(VolunteerQuery, { now: DateTime.now().minus({ months: 6 }) }, {});
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  const query = await apiFetch(
+    VolunteerQuery,
+    { locale: cmsLocale(locale), now: DateTime.now().minus({ months: 6 }) },
+    {},
+  );
   return {
     props: {
       query,

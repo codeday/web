@@ -10,7 +10,11 @@ import { FragmentType, useFragment } from "@/gql/fragment-masking";
 export const CreditsFragment = graphql(`
   fragment IndexCreditsComponent on Query {
     cms {
-      majorSponsors: globalSponsors(where: { type: "major" }, order: [sys_firstPublishedAt_ASC]) {
+      majorSponsors: globalSponsors(
+        where: { type: "major" }
+        order: [sys_firstPublishedAt_ASC]
+        locale: $locale
+      ) {
         items {
           name
           link
@@ -24,7 +28,11 @@ export const CreditsFragment = graphql(`
         }
       }
 
-      minorSponsors: globalSponsors(where: { type: "minor" }, order: [sys_firstPublishedAt_ASC]) {
+      minorSponsors: globalSponsors(
+        where: { type: "minor" }
+        order: [sys_firstPublishedAt_ASC]
+        locale: $locale
+      ) {
         items {
           name
           link
@@ -38,7 +46,7 @@ export const CreditsFragment = graphql(`
         }
       }
 
-      pressCoverage: newsCoverages(order: date_DESC, limit: 50) {
+      pressCoverage: newsCoverages(order: date_DESC, limit: 50, locale: $locale) {
         items {
           publicationName
           url

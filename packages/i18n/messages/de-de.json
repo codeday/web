@@ -269,7 +269,6 @@
   "www_microinternship_individual_things_workshops_heading": "Workshops",
   "www_microinternship_individual_things_workshops_number": "8",
   "www_microinternship_individual_things_workshops_body": "Jeden Monat nehmen Sie an einem Workshop teil, der Ihnen bei der Stellensuche hilft, und können Sprechstunden mit unserem Netzwerk aus Karriereexperten in Anspruch nehmen.",
-  "www_microinternship_individual_title_countdown": "{days}d {hours}h {minutes}m ﷐0-4:\\{\"arg\":\\{\"name\":\"seconds\",\"type\":\"variable-reference\"\\},\"type\":\"expressi",
   "www_microinternship_individual_title_countdown_label": "Zeit bis zum Anmeldeschluss",
   "www_microinternship_individual_title_due": "Fälligkeit: {date}",
   "www_microinternship_individual_title_eyebrow": "CodeDay + Mentoren aus der Tech-Branche",

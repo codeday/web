@@ -27,7 +27,7 @@ import { deepLTargets, toDeepLTarget } from "./deepl.mjs";
 const ROOT = path.join(import.meta.dirname, "..");
 const PROJECT = path.join(ROOT, "project.inlang");
 const FINGERPRINTS = path.join(ROOT, "messages/.fingerprints.json");
-const RATE_LIMIT = pathToFileURL(path.join(import.meta.dirname, "deepl-rate-limit.mjs")).href;
+const DEEPL_FETCH = pathToFileURL(path.join(import.meta.dirname, "deepl-fetch.mjs")).href;
 
 const settings = JSON.parse(await readFile(path.join(PROJECT, "settings.json"), "utf8"));
 const { baseLocale, locales } = settings;
@@ -94,7 +94,7 @@ function machineTranslate(project, targets) {
       cwd: ROOT,
       env: {
         ...process.env,
-        NODE_OPTIONS: [process.env.NODE_OPTIONS, `--import ${RATE_LIMIT}`]
+        NODE_OPTIONS: [process.env.NODE_OPTIONS, `--import ${DEEPL_FETCH}`]
           .filter(Boolean)
           .join(" "),
       },

@@ -1,3 +1,4 @@
+import * as m from "@codeday/i18n/messages";
 import {
   PortraitWall,
   type PortraitWallPerson,
@@ -46,6 +47,7 @@ export const ThenNowFragment = graphql(`
         }
         limit: 24
         order: [sys_firstPublishedAt_DESC]
+        locale: $locale
       ) {
         items {
           ...IndexThenNowAlumFields
@@ -61,6 +63,7 @@ export const ThenNowFragment = graphql(`
         }
         limit: 24
         order: [sys_firstPublishedAt_DESC]
+        locale: $locale
       ) {
         items {
           ...IndexThenNowAlumFields
@@ -80,7 +83,9 @@ export interface AlumCard {
 
 export function toCard(item: any): AlumCard | null {
   if (!item?.photoCutout?.url || !item?.name || !item?.journeyNow) return null;
-  const thenLabel = item.journeyStartYear ? String(item.journeyStartYear) : "Then";
+  const thenLabel = item.journeyStartYear
+    ? String(item.journeyStartYear)
+    : m.www_home_thennow_then_fallback();
   const thenDetail = ["CodeDay", item.journeyStartRegion?.name, item.journeyStartProgram?.name]
     .filter(Boolean)
     .join(" ");
@@ -88,8 +93,8 @@ export function toCard(item: any): AlumCard | null {
     id: item.sys.id,
     name: item.name,
     // oxlint-disable-next-line unicorn/no-thenable -- `then` is AlumCard's field name, not a real thenable
-    then: `${thenLabel}: ${thenDetail}`,
-    now: `Now: ${item.journeyNow}`,
+    then: m.www_home_thennow_then({ label: thenLabel, detail: thenDetail }),
+    now: m.www_home_thennow_now({ journey: item.journeyNow }),
     photo: item.photoCutout.url,
   };
 }

@@ -10,11 +10,12 @@ import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 import Error404 from "@/pages/404";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 export const DataFragment = graphql(`
   fragment DataComponent on Query {
     cms {
-      publications(where: { type: "dataset" }) {
+      publications(where: { type: "dataset" }, locale: $locale) {
         items {
           title
           doiSuffix
@@ -29,7 +30,7 @@ export const DataFragment = graphql(`
 `);
 
 const DataListPublicationsQuery = graphql(`
-  query DataListPublicationsQuery {
+  query DataListPublicationsQuery($locale: String!) {
     ...DataComponent
   }
 `);
@@ -96,10 +97,10 @@ export default function Home({ query }: HomeProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
     props: {
-      query: await apiFetch(DataListPublicationsQuery, {}, {}),
+      query: await apiFetch(DataListPublicationsQuery, { locale: cmsLocale(locale) }, {}),
     },
     revalidate: 300,
   };

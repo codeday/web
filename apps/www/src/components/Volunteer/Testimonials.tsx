@@ -13,6 +13,7 @@ export const VolunteerTestimonialsFragment = graphql(`
       volunteerTestimonials: testimonials(
         where: { image_exists: true, featured: true }
         limit: 10
+        locale: $locale
       ) {
         items {
           quote

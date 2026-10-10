@@ -33,11 +33,12 @@ import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 import Error404 from "@/pages/404";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 export const DoiFragment = graphql(`
   fragment DoiComponent on Query {
     cms {
-      publications(where: { doiSuffix: $doiSuffix }, limit: 1) {
+      publications(where: { doiSuffix: $doiSuffix }, limit: 1, locale: $locale) {
         items {
           title
           description
@@ -69,7 +70,7 @@ export const DoiFragment = graphql(`
 `);
 
 export const PublicationQuery = graphql(`
-  query PublicationQuery($doiSuffix: String) {
+  query PublicationQuery($doiSuffix: String, $locale: String!) {
     ...DoiComponent
     ...DoiCrossrefComponent
   }
@@ -389,12 +390,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const doi = params?.doi as string[];
   const token = sign({ scopes: "read:users" }, process.env.ACCOUNT_SECRET!, { expiresIn: "3m" });
   const query = await apiFetch(
     PublicationQuery,
-    { doiSuffix: doi.slice(1).join("/") },
+    { locale: cmsLocale(locale), doiSuffix: doi.slice(1).join("/") },
     {
       Authorization: `Bearer ${token}`,
     },

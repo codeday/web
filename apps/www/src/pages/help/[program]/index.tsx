@@ -20,16 +20,17 @@ import React from "react";
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 export const HelpProgramIndexFragment = graphql(`
   fragment HelpProgramIndexComponent on Query {
     cms {
-      programs(where: { webname: $programWebname }, limit: 1) {
+      programs(where: { webname: $programWebname }, limit: 1, locale: $locale) {
         items {
           name
         }
       }
-      events(where: { program: { webname: $programWebname } }, limit: 15) {
+      events(where: { program: { webname: $programWebname } }, limit: 15, locale: $locale) {
         items {
           linkedFrom {
             pressPhotos(limit: 1) {
@@ -42,7 +43,7 @@ export const HelpProgramIndexFragment = graphql(`
           }
         }
       }
-      faqs(where: { program: { webname: $programWebname } }, limit: 1000) {
+      faqs(where: { program: { webname: $programWebname } }, limit: 1000, locale: $locale) {
         items {
           audience
         }
@@ -52,7 +53,7 @@ export const HelpProgramIndexFragment = graphql(`
 `);
 
 const HelpProgramIndexQuery = graphql(`
-  query HelpProgramIndexQuery($programWebname: String!) {
+  query HelpProgramIndexQuery($programWebname: String!, $locale: String!) {
     ...HelpProgramIndexComponent
   }
 `);
@@ -160,9 +161,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const program = params?.program as string;
-  const query = await apiFetch(HelpProgramIndexQuery, { programWebname: program }, {});
+  const query = await apiFetch(
+    HelpProgramIndexQuery,
+    { locale: cmsLocale(locale), programWebname: program },
+    {},
+  );
 
   return {
     props: {

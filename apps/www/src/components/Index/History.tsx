@@ -9,7 +9,7 @@ import { FragmentType, useFragment } from "@/gql/fragment-masking";
 export const HistoryFragment = graphql(`
   fragment IndexHistoryComponent on Query {
     cms {
-      milestones(order: [date_ASC], limit: 50) {
+      milestones(order: [date_ASC], limit: 50, locale: $locale) {
         items {
           sys {
             id

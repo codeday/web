@@ -9,16 +9,17 @@ import React, { useState } from "react";
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 export const HelpProgramAudienceFragment = graphql(`
   fragment HelpProgramAudienceComponent on Query {
     cms {
-      programs(where: { webname: $programWebname }, limit: 1) {
+      programs(where: { webname: $programWebname }, limit: 1, locale: $locale) {
         items {
           name
         }
       }
-      events(where: { program: { webname: $programWebname } }, limit: 15) {
+      events(where: { program: { webname: $programWebname } }, limit: 15, locale: $locale) {
         items {
           linkedFrom {
             pressPhotos(limit: 1) {
@@ -34,6 +35,7 @@ export const HelpProgramAudienceFragment = graphql(`
       faqs(
         where: { program: { webname: $programWebname }, audience_contains_all: [$audience] }
         order: [featured_DESC]
+        locale: $locale
       ) {
         items {
           title
@@ -51,7 +53,7 @@ export const HelpProgramAudienceFragment = graphql(`
 `);
 
 const HelpProgramAudienceQuery = graphql(`
-  query HelpProgramAudienceQuery($programWebname: String!, $audience: String!) {
+  query HelpProgramAudienceQuery($programWebname: String!, $audience: String!, $locale: String!) {
     ...HelpProgramAudienceComponent
   }
 `);
@@ -223,13 +225,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const program = params?.program as string;
   const audience = params?.audience as string;
   const audienceName = audience.charAt(0).toUpperCase() + audience.slice(1);
   const query = await apiFetch(
     HelpProgramAudienceQuery,
-    { programWebname: program, audience: audienceName },
+    { locale: cmsLocale(locale), programWebname: program, audience: audienceName },
     {},
   );
 

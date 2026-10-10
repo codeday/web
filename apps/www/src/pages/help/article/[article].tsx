@@ -8,11 +8,12 @@ import React from "react";
 
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 const HelpArticleQuery = graphql(`
-  query HelpArticleQuery($article: String!) {
+  query HelpArticleQuery($article: String!, $locale: String!) {
     cms {
-      faq(id: $article) {
+      faq(id: $article, locale: $locale) {
         sys {
           id
           publishedAt
@@ -121,11 +122,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const article = params?.article as string;
   const {
     cms: { faq },
-  } = await apiFetch(HelpArticleQuery, { article }, {});
+  } = await apiFetch(HelpArticleQuery, { locale: cmsLocale(locale), article }, {});
   return {
     props: {
       faq,

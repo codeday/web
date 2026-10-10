@@ -1,4 +1,5 @@
 import * as m from "@codeday/i18n/messages";
+import { getLocale } from "@codeday/i18n/runtime";
 import { Box, Grid, Text, Heading } from "@codeday/topo/Atom";
 import {
   ActionLink,
@@ -37,9 +38,10 @@ import { buildPublications } from "@/lib/research/normalize";
 import { computeResearchStats } from "@/lib/research/stats";
 import { ResearchFragment } from "@/pages/research";
 import useTwitch from "@/useTwitch";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 const IndexQuery = graphql(`
-  query IndexQuery {
+  query IndexQuery($locale: String!) {
     ...PageComponent
     ...IndexLogoWallComponent
     ...IndexQuoteComponent
@@ -74,9 +76,12 @@ const INK_SECTION_PROPS: Omit<SectionProps, "ramp"> = {
 const DOI_PREFIX = process.env.NEXT_PUBLIC_DOI_PREFIX || "";
 
 export default function Home({ query, seed, now }: HomeProps) {
-  const yearsSince2009Words = toWords(DateTime.now().year - 2009);
-  const heroHeadingYears =
-    yearsSince2009Words.charAt(0).toUpperCase() + yearsSince2009Words.slice(1);
+  const locale = getLocale();
+  const yearsSince2009 = DateTime.now().year - 2009;
+  const yearsSince2009Words = toWords(yearsSince2009);
+  const heroHeadingYears = locale.startsWith("en")
+    ? yearsSince2009Words.charAt(0).toUpperCase() + yearsSince2009Words.slice(1)
+    : new Intl.NumberFormat(locale).format(yearsSince2009);
   const twitch = useTwitch();
   const announcement = useHomepageAnnouncement(query, now);
 
@@ -450,10 +455,10 @@ export default function Home({ query, seed, now }: HomeProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
     props: {
-      query: await apiFetch(IndexQuery, {}, {}),
+      query: await apiFetch(IndexQuery, { locale: cmsLocale(locale) }, {}),
       seed: Math.random(),
       now: DateTime.utc().toISO(),
     },

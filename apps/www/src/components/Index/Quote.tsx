@@ -23,6 +23,7 @@ export const QuoteFragment = graphql(`
       quoteTestimonials: testimonials(
         where: { featured: true, type_in: ["Employer", "Maintainer"] }
         limit: 20
+        locale: $locale
       ) {
         items {
           quote

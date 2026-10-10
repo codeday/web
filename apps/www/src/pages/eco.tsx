@@ -9,11 +9,12 @@ import React from "react";
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 export const EcoFragment = graphql(`
   fragment EcoComponent on Query {
     cms {
-      details: strings(where: { key: "eco.details" }, limit: 1) {
+      details: strings(where: { key: "eco.details" }, limit: 1, locale: $locale) {
         items {
           richValue {
             json
@@ -25,7 +26,7 @@ export const EcoFragment = graphql(`
 `);
 
 const EcoQuery = graphql(`
-  query EcoQuery {
+  query EcoQuery($locale: String!) {
     ...EcoComponent
   }
 `);
@@ -49,10 +50,10 @@ export default function Eco({ query }: EcoProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
     props: {
-      query: await apiFetch(EcoQuery, {}, {}),
+      query: await apiFetch(EcoQuery, { locale: cmsLocale(locale) }, {}),
     },
     revalidate: 300,
   };

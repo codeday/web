@@ -10,6 +10,7 @@ import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 import Error404 from "@/pages/404";
+import { cmsLocale } from "@/utils/cmsLocale";
 
 const ListFormsQuery = graphql(`
   query ListFormsQuery {
@@ -26,7 +27,7 @@ const ListFormsQuery = graphql(`
 export const FormFragment = graphql(`
   fragment FormComponent on Query {
     cms {
-      forms(where: { slug: $slug }, limit: 1) {
+      forms(where: { slug: $slug }, limit: 1, locale: $locale) {
         items {
           title
           cognitoForm
@@ -70,7 +71,7 @@ export const FormFragment = graphql(`
 `);
 
 const FormQuery = graphql(`
-  query FormQuery($slug: String) {
+  query FormQuery($slug: String, $locale: String!) {
     ...FormComponent
   }
 `);
@@ -142,11 +143,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const slug = params?.slug as string;
   return {
     props: {
-      pageQuery: await apiFetch(FormQuery, { slug }, {}),
+      pageQuery: await apiFetch(FormQuery, { locale: cmsLocale(locale), slug }, {}),
     },
     revalidate: 300,
   };
