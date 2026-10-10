@@ -26,7 +26,11 @@ export const PageFragment = graphql(`
           value
         }
       }
-      globalSponsors(where: { legalDisclaimer_exists: true }, locale: $locale) {
+      globalSponsors(
+        where: { legalDisclaimer_exists: true }
+        order: sys_firstPublishedAt_ASC
+        locale: $locale
+      ) {
         items {
           legalDisclaimer
         }
@@ -108,12 +112,10 @@ export default function Page({
   const isContactActive = router.pathname === "/contact";
   const isVolunteerActive = router.pathname.startsWith("/volunteer");
   const isPressActive = router.pathname === "/press";
-  const disclaimerTexts = [
-    ...(cms?.globalSponsors?.items || [])
-      .flatMap((sponsor: any) => sponsor.legalDisclaimer.split(`\n`))
-      .filter(Boolean),
-    ...fundingDisclaimers,
-  ];
+  const sponsorDisclaimers = (cms?.globalSponsors?.items || [])
+    .flatMap((sponsor: any) => sponsor.legalDisclaimer.split(`\n`))
+    .filter(Boolean);
+  const pageDisclaimers = fundingDisclaimers.filter(Boolean);
 
   return (
     // `overflow-x: clip` (not `overflow: hidden`) — `hidden` on either axis
@@ -250,12 +252,20 @@ export default function Page({
         </Box>
 
         <Main>{children}</Main>
-        <Box mt={16}>
-          <Footer repository="web" branch="master" domainName="www.codeday.org">
-            {""}
-          </Footer>
-          <DisclaimerFooter disclaimerTexts={disclaimerTexts} />
-        </Box>
+        <Footer
+          mt={16}
+          repository="web"
+          branch="master"
+          domainName="www.codeday.org"
+          scene={{
+            ink: "/images/doodle-scene-ink.svg",
+            accent: "/images/doodle-scene-accent.svg",
+          }}
+        >
+          {(sponsorDisclaimers.length > 0 || pageDisclaimers.length > 0) && (
+            <DisclaimerFooter statements={sponsorDisclaimers} notices={pageDisclaimers} />
+          )}
+        </Footer>
       </Box>
     </Box>
   );

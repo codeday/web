@@ -313,6 +313,7 @@ const config = defineConfig({
         heading: { value: fonts.heading },
         mono: { value: fonts.mono },
         logo: { value: fonts.logo },
+        handwriting: { value: fonts.handwriting },
       },
     },
 
