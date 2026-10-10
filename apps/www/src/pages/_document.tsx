@@ -1,3 +1,4 @@
+import { baseLocale } from "@codeday/i18n/locales";
 import { ColorModeScript, gradientStops } from "@codeday/topo/Theme";
 import Document, {
   Html,
@@ -18,8 +19,9 @@ export default class CustomDocument extends Document {
   }
 
   render() {
+    const { locale } = this.props;
     return (
-      <Html lang="en">
+      <Html lang={locale && locale !== "_default" ? locale : baseLocale}>
         <Head>
           <link rel="shortcut icon" href="/favicon.ico" />
           <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />

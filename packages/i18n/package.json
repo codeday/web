@@ -2,25 +2,28 @@
   "name": "@codeday/i18n",
   "version": "0.0.0",
   "private": true,
-  "scripts": {
-    "build": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy baseLocale",
-    "dev": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy baseLocale --watch",
-    "clean": "rm -rf src/paraglide"
-  },
-  "dependencies": {
-    "@inlang/paraglide-js": "^2.0.0"
-  },
-  "devDependencies": {
-    "@codeday/tsconfig": "workspace:*",
-    "next": "catalog:",
-    "typescript": "catalog:"
-  },
   "exports": {
     "./messages": "./src/paraglide/messages.js",
     "./runtime": "./src/paraglide/runtime.js",
     "./server": "./src/paraglide/server.js",
     "./next-pages": "./src/next-pages.ts",
     "./locales": "./src/locales.ts"
+  },
+  "scripts": {
+    "build": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy baseLocale",
+    "dev": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy baseLocale --watch",
+    "clean": "rm -rf src/paraglide",
+    "test": "inlang check --project ./project.inlang --empty-translations --empty-variants --missing-variables --unknown-variables --missing-markup --missing-variants --missing-selectors",
+    "translate": "node scripts/translate.mjs"
+  },
+  "dependencies": {
+    "@inlang/paraglide-js": "^2.0.0"
+  },
+  "devDependencies": {
+    "@codeday/tsconfig": "workspace:*",
+    "@inlang/cli": "^3.4.0",
+    "next": "catalog:",
+    "typescript": "catalog:"
   },
   "peerDependencies": {
     "next": "catalog:"

@@ -20,8 +20,9 @@ function getPreferredLocale(acceptLanguage: string | null): string {
 
   for (const { lang } of entries) {
     if (AVAILABLE_LOCALES.includes(lang)) return lang;
-    const prefix = lang.split("-")[0];
-    if (AVAILABLE_LOCALES.includes(prefix)) return prefix;
+    const language = lang.split("-")[0];
+    const sameLanguage = AVAILABLE_LOCALES.find((locale) => locale.split("-")[0] === language);
+    if (sameLanguage) return sameLanguage;
   }
 
   return FALLBACK_LOCALE;

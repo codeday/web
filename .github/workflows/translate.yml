@@ -1,0 +1,48 @@
+name: Translate
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "packages/i18n/messages/**"
+      - "packages/i18n/project.inlang/**"
+      - "packages/i18n/scripts/translate.mjs"
+  workflow_dispatch:
+
+concurrency:
+  group: translate
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm --filter @codeday/i18n translate
+        env:
+          INLANG_MACHINE_TRANSLATE_PROVIDER: deepl
+          INLANG_DEEPL_API_KEY: ${{ secrets.INLANG_DEEPL_API_KEY }}
+
+      - name: Commit translations
+        if: ${{ !cancelled() }}
+        run: |
+          pnpm exec oxfmt packages/i18n/messages
+          git add packages/i18n/messages
+          git diff --cached --quiet && exit 0
+          git -c user.name="github-actions[bot]" \
+            -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "chore(i18n): Machine-translate messages"
+          git pull --rebase
+          git push
+
+      - run: pnpm --filter @codeday/i18n test
