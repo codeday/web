@@ -17,7 +17,13 @@
       ],
       "dependsOn": ["^build", "codegen"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**", "src/paraglide/**"]
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "dist/**",
+        "src/paraglide/**",
+        "public/images/ink-masks/**"
+      ]
     },
     "dev": {
       "dependsOn": ["^build", "codegen"],

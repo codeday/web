@@ -12,3 +12,5 @@ schema.graphql
 .pnpm-store/
 test-results/
 playwright-report/
+
+apps/www/public/images/ink-masks/

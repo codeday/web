@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "rm -rf .next && next dev",
-    "build": "next build",
+    "dev": "pnpm run ink-masks && rm -rf .next && next dev",
+    "build": "pnpm run ink-masks && next build",
     "start": "next start",
     "clean": "rm -rf .next",
     "codegen": "graphql-codegen --config codegen.yml",
@@ -13,6 +13,7 @@
     "analyze": "cross-env ANALYZE=true next build",
     "analyze:server": "cross-env BUNDLE_ANALYZE=server next build",
     "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build",
+    "ink-masks": "node scripts/generate-ink-masks.mjs",
     "cutouts:alum": "node --env-file=.env scripts/generate-alum-cutouts.ts"
   },
   "dependencies": {

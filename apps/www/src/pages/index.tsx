@@ -5,8 +5,10 @@ import {
   AnnouncementPill,
   Band,
   Content,
-  SECTION_IMAGE_ANCHOR,
+  INK_ILLUSTRATION_DESKTOP_SIZE,
+  InkIllustration,
   Section,
+  type SectionProps,
 } from "@codeday/topo/Molecule";
 import { FormatCards, RowList, StatementBlock } from "@codeday/topo/Organism";
 import { apiFetch } from "@codeday/topo/utils";
@@ -56,6 +58,18 @@ interface HomeProps {
   seed: number;
   now: string;
 }
+
+const INK_SECTION_PROPS: Omit<SectionProps, "ramp"> = {
+  backgroundColor: "hibiscus.50",
+  position: "relative",
+  overflow: "hidden",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  gap: { base: "6", md: "0" },
+  paddingBottom: { mdDown: "0" },
+  minHeight: { md: `calc(${INK_ILLUSTRATION_DESKTOP_SIZE} + {spacing.12})` },
+};
 
 const DOI_PREFIX = process.env.NEXT_PUBLIC_DOI_PREFIX || "";
 
@@ -276,20 +290,23 @@ export default function Home({ query, seed, now }: HomeProps) {
           </Content>
         </Box>
 
-        <Section
-          ramp="hotsauce"
-          backgroundColor="hibiscus.50"
-          imgSrc={{ base: null, md: "/images/cliff-ink.png" }}
-          imgSide="right"
-          imgPosition="left"
-          imgSize="contain"
-          imgMask="linear-gradient(to right, transparent, black {sizes.32})"
-        >
-          <Box maxWidth="container.lg" marginX="auto" display="flex">
+        <Section ramp="hotsauce" {...INK_SECTION_PROPS}>
+          <InkIllustration
+            src="/images/ink-masks/cliff-ink.avif"
+            side="right"
+            order={{ base: 1, md: 0 }}
+          />
+          <Box
+            position="relative"
+            maxWidth="container.lg"
+            marginX="auto"
+            width="full"
+            display="flex"
+          >
             <StatementBlock
               size="section"
               ramp="hotsauce"
-              anchorName={SECTION_IMAGE_ANCHOR}
+              maxWidth={{ md: "7/12" }}
               heading={m.www_home_whymatters_heading()}
               body={[<Message key="body" message={m.www_home_whymatters_body} />]}
             />
@@ -350,21 +367,25 @@ export default function Home({ query, seed, now }: HomeProps) {
       </Band>
 
       <Band tone="tinted">
-        <Section
-          ramp="chilioil"
-          backgroundColor="hibiscus.50"
-          imgSrc={{ base: null, md: "/images/study-classroom.png" }}
-          imgSide="left"
-          imgOverlap="{spacing.4}"
-          imgPosition="right"
-          imgSize="contain"
-          imgMask="linear-gradient(to left, transparent, black {sizes.32})"
-        >
-          <Box maxWidth="container.lg" marginX="auto" display="flex" justifyContent="flex-end">
+        <Section ramp="chilioil" {...INK_SECTION_PROPS}>
+          <InkIllustration
+            src="/images/ink-masks/study-classroom.avif"
+            side="left"
+            textFade="7%"
+            order={{ base: 1, md: 0 }}
+          />
+          <Box
+            position="relative"
+            maxWidth="container.lg"
+            marginX="auto"
+            width="full"
+            display="flex"
+            justifyContent={{ md: "flex-end" }}
+          >
             <StatementBlock
               size="section"
               ramp="chilioil"
-              anchorName={SECTION_IMAGE_ANCHOR}
+              maxWidth={{ md: "7/12" }}
               heading={m.www_home_evidence_heading()}
               body={[<Message key="body1" message={m.www_home_evidence_body1} />]}
               actions={[{ label: m.www_home_evidence_action(), href: "/research" }]}

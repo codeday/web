@@ -6,6 +6,7 @@ export * from "./Content";
 export * from "./DataCollection";
 export * from "./Html";
 export * from "./IconBox";
+export * from "./InkIllustration";
 export * from "./Slides";
 export * from "./GithubAuthors";
 export * from "./VideoPlayer";
