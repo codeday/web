@@ -1,5 +1,4 @@
 {
-  "$schema": "https://inlang.com/schema/inlang-message-format",
   "topo_announcement_learn_more": "了解更多",
   "topo_announcement_pill_chip_default": "最新",
   "topo_cognitoform_open_newtab": "在新标签页中打开。",
