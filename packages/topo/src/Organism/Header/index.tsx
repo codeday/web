@@ -3,6 +3,7 @@ import { Box, type BoxProps, Button } from "@codeday/topo/Atom";
 import { UiMenu, UiX, UiArrowDown } from "@codeday/topocons";
 import React, { useEffect, useRef, useState } from "react";
 
+import { LanguageSwitcher, type LanguageSwitcherProps } from "../../Molecule/LanguageSwitcher";
 import type { GradientName } from "../../Theme/vars/colors";
 import { useGrainOverlay } from "../../Theme/vars/grain";
 import { usePrefersReducedMotion } from "../../utils";
@@ -30,9 +31,12 @@ export interface HeaderProps extends Omit<BoxProps, "children"> {
   onWash?: boolean;
   ramp?: GradientName;
   /**
-   * A `HeaderBrand`, some `HeaderLink`s, a `HeaderSpacer`, and a trailing
-   * action (typically a `Button`) — the SAME children populate the desktop
-   * row and the mobile menu (`Header` walks them by type to build both).
+   * A `HeaderBrand`, some `HeaderLink`s, a `HeaderSpacer`, an optional
+   * `LanguageSwitcher`, and a trailing action (typically a `Button`) — the
+   * SAME children populate the desktop row and the mobile menu (`Header`
+   * walks them by type to build both). The switcher sits just left of the
+   * action on desktop and left of the menu button on mobile, wherever it's
+   * passed.
    * Pass them directly, not wrapped in an intermediate component — a
    * `<MyLinks />` that itself renders several `HeaderLink`s is one opaque
    * child of type `MyLinks` as far as `React.Children.toArray` is
@@ -452,12 +456,32 @@ export const Header = React.forwardRef<HTMLElement, HeaderProps>(
     const links = childArray.filter((c) =>
       isElementOfType(c, HeaderLink),
     ) as React.ReactElement<HeaderLinkProps>[];
+    const switcherChild = childArray.find((c) => isElementOfType(c, LanguageSwitcher)) as
+      | React.ReactElement<LanguageSwitcherProps>
+      | undefined;
+    const switcher =
+      switcherChild &&
+      React.cloneElement(switcherChild, { onColor: switcherChild.props.onColor ?? onWash });
     const action = childArray.find(
       (c) =>
         !isElementOfType(c, HeaderBrand) &&
         !isElementOfType(c, HeaderLink) &&
-        !isElementOfType(c, HeaderSpacer),
+        !isElementOfType(c, HeaderSpacer) &&
+        !isElementOfType(c, LanguageSwitcher),
     ) as React.ReactElement<any> | undefined;
+    const desktopChildren = childArray
+      .filter((c) => c !== switcherChild)
+      .map((c) =>
+        c === action && switcher ? (
+          <Box key="header-actions" display="flex" alignItems="center" gap="2.5">
+            {switcher}
+            {action}
+          </Box>
+        ) : (
+          c
+        ),
+      );
+    if (switcher && !action) desktopChildren.push(switcher);
 
     return (
       <>
@@ -501,12 +525,13 @@ export const Header = React.forwardRef<HTMLElement, HeaderProps>(
           {...props}
         >
           <Box display={{ base: "none", md: "flex" }} alignItems="center" gap="6" width="full">
-            {children}
+            {desktopChildren}
           </Box>
 
-          <Box display={{ base: "flex", md: "none" }} alignItems="center" width="full">
+          <Box display={{ base: "flex", md: "none" }} alignItems="center" gap="1" width="full">
             {brand}
             <Box flex="1" />
+            {switcher}
             <Box
               as="button"
               ref={triggerRef}

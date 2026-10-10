@@ -1,5 +1,6 @@
 import * as m from "@codeday/i18n/messages";
 import { Box, Button, SquircleLogo } from "@codeday/topo/Atom";
+import { LanguageSwitcher } from "@codeday/topo/Molecule";
 import {
   Header,
   HeaderBrand,
@@ -208,6 +209,7 @@ export default function Page({
               {m.www_navmenu_press()}
             </HeaderLink>
             <HeaderSpacer />
+            <LanguageSwitcher />
             {/* Auto-sized to the button alone (see the constant's comment
               above) — no hardcoded dimensions, no measurement. */}
             <Box position="relative" display="inline-block" flexShrink={0}>

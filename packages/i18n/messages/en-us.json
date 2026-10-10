@@ -22,6 +22,7 @@
   "topo_datacollection_pii_notice": "This form collects personally-identifiable information (PII). We take the privacy of this information seriously.",
   "topo_datacollection_payment_notice": "This form collects personally-identifiable and payment information. We take the privacy and security of this information seriously.",
   "topo_spinner_loading": "(loading...)",
+  "topo_languageswitcher_label": "Language: {language}",
   "www_page_site_name": "CodeDay",
   "www_page_disclaimer_heading": "Funding Statements and Disclaimers",
   "www_navmenu_contact": "Contact",

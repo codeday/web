@@ -7,12 +7,13 @@
     "./runtime": "./src/paraglide/runtime.js",
     "./server": "./src/paraglide/server.js",
     "./next-pages": "./src/next-pages.ts",
-    "./locales": "./src/locales.ts"
+    "./locales": "./src/locales.ts",
+    "./flags": "./src/flags.ts"
   },
   "scripts": {
-    "build": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy baseLocale",
-    "dev": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy baseLocale --watch",
-    "clean": "rm -rf src/paraglide",
+    "build": "node scripts/generate-flags.mjs && paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy baseLocale",
+    "dev": "node scripts/generate-flags.mjs && paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy baseLocale --watch",
+    "clean": "rm -rf src/paraglide src/generated",
     "test": "inlang check --project ./project.inlang --empty-translations --empty-variants --missing-variables --unknown-variables --missing-markup --missing-variants --missing-selectors",
     "translate": "node scripts/translate.mjs",
     "translate:contentful": "node --env-file-if-exists=.env scripts/translate-contentful.mjs"
@@ -24,6 +25,7 @@
     "@codeday/tsconfig": "workspace:*",
     "@inlang/cli": "^3.4.0",
     "contentful-management": "^12.17.0",
+    "country-flag-icons": "^1.6.20",
     "next": "catalog:",
     "typescript": "catalog:"
   },

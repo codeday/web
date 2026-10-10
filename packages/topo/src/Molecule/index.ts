@@ -20,3 +20,4 @@ export * from "./Section";
 export * from "./Wash";
 export * from "./AnnouncementPill";
 export * from "./GradientField";
+export * from "./LanguageSwitcher";

@@ -22,6 +22,7 @@
         "!.next/cache/**",
         "dist/**",
         "src/paraglide/**",
+        "src/generated/**",
         "public/images/ink-masks/**"
       ]
     },

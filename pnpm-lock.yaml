@@ -365,6 +365,9 @@ importers:
       contentful-management:
         specifier: ^12.17.0
         version: 12.17.0
+      country-flag-icons:
+        specifier: ^1.6.20
+        version: 1.6.20
       next:
         specifier: 'catalog:'
         version: 16.0.10(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -4150,6 +4153,9 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  country-flag-icons@1.6.20:
+    resolution: {integrity: sha512-py8JiEKzjhYw6HPJ0L7SxLgCYim36UPRTZX43/kqGueUCZLSvnrqAiwW8HtQibur7mdkFQUkjOgdK+o/9FBtaw==}
 
   countup.js@1.9.3:
     resolution: {integrity: sha512-UHf2P/mFKaESqdPq+UdBJm/1y8lYdlcDd0nTZHNC8cxWoJwZr1Eldm1PpWui446vDl5Pd8PtRYkr3q6K4+Qa5A==}
@@ -11106,6 +11112,8 @@ snapshots:
       path-type: 4.0.0
     optionalDependencies:
       typescript: 6.0.2
+
+  country-flag-icons@1.6.20: {}
 
   countup.js@1.9.3: {}
 

@@ -1,4 +1,5 @@
 import { Box, Button, SquircleLogo } from "@codeday/topo/Atom";
+import { LanguageSwitcher } from "@codeday/topo/Molecule";
 import { Header, HeaderBrand, HeaderLink, HeaderSpacer } from "@codeday/topo/Organism";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import React from "react";
@@ -57,6 +58,7 @@ export const OnWashAndLightGround: Story = {
         </HeaderBrand>
         {demoLinks()}
         <HeaderSpacer />
+        <LanguageSwitcher />
         <Button size="sm" variant="onColor" color="colorPalette.800">
           Get started
         </Button>
@@ -67,6 +69,7 @@ export const OnWashAndLightGround: Story = {
         </HeaderBrand>
         {demoLinks()}
         <HeaderSpacer />
+        <LanguageSwitcher />
         <Button size="sm" variant="primary">
           Get started
         </Button>
