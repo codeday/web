@@ -13,7 +13,7 @@ import {
   Text,
   type BoxProps,
 } from "@codeday/topo/Atom";
-import { Content, GithubAuthors } from "@codeday/topo/Molecule";
+import { CONTENT_INSET, Content, GithubAuthors } from "@codeday/topo/Molecule";
 import { useRegion } from "@codeday/topo/Region";
 import { useCmp, useQuery } from "@codeday/topo/Theme";
 import { useApi } from "@codeday/topo/utils";
@@ -140,127 +140,129 @@ const Footer = ({
   const mainSitePrefix = isMainSite ? "" : `https://${domainName}`;
 
   return (
-    <Content
-      fontSize="sm"
-      ref={ref as React.MutableRefObject<any>}
-      role="contentinfo"
-      {...(props as any)}
-    >
-      {repository && (
-        <Box mb={4}>
-          <GithubAuthors
-            repository={repository}
-            owner={owner}
-            branch={branch}
-            title={maintainedBy}
-          />
-        </Box>
-      )}
-      <Grid templateColumns={{ base: "1fr", md: "6fr 3fr 3fr" }} color="current.textLight">
-        <Box fontFamily="body" gridRow={{ base: 3, md: 1 }} marginTop={{ base: 6, md: 0 }}>
+    <Box paddingInline={CONTENT_INSET}>
+      <Content
+        fontSize="sm"
+        ref={ref as React.MutableRefObject<any>}
+        role="contentinfo"
+        {...(props as any)}
+      >
+        {repository && (
+          <Box mb={4}>
+            <GithubAuthors
+              repository={repository}
+              owner={owner}
+              branch={branch}
+              title={maintainedBy}
+            />
+          </Box>
+        )}
+        <Grid templateColumns={{ base: "1fr", md: "6fr 3fr 3fr" }} color="current.textLight">
+          <Box fontFamily="body" gridRow={{ base: 3, md: 1 }} marginTop={{ base: 6, md: 0 }}>
+            <Box>
+              {customText.length > 0 ? (
+                customText
+              ) : (
+                <Text>
+                  {copyright}
+                  <br />
+                  {nonprofit}{" "}
+                  {localization?.legalEntity && (
+                    <CopyText
+                      fontFamily="mono"
+                      label={`${localization?.name} ${localization?.legalEntity?.identifierName}: `}
+                      children={localization?.legalEntity?.identifier}
+                    />
+                  )}
+                  <br />
+                  {localization &&
+                    (localization.contactDefaultValue === "whatsapp" ? (
+                      <Link
+                        href={`https://api.whatsapp.com/send?phone=${localization.contactDefaultValue.replace(
+                          /[^0-9]/g,
+                          "",
+                        )}`}
+                      >
+                        {localization.contactDefaultValue}
+                      </Link>
+                    ) : (
+                      <Link href={`tel:${localization.contactDefaultValue.replace(/[^0-9]/g, "")}`}>
+                        {localization.contactDefaultValue}
+                      </Link>
+                    ))}
+                </Text>
+              )}
+            </Box>
+            <Box marginTop={4}>
+              <Link
+                href={`${mainSitePrefix}/legal/tos`}
+                target={isMainSite ? undefined : "_blank"}
+                rel="noopener"
+              >
+                {m.topo_footer_terms_of_service()}
+              </Link>
+              <br />
+              <Link
+                href={`${mainSitePrefix}/legal/privacy`}
+                target={isMainSite ? undefined : "_blank"}
+                rel="noopener"
+              >
+                {m.topo_footer_privacy_policy()}
+              </Link>
+              <br />
+              <Link
+                href={`${mainSitePrefix}/legal/cookies`}
+                target={isMainSite ? undefined : "_blank"}
+                rel="noopener"
+              >
+                {m.topo_footer_cookie_policy()}
+              </Link>
+              <br />
+              <Link
+                href={`${mainSitePrefix}/legal/disclaimer`}
+                target={isMainSite ? undefined : "_blank"}
+                rel="noopener"
+              >
+                {m.topo_footer_disclaimer()}
+              </Link>
+              <br />
+              <Link
+                href={`${mainSitePrefix}/privacy/controls`}
+                target={isMainSite ? undefined : "_blank"}
+                rel="noopener"
+              >
+                {ccpaLink}
+              </Link>
+              {!isCmpBlocked && (
+                <>
+                  <br />
+                  <Link as="a" onClick={() => ucUi?.showSecondLayer()} id="usercentrics-psl">
+                    {m.topo_footer_privacy_settings()}
+                  </Link>
+                </>
+              )}
+            </Box>
+          </Box>
+          <Box
+            gridRow={{ base: 2, md: 1 }}
+            marginTop={{ base: customLinks.length > 0 ? 6 : "", md: 0 }}
+          >
+            {customLinks.length > 0 && (
+              <Heading as="h2" fontSize="lg">
+                {customHeading}
+              </Heading>
+            )}
+            {customLinks}
+          </Box>
           <Box>
-            {customText.length > 0 ? (
-              customText
-            ) : (
-              <Text>
-                {copyright}
-                <br />
-                {nonprofit}{" "}
-                {localization?.legalEntity && (
-                  <CopyText
-                    fontFamily="mono"
-                    label={`${localization?.name} ${localization?.legalEntity?.identifierName}: `}
-                    children={localization?.legalEntity?.identifier}
-                  />
-                )}
-                <br />
-                {localization &&
-                  (localization.contactDefaultValue === "whatsapp" ? (
-                    <Link
-                      href={`https://api.whatsapp.com/send?phone=${localization.contactDefaultValue.replace(
-                        /[^0-9]/g,
-                        "",
-                      )}`}
-                    >
-                      {localization.contactDefaultValue}
-                    </Link>
-                  ) : (
-                    <Link href={`tel:${localization.contactDefaultValue.replace(/[^0-9]/g, "")}`}>
-                      {localization.contactDefaultValue}
-                    </Link>
-                  ))}
-              </Text>
-            )}
-          </Box>
-          <Box marginTop={4}>
-            <Link
-              href={`${mainSitePrefix}/legal/tos`}
-              target={isMainSite ? undefined : "_blank"}
-              rel="noopener"
-            >
-              {m.topo_footer_terms_of_service()}
-            </Link>
-            <br />
-            <Link
-              href={`${mainSitePrefix}/legal/privacy`}
-              target={isMainSite ? undefined : "_blank"}
-              rel="noopener"
-            >
-              {m.topo_footer_privacy_policy()}
-            </Link>
-            <br />
-            <Link
-              href={`${mainSitePrefix}/legal/cookies`}
-              target={isMainSite ? undefined : "_blank"}
-              rel="noopener"
-            >
-              {m.topo_footer_cookie_policy()}
-            </Link>
-            <br />
-            <Link
-              href={`${mainSitePrefix}/legal/disclaimer`}
-              target={isMainSite ? undefined : "_blank"}
-              rel="noopener"
-            >
-              {m.topo_footer_disclaimer()}
-            </Link>
-            <br />
-            <Link
-              href={`${mainSitePrefix}/privacy/controls`}
-              target={isMainSite ? undefined : "_blank"}
-              rel="noopener"
-            >
-              {ccpaLink}
-            </Link>
-            {!isCmpBlocked && (
-              <>
-                <br />
-                <Link as="a" onClick={() => ucUi?.showSecondLayer()} id="usercentrics-psl">
-                  {m.topo_footer_privacy_settings()}
-                </Link>
-              </>
-            )}
-          </Box>
-        </Box>
-        <Box
-          gridRow={{ base: 2, md: 1 }}
-          marginTop={{ base: customLinks.length > 0 ? 6 : "", md: 0 }}
-        >
-          {customLinks.length > 0 && (
             <Heading as="h2" fontSize="lg">
-              {customHeading}
+              {resourcesHeading}
             </Heading>
-          )}
-          {customLinks}
-        </Box>
-        <Box>
-          <Heading as="h2" fontSize="lg">
-            {resourcesHeading}
-          </Heading>
-          <StandardLinks links={cmsData?.cms?.sites?.items} domainName={domainName} />
-        </Box>
-      </Grid>
-    </Content>
+            <StandardLinks links={cmsData?.cms?.sites?.items} domainName={domainName} />
+          </Box>
+        </Grid>
+      </Content>
+    </Box>
   );
 };
 export { Footer };
