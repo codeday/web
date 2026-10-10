@@ -22,6 +22,8 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
+import { deepLTargets, toDeepLTarget } from "./deepl.mjs";
+
 const ROOT = path.join(import.meta.dirname, "..");
 const PROJECT = path.join(ROOT, "project.inlang");
 const FINGERPRINTS = path.join(ROOT, "messages/.fingerprints.json");
@@ -33,14 +35,6 @@ const targetLocales = locales.filter((locale) => locale !== baseLocale);
 const pathPattern = settings["plugin.inlang.messageFormat"].pathPattern;
 const messagesPath = (locale, root = ROOT) =>
   path.join(root, pathPattern.replace("{locale}", locale));
-
-const DEEPL_ALIASES = {
-  "zh-tw": "zh-hant",
-  "zh-hk": "zh-hant",
-  "zh-mo": "zh-hant",
-  "zh-cn": "zh-hans",
-  "zh-sg": "zh-hans",
-};
 
 async function readJson(file) {
   try {
@@ -78,30 +72,6 @@ for (const locale of targetLocales) {
     console.log(`${locale}: retranslating ${stale.length} changed or removed message(s)`);
     await writeJson(messagesPath(locale), messages);
   }
-}
-
-async function deepLTargets() {
-  const apiKey = process.env.INLANG_DEEPL_API_KEY;
-  if (!apiKey) throw new Error("INLANG_DEEPL_API_KEY must be set to translate with DeepL");
-  const host = apiKey.endsWith(":fx") ? "api-free.deepl.com" : "api.deepl.com";
-  const response = await fetch(`https://${host}/v2/languages?type=target`, {
-    headers: { Authorization: `DeepL-Auth-Key ${apiKey}` },
-  });
-  if (!response.ok)
-    throw new Error(`DeepL /v2/languages: ${response.status} ${response.statusText}`);
-  const languages = await response.json();
-  return new Map(languages.map(({ language }) => [language.toLowerCase(), language]));
-}
-
-function toDeepLTarget(locale, supported) {
-  const lower = locale.toLowerCase();
-  const [language, region] = lower.split("-");
-  const latinAmericanSpanish =
-    language === "es" && region && region !== "es" ? "es-419" : undefined;
-  return [lower, DEEPL_ALIASES[lower], latinAmericanSpanish, language]
-    .filter(Boolean)
-    .map((candidate) => supported.get(candidate))
-    .find(Boolean);
 }
 
 function machineTranslate(project, targets) {

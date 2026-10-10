@@ -14,7 +14,8 @@
     "dev": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy baseLocale --watch",
     "clean": "rm -rf src/paraglide",
     "test": "inlang check --project ./project.inlang --empty-translations --empty-variants --missing-variables --unknown-variables --missing-markup --missing-variants --missing-selectors",
-    "translate": "node scripts/translate.mjs"
+    "translate": "node scripts/translate.mjs",
+    "translate:contentful": "node --env-file-if-exists=.env scripts/translate-contentful.mjs"
   },
   "dependencies": {
     "@inlang/paraglide-js": "^2.0.0"
@@ -22,6 +23,7 @@
   "devDependencies": {
     "@codeday/tsconfig": "workspace:*",
     "@inlang/cli": "^3.4.0",
+    "contentful-management": "^12.17.0",
     "next": "catalog:",
     "typescript": "catalog:"
   },
