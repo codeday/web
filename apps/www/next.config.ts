@@ -4,6 +4,8 @@ import { withBotId } from "botid/next/config";
 import { NextConfig } from "next";
 import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 
+import { geoRedirects } from "./src/lib/geoRedirects";
+
 const nextConfig: NextConfig = {
   i18n: {
     locales: ["_default", ...locales],
@@ -44,7 +46,14 @@ const nextConfig: NextConfig = {
     ],
   },
   async redirects() {
-    const { cms } = await apiFetch("{ cms { regions { items { webname aliases } } } }", {}, {});
+    const { cms } = await apiFetch(
+      `{ cms {
+        regions { items { webname aliases } }
+        localizationConfigs(limit: 100) { items { iso3166Alpha2Code domainName } }
+      } }`,
+      {},
+      {},
+    );
     const webnames = (cms && cms.regions && cms.regions.items ? cms.regions.items : []).flatMap(
       (r: any) => [r.webname, ...(r.aliases || [])],
     );
@@ -112,6 +121,7 @@ const nextConfig: NextConfig = {
     ];
 
     return [
+      ...geoRedirects(cms?.localizationConfigs?.items ?? [], locales),
       ...staticRedirects,
       ...webnames.map((webname: string) => ({
         source: `/${webname}`,
