@@ -15,23 +15,18 @@ export interface RegionFeatures {
   donate: boolean;
 }
 
-const DEFAULT_FEATURES: RegionFeatures = {
-  donate: true,
-};
-
-const REGION_FEATURES: Record<string, Partial<RegionFeatures>> = {
-  estonia: { donate: false },
-  uk: { donate: false },
-};
-
-export function getRegionFeatures(region: string): RegionFeatures {
-  return { ...DEFAULT_FEATURES, ...REGION_FEATURES[region] };
+export function getRegionFeatures(
+  localization: RegionLocalization | null | undefined,
+): RegionFeatures {
+  return { donate: Boolean(localization?.legalEntity?.acceptsDonations) };
 }
 
 export interface RegionPageProps {
   region: string;
   regionLocalization: RegionLocalization | null;
 }
+
+const REGION_REVALIDATE_SECONDS = 300;
 
 interface RegionPageOptions {
   requires?: keyof RegionFeatures;
@@ -43,12 +38,17 @@ const RegionLocalizationQuery = graphql(`
       localizationConfigs(where: { id: $region }, locale: $locale, limit: 1) {
         items {
           name
+          domainName
           contactDefaultType
           contactDefaultValue
           legalEntity {
             legalName
+            entityFormDescriptor
             identifierName
             identifier
+            secondaryIdentifierName
+            secondaryIdentifier
+            acceptsDonations
           }
         }
       }
@@ -56,14 +56,16 @@ const RegionLocalizationQuery = graphql(`
   }
 `);
 
-function resolveRegion(
-  ctx: GetStaticPropsContext | GetServerSidePropsContext,
-  { requires }: RegionPageOptions,
-): string | null {
+function resolveRegion(ctx: GetStaticPropsContext | GetServerSidePropsContext): string | null {
   const region = ctx.params?.siteRegion;
-  if (!isRegion(region)) return null;
-  if (requires && !getRegionFeatures(region)[requires]) return null;
-  return region;
+  return isRegion(region) ? region : null;
+}
+
+function isAvailable(
+  localization: RegionLocalization | null,
+  { requires }: RegionPageOptions,
+): boolean {
+  return !requires || getRegionFeatures(localization)[requires];
 }
 
 async function fetchRegionLocalization(
@@ -79,13 +81,16 @@ export function withRegionStaticProps<P extends Record<string, any>>(
   options: RegionPageOptions = {},
 ): GetStaticProps<P & RegionPageProps> {
   return async (ctx) => {
-    const region = resolveRegion(ctx, options);
+    const region = resolveRegion(ctx);
     if (!region) return { notFound: true };
 
     const [regionLocalization, result] = await Promise.all([
       fetchRegionLocalization(region, ctx.locale),
       fn(ctx),
     ]);
+    if (!isAvailable(regionLocalization, options)) {
+      return { notFound: true, revalidate: REGION_REVALIDATE_SECONDS };
+    }
     if (!("props" in result)) return result;
     return { ...result, props: { ...result.props, region, regionLocalization } };
   };
@@ -96,13 +101,14 @@ export function withRegionServerSideProps<P extends Record<string, any>>(
   options: RegionPageOptions = {},
 ): GetServerSideProps<P & RegionPageProps> {
   return async (ctx) => {
-    const region = resolveRegion(ctx, options);
+    const region = resolveRegion(ctx);
     if (!region) return { notFound: true };
 
     const [regionLocalization, result] = await Promise.all([
       fetchRegionLocalization(region, ctx.locale),
       fn(ctx),
     ]);
+    if (!isAvailable(regionLocalization, options)) return { notFound: true };
     if (!("props" in result)) return result;
     return { ...result, props: { ...(await result.props), region, regionLocalization } };
   };

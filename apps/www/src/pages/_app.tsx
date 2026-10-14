@@ -42,7 +42,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <RegionProvider value={{ region, localization: pageProps.regionLocalization }}>
         <ThemeProvider brandColor="hibiscus" useSystemColorMode cookies={pageProps.cookies}>
           <MarketingProvider>
-            <FundraiseProvider enabled={getRegionFeatures(region).donate}>
+            <FundraiseProvider enabled={getRegionFeatures(pageProps.regionLocalization).donate}>
               <PageLoadingBar />
               <Component {...pageProps} />
               <Toaster toaster={_toaster} />

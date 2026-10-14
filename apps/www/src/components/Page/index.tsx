@@ -9,7 +9,7 @@ import {
   Main,
   Footer,
 } from "@codeday/topo/Organism";
-import { useRegion } from "@codeday/topo/Region";
+import { useRegionLocalization } from "@codeday/topo/Region";
 import { DefaultSeo } from "next-seo";
 import Head from "next/head";
 import React, { ReactNode, useRef } from "react";
@@ -107,7 +107,7 @@ export default function Page({
   const { mission } = cms || {};
   const donateAnchorRef = useRef<HTMLAnchorElement | null>(null);
   const pathname = usePublicPathname();
-  const { donate: showDonate } = getRegionFeatures(useRegion());
+  const { donate: showDonate } = getRegionFeatures(useRegionLocalization());
   const isResearchActive = pathname === "/research";
   const isMicroInternshipActive = pathname.startsWith("/micro-internship");
   const isTalentActive = pathname === "/talent";

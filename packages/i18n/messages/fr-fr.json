@@ -20,7 +20,6 @@
   "topo_footer_privacy_settings": "Paramètres de confidentialité",
   "topo_footer_copyright": "© {currentYear} {entityName}. Tous droits réservés.",
   "topo_mailinglist_subscribe": "S’abonner",
-  "topo_footer_nonprofit": "Une association à but non lucratif de type 501(c)(3).",
   "topo_mailinglist_error": "Désolé, nous n’avons pas pu finaliser votre abonnement. Veuillez réessayer.",
   "topo_mailinglist_placeholder": "e-mail ou téléphone",
   "topo_mailinglist_success": "Nous vous avons ajouté à la liste !",

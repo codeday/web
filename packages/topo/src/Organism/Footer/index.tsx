@@ -17,7 +17,7 @@ import {
   type HeadingProps,
 } from "@codeday/topo/Atom";
 import { CONTENT_INSET, Content, GithubAuthors } from "@codeday/topo/Molecule";
-import { useRegion, useRegionLocalization } from "@codeday/topo/Region";
+import { useRegion, useRegionLocalization, type RegionLocalization } from "@codeday/topo/Region";
 import { useCmp } from "@codeday/topo/Theme";
 import { useApi } from "@codeday/topo/utils";
 import { fixLocaleCasing } from "@codeday/utils";
@@ -39,12 +39,17 @@ query CmsConfigQuery ($locale: String!, $region: String!) {
     localizationConfigs(where:{ id: $region }, locale: $locale) {
       items {
         name
+        domainName
         contactDefaultType
         contactDefaultValue
         legalEntity {
           legalName
+          entityFormDescriptor
           identifierName
           identifier
+          secondaryIdentifierName
+          secondaryIdentifier
+          acceptsDonations
         }
       }
     }
@@ -220,7 +225,13 @@ const Footer = ({
     query,
     variables: { locale: fixLocaleCasing(locale), region },
   });
-  const localization = regionLocalization ?? cmsData?.cms?.localizationConfigs?.items?.[0];
+  const localization: RegionLocalization | undefined =
+    regionLocalization ?? cmsData?.cms?.localizationConfigs?.items?.[0];
+  const legalEntity = localization?.legalEntity;
+  const identifiers = [
+    { name: legalEntity?.identifierName, value: legalEntity?.identifier },
+    { name: legalEntity?.secondaryIdentifierName, value: legalEntity?.secondaryIdentifier },
+  ].filter((id): id is { name: string; value: string } => Boolean(id.name && id.value));
   const { community, support } = groupSiteLinks(cmsData?.cms?.sites?.items, domainName);
 
   const repoUrl = `https://github.com/${owner || "codeday"}/${repository}`;
@@ -338,21 +349,16 @@ const Footer = ({
               <Box>
                 <FooterHeading>{m.topo_footer_organization()}</FooterHeading>
                 <Box display="flex" flexDirection="column" gap={2} fontSize="md">
-                  <Text>{m.topo_footer_nonprofit()}</Text>
-                  {localization?.legalEntity && (
-                    <Box>
-                      <CopyText
-                        fontFamily="mono"
-                        fontSize="sm"
-                        color="black"
-                        label={`${localization.name} ${localization.legalEntity.identifierName}: `}
-                      >
-                        {localization.legalEntity.identifier}
-                      </CopyText>
-                    </Box>
+                  {legalEntity?.entityFormDescriptor && (
+                    <Text>{legalEntity.entityFormDescriptor}</Text>
                   )}
-                  {localization?.contactDefaultValue && (
-                    <FooterLinkList>
+                  <FooterLinkList>
+                    {localization?.domainName && (
+                      <FooterLink href={`mailto:team@${localization.domainName}`}>
+                        team@{localization.domainName}
+                      </FooterLink>
+                    )}
+                    {localization?.contactDefaultValue && (
                       <FooterLink
                         href={
                           localization.contactDefaultType === "whatsapp"
@@ -362,8 +368,8 @@ const Footer = ({
                       >
                         {localization.contactDefaultValue}
                       </FooterLink>
-                    </FooterLinkList>
-                  )}
+                    )}
+                  </FooterLinkList>
                 </Box>
               </Box>
             </Grid>
@@ -382,12 +388,30 @@ const Footer = ({
               fontSize="sm"
               color="fg.muted"
             >
-              <Text>
-                {m.topo_footer_copyright({
-                  currentYear: String(new Date().getFullYear()),
-                  entityName: localization?.legalEntity?.legalName ?? "CodeDay",
-                })}
-              </Text>
+              <Box>
+                <Text>
+                  {m.topo_footer_copyright({
+                    currentYear: String(new Date().getFullYear()),
+                    entityName: legalEntity?.legalName ?? "CodeDay",
+                  })}
+                </Text>
+                {identifiers.length > 0 && (
+                  <Flex wrap="wrap" columnGap={4} rowGap={1} mt={1}>
+                    {identifiers.map(({ name, value }) => (
+                      <Box key={value}>
+                        <CopyText
+                          fontFamily="mono"
+                          fontSize="sm"
+                          color="fg.muted"
+                          label={`${name}: `}
+                        >
+                          {value}
+                        </CopyText>
+                      </Box>
+                    ))}
+                  </Flex>
+                )}
+              </Box>
               <Flex as="ul" listStyleType="none" wrap="wrap" columnGap={4} rowGap={1}>
                 {legalLinks.map(({ href, label }) => (
                   <li key={href}>

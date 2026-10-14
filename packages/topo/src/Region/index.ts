@@ -13,12 +13,17 @@ import { DEFAULT_REGION } from "./config";
 
 export interface RegionLocalization {
   name?: string | null;
+  domainName?: string | null;
   contactDefaultType?: string | null;
   contactDefaultValue?: string | null;
   legalEntity?: {
     legalName?: string | null;
+    entityFormDescriptor?: string | null;
     identifierName?: string | null;
     identifier?: string | null;
+    secondaryIdentifierName?: string | null;
+    secondaryIdentifier?: string | null;
+    acceptsDonations?: boolean | null;
   } | null;
 }
 
