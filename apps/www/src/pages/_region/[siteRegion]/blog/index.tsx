@@ -24,7 +24,8 @@ import {
   usePostPages,
 } from "@/lib/blog/usePostPages";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { getRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getRegionStaticPaths, prebuildCommonLocales } from "@/utils/regionStaticPaths";
 import { useReplaceQuery } from "@/utils/useRegionRouter";
 
 const SEARCH_DEBOUNCE_MS = 250;
@@ -355,4 +356,4 @@ export const getStaticProps = withRegionStaticProps(async ({ locale }) => {
   };
 });
 
-export const getStaticPaths = getRegionStaticPaths;
+export const getStaticPaths = getRegionStaticPaths(prebuildCommonLocales);

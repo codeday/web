@@ -38,7 +38,8 @@ import { computeResearchStats } from "@/lib/research/stats";
 import { ResearchFragment } from "@/pages/_region/[siteRegion]/research";
 import useTwitch from "@/useTwitch";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { getRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getRegionStaticPaths, prebuildAllLocales } from "@/utils/regionStaticPaths";
 
 const IndexQuery = graphql(`
   query IndexQuery($locale: String!) {
@@ -457,4 +458,4 @@ export const getStaticProps = withRegionStaticProps(async ({ locale }) => {
   };
 });
 
-export const getStaticPaths = getRegionStaticPaths;
+export const getStaticPaths = getRegionStaticPaths(prebuildAllLocales);

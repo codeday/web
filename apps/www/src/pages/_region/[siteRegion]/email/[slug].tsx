@@ -5,7 +5,8 @@ import { useRouter } from "next/router";
 import React from "react";
 
 import Page from "@/components/Page";
-import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths } from "@/utils/regionStaticPaths";
 
 export default function Home() {
   const { query } = useRouter();

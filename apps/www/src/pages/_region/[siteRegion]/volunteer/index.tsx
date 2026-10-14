@@ -28,7 +28,8 @@ import Wizard from "@/components/Volunteer/Wizard";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { getRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getRegionStaticPaths, prebuildCommonLocales } from "@/utils/regionStaticPaths";
 
 export const VolunteerFragment = graphql(`
   fragment VolunteerComponent on Query {
@@ -273,4 +274,4 @@ export const getStaticProps = withRegionStaticProps(async ({ locale }) => {
   };
 });
 
-export const getStaticPaths = getRegionStaticPaths;
+export const getStaticPaths = getRegionStaticPaths(prebuildCommonLocales);

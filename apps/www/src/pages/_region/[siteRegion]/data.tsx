@@ -10,7 +10,8 @@ import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 import Error404 from "@/pages/404";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { getRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getRegionStaticPaths, prebuildCommonLocales } from "@/utils/regionStaticPaths";
 
 export const DataFragment = graphql(`
   fragment DataComponent on Query {
@@ -106,4 +107,4 @@ export const getStaticProps = withRegionStaticProps(async ({ locale }) => {
   };
 });
 
-export const getStaticPaths = getRegionStaticPaths;
+export const getStaticPaths = getRegionStaticPaths(prebuildCommonLocales);

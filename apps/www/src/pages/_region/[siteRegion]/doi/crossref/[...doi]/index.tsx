@@ -13,7 +13,8 @@ import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 import { PublicationQuery } from "@/pages/_region/[siteRegion]/doi/[...doi]/index";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths } from "@/utils/regionStaticPaths";
 
 export const DoiCrossrefFragment = graphql(`
   fragment DoiCrossrefComponent on Query {

@@ -9,7 +9,8 @@ import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { getRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getRegionStaticPaths, prebuildCommonLocales } from "@/utils/regionStaticPaths";
 
 export const EcoFragment = graphql(`
   fragment EcoComponent on Query {
@@ -59,4 +60,4 @@ export const getStaticProps = withRegionStaticProps(async ({ locale }) => {
   };
 });
 
-export const getStaticPaths = getRegionStaticPaths;
+export const getStaticPaths = getRegionStaticPaths(prebuildCommonLocales);

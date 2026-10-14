@@ -6,7 +6,8 @@ import React from "react";
 
 import Page from "@/components/Page";
 import EmailSample from "@/components/SchoolPartnership/EmailSample";
-import { getRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getRegionStaticPaths, prebuildCommonLocales } from "@/utils/regionStaticPaths";
 
 export default function SchoolPartnership() {
   return (
@@ -46,6 +47,6 @@ export default function SchoolPartnership() {
   );
 }
 
-export const getStaticPaths = getRegionStaticPaths;
+export const getStaticPaths = getRegionStaticPaths(prebuildCommonLocales);
 
 export const getStaticProps = withRegionStaticProps(async () => ({ props: {} }));

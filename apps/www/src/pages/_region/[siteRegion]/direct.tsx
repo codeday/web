@@ -17,7 +17,8 @@ import RegistrationCountdown from "@/components/MicroInternship/RegistrationCoun
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { getRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getRegionStaticPaths, prebuildCommonLocales } from "@/utils/regionStaticPaths";
 
 const MicroInternshipRegisterQuery = graphql(`
   query MicroInternshipRegisterQuery($now: CmsDateTime!, $locale: String!) {
@@ -379,4 +380,4 @@ export const getStaticProps = withRegionStaticProps(async ({ locale }) => {
   };
 });
 
-export const getStaticPaths = getRegionStaticPaths;
+export const getStaticPaths = getRegionStaticPaths(prebuildCommonLocales);

@@ -8,7 +8,8 @@ import React from "react";
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths } from "@/utils/regionStaticPaths";
 
 const HelpArticleQuery = graphql(`
   query HelpArticleQuery($article: String!, $locale: String!) {

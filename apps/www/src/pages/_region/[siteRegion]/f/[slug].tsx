@@ -10,7 +10,8 @@ import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 import Error404 from "@/pages/404";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths } from "@/utils/regionStaticPaths";
 
 export const FormFragment = graphql(`
   fragment FormComponent on Query {

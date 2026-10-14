@@ -3,7 +3,8 @@ import { DateTime } from "luxon";
 
 import { VolunteerQuery } from "@/pages/_region/[siteRegion]/volunteer/index";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { getRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getRegionStaticPaths, prebuildCommonLocales } from "@/utils/regionStaticPaths";
 
 export { default } from "@/pages/_region/[siteRegion]/volunteer/index";
 
@@ -25,4 +26,4 @@ export const getStaticProps = withRegionStaticProps(async ({ locale }) => {
   };
 });
 
-export const getStaticPaths = getRegionStaticPaths;
+export const getStaticPaths = getRegionStaticPaths(prebuildCommonLocales);

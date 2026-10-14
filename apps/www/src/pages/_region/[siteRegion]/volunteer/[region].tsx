@@ -3,7 +3,8 @@ import { DateTime } from "luxon";
 
 import { VolunteerQuery } from "@/pages/_region/[siteRegion]/volunteer/index";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths } from "@/utils/regionStaticPaths";
 
 export { default } from "@/pages/_region/[siteRegion]/volunteer/index";
 

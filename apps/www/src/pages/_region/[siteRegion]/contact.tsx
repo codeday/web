@@ -17,7 +17,8 @@ import TextOnly from "@/components/Contact/TextOnly";
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
-import { getRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getRegionStaticPaths, prebuildCommonLocales } from "@/utils/regionStaticPaths";
 
 export const ContactFragment = graphql(`
   fragment ContactComponent on Query {
@@ -370,4 +371,4 @@ export const getStaticProps = withRegionStaticProps(async (ctx) => {
   };
 });
 
-export const getStaticPaths = getRegionStaticPaths;
+export const getStaticPaths = getRegionStaticPaths(prebuildCommonLocales);

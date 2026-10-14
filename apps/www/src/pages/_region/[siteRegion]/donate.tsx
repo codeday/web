@@ -11,7 +11,8 @@ import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 import { useFundraise } from "@/providers";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { getRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getRegionStaticPaths, prebuildCommonLocales } from "@/utils/regionStaticPaths";
 
 export const DonateFragment = graphql(`
   fragment DonateComponent on Query {
@@ -129,4 +130,4 @@ export const getStaticProps = withRegionStaticProps(
   { requires: "donate" },
 );
 
-export const getStaticPaths = getRegionStaticPaths;
+export const getStaticPaths = getRegionStaticPaths(prebuildCommonLocales);

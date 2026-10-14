@@ -20,7 +20,8 @@ import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths } from "@/utils/regionStaticPaths";
 
 export const HelpProgramIndexFragment = graphql(`
   fragment HelpProgramIndexComponent on Query {

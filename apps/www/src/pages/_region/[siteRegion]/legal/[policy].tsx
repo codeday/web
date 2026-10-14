@@ -7,7 +7,8 @@ import React from "react";
 
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
-import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths } from "@/utils/regionStaticPaths";
 
 const LegalContentQuery = graphql(`
   query LegalContentQuery($slug: String!, $parentSlug: String!) {

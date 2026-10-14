@@ -4,7 +4,8 @@ import { CalendlyEmbed as Calendly } from "@codeday/topo/Molecule";
 import React from "react";
 
 import Page from "@/components/Page";
-import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths } from "@/utils/regionStaticPaths";
 
 interface CalendlyPageProps {
   slug: string[];

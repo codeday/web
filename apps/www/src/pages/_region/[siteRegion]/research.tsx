@@ -15,7 +15,8 @@ import { buildPublications } from "@/lib/research/normalize";
 import { computeResearchStats } from "@/lib/research/stats";
 import type { Publication } from "@/lib/research/types";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { getRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getRegionStaticPaths, prebuildCommonLocales } from "@/utils/regionStaticPaths";
 
 export const ResearchFragment = graphql(`
   fragment ResearchIndexComponent on Query {
@@ -223,4 +224,4 @@ export const getStaticProps = withRegionStaticProps(async ({ locale }) => {
   };
 });
 
-export const getStaticPaths = getRegionStaticPaths;
+export const getStaticPaths = getRegionStaticPaths(prebuildCommonLocales);

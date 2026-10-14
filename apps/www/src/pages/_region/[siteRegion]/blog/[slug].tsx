@@ -19,7 +19,8 @@ import { BlogPageQuery, BlogPostQuery } from "@/lib/blog/queries";
 import { splitHighlight } from "@/lib/blog/title";
 import type { BlogImage, BlogPostSummary, RichTextNode } from "@/lib/blog/types";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths } from "@/utils/regionStaticPaths";
 
 const READING_WIDTH = "2xl";
 
