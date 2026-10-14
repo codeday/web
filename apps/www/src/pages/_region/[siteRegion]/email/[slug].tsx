@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import React from "react";
 
 import Page from "@/components/Page";
-import { withRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
 
 export default function Home() {
   const { query } = useRouter();
@@ -28,9 +28,6 @@ export default function Home() {
   );
 }
 
-export const getStaticPaths = withRegionStaticPaths(async () => ({
-  paths: [],
-  fallback: "blocking",
-}));
+export const getStaticPaths = getOnDemandStaticPaths("blocking");
 
 export const getStaticProps = withRegionStaticProps(async () => ({ props: {} }));

@@ -1,4 +1,4 @@
-import { DEFAULT_REGION, isRegion, type RegionLocalization } from "@codeday/topo/Region";
+import { REGIONS, isRegion, type RegionLocalization } from "@codeday/topo/Region";
 import { apiFetch } from "@codeday/topo/utils";
 import type {
   GetServerSideProps,
@@ -115,22 +115,14 @@ export function withRegionServerSideProps<P extends Record<string, any>>(
 }
 
 export const getRegionStaticPaths: GetStaticPaths = async ({ locales = [] }) => ({
-  paths: locales
-    .filter((locale) => locale !== "_default")
-    .map((locale) => ({ params: { siteRegion: DEFAULT_REGION }, locale })),
+  paths: REGIONS.flatMap((siteRegion) =>
+    locales
+      .filter((locale) => locale !== "_default")
+      .map((locale) => ({ params: { siteRegion }, locale })),
+  ),
   fallback: "blocking",
 });
 
-export function withRegionStaticPaths(fn: GetStaticPaths): GetStaticPaths {
-  return async (ctx) => {
-    const { paths, fallback } = await fn(ctx);
-    return {
-      fallback,
-      paths: paths.map((path) =>
-        typeof path === "string"
-          ? `/_region/${DEFAULT_REGION}${path}`
-          : { ...path, params: { ...path.params, siteRegion: DEFAULT_REGION } },
-      ),
-    };
-  };
+export function getOnDemandStaticPaths(fallback: true | "blocking"): GetStaticPaths {
+  return async () => ({ paths: [], fallback });
 }

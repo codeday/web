@@ -10,14 +10,12 @@ export interface ImpactItem {
   id: string;
   href?: string;
   project: Message | string;
-  student?: Message | string;
   impact?: Message | string;
   contribution?: Message | string;
   mark?: string;
   markAlt?: Message;
   photo?: string;
   photoAlt?: Message;
-  avatar?: string | null;
 }
 
 export interface ImpactTickerProps extends Omit<BoxProps, "children"> {
@@ -60,25 +58,9 @@ function PhotoImpactCard({ item }: { item: ImpactItem }) {
         padding="{spacing.2} {spacing.2.5}"
         backgroundImage="linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0))"
       >
-        {item.avatar && (
-          <Image
-            src={item.avatar}
-            alt=""
-            boxSize="4.5"
-            borderRadius="full"
-            display="inline-block"
-            verticalAlign="middle"
-            marginRight="1.5"
-          />
-        )}
-        <Box as="span" fontSize="xs" fontWeight="700" color="trueWhite" verticalAlign="middle">
+        <Box as="span" fontSize="xs" fontWeight="700" color="trueWhite">
           {item.project}
         </Box>
-        {item.student && (
-          <Box fontSize="xs" color="whiteAlpha.800">
-            {item.student}
-          </Box>
-        )}
       </Box>
     </Box>
   );
@@ -158,11 +140,6 @@ function ImpactCard({ item }: { item: ImpactItem }) {
       {item.contribution && (
         <Box fontSize="xs" color="gray.700">
           {item.contribution}
-        </Box>
-      )}
-      {item.student && (
-        <Box fontSize="xs" fontWeight="600" color="black">
-          {item.student}
         </Box>
       )}
       <Box

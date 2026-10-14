@@ -19,7 +19,7 @@ import { BlogPageQuery, BlogPostQuery } from "@/lib/blog/queries";
 import { splitHighlight } from "@/lib/blog/title";
 import type { BlogImage, BlogPostSummary, RichTextNode } from "@/lib/blog/types";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { withRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
 
 const READING_WIDTH = "2xl";
 
@@ -234,10 +234,7 @@ export default function BlogPostPage({ query, post }: BlogPostPageProps) {
   );
 }
 
-export const getStaticPaths = withRegionStaticPaths(async () => ({
-  paths: [],
-  fallback: "blocking",
-}));
+export const getStaticPaths = getOnDemandStaticPaths("blocking");
 
 export const getStaticProps = withRegionStaticProps(async ({ params, locale }) => {
   const cmsLocaleCode = cmsLocale(locale);

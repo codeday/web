@@ -33,7 +33,7 @@ import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 import Error404 from "@/pages/404";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { withRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
 
 export const DoiFragment = graphql(`
   fragment DoiComponent on Query {
@@ -73,18 +73,6 @@ export const PublicationQuery = graphql(`
   query PublicationQuery($doiSuffix: String, $locale: String!) {
     ...DoiComponent
     ...DoiCrossrefComponent
-  }
-`);
-
-export const ListPublicationsQuery = graphql(`
-  query ListPublicationsQuery {
-    cms {
-      publications {
-        items {
-          doiSuffix
-        }
-      }
-    }
   }
 `);
 
@@ -376,19 +364,7 @@ export default function Home({ query: pageQuery }: HomeProps) {
   );
 }
 
-export const getStaticPaths = withRegionStaticPaths(async () => {
-  const query = await apiFetch(ListPublicationsQuery, {}, {});
-
-  return {
-    paths:
-      query?.cms?.publications?.items?.map((i: any) => ({
-        params: {
-          doi: [process.env.NEXT_PUBLIC_DOI_PREFIX, i.doiSuffix],
-        },
-      })) || [],
-    fallback: true,
-  };
-});
+export const getStaticPaths = getOnDemandStaticPaths(true);
 
 export const getStaticProps = withRegionStaticProps(async ({ params, locale }) => {
   const doi = params?.doi as string[];

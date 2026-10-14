@@ -7,17 +7,7 @@ import React from "react";
 
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
-import { withRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
-
-const LegalPathsQuery = graphql(`
-  query LegalPathsQuery {
-    notion {
-      pages(parentSlug: "legal") {
-        slug
-      }
-    }
-  }
-`);
+import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
 
 const LegalContentQuery = graphql(`
   query LegalContentQuery($slug: String!, $parentSlug: String!) {
@@ -65,13 +55,7 @@ export default function Policy({ slug, page }: PolicyProps) {
 }
 
 const TERMAGEDDON_POLICIES = ["tos", "privacy", "cookies", "disclaimer"];
-export const getStaticPaths = withRegionStaticPaths(async () => {
-  const { notion } = await apiFetch(LegalPathsQuery, {}, {});
-  return {
-    paths: TERMAGEDDON_POLICIES.map((p) => ({ params: { policy: p } })),
-    fallback: "blocking",
-  };
-});
+export const getStaticPaths = getOnDemandStaticPaths("blocking");
 
 export const getStaticProps = withRegionStaticProps(async ({ params }) => {
   if (TERMAGEDDON_POLICIES.includes(params!.policy as string)) {

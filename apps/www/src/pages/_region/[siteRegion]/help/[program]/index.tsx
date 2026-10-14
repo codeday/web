@@ -20,7 +20,7 @@ import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { withRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
 
 export const HelpProgramIndexFragment = graphql(`
   fragment HelpProgramIndexComponent on Query {
@@ -55,27 +55,6 @@ export const HelpProgramIndexFragment = graphql(`
 const HelpProgramIndexQuery = graphql(`
   query HelpProgramIndexQuery($programWebname: String!, $locale: String!) {
     ...HelpProgramIndexComponent
-  }
-`);
-
-const HelpProgramIndexPathsQuery = graphql(`
-  query HelpProgramIndexPathsQuery {
-    cms {
-      programs {
-        items {
-          webname
-          linkedFrom {
-            faqs(limit: 1) {
-              items {
-                sys {
-                  id
-                }
-              }
-            }
-          }
-        }
-      }
-    }
   }
 `);
 
@@ -150,16 +129,7 @@ export default function Program({ query, programWebname }: ProgramProps) {
   );
 }
 
-export const getStaticPaths = withRegionStaticPaths(async () => {
-  const query = await apiFetch(HelpProgramIndexPathsQuery, {}, {});
-
-  return {
-    paths: query.cms.programs?.items
-      ?.filter((program: any) => program?.linkedFrom?.faqs?.items?.length > 0)
-      .map((program: any) => ({ params: { program: program.webname } })),
-    fallback: true,
-  };
-});
+export const getStaticPaths = getOnDemandStaticPaths(true);
 
 export const getStaticProps = withRegionStaticProps(async ({ params, locale }) => {
   const program = params?.program as string;

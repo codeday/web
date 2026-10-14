@@ -4,7 +4,7 @@ import { CalendlyEmbed as Calendly } from "@codeday/topo/Molecule";
 import React from "react";
 
 import Page from "@/components/Page";
-import { withRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
 
 interface CalendlyPageProps {
   slug: string[];
@@ -24,12 +24,7 @@ export default function CalendlyPage({ slug }: CalendlyPageProps) {
   );
 }
 
-export const getStaticPaths = withRegionStaticPaths(async () => {
-  return {
-    paths: [],
-    fallback: true,
-  };
-});
+export const getStaticPaths = getOnDemandStaticPaths(true);
 
 export const getStaticProps = withRegionStaticProps(async ({ params }) => {
   const slug = params?.slug as string[];

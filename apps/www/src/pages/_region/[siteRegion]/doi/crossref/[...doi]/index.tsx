@@ -11,12 +11,9 @@ import xmlbuilder from "xmlbuilder";
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
-import {
-  PublicationQuery,
-  ListPublicationsQuery,
-} from "@/pages/_region/[siteRegion]/doi/[...doi]/index";
+import { PublicationQuery } from "@/pages/_region/[siteRegion]/doi/[...doi]/index";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { withRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
 
 export const DoiCrossrefFragment = graphql(`
   fragment DoiCrossrefComponent on Query {
@@ -284,19 +281,7 @@ export default function Crossref({ query: pageQuery }: CrossrefProps) {
   );
 }
 
-export const getStaticPaths = withRegionStaticPaths(async () => {
-  const query = await apiFetch(ListPublicationsQuery, {}, {});
-
-  return {
-    paths:
-      query?.cms?.publications?.items?.map((i: any) => ({
-        params: {
-          doi: [process.env.NEXT_PUBLIC_DOI_PREFIX, i.doiSuffix],
-        },
-      })) || [],
-    fallback: true,
-  };
-});
+export const getStaticPaths = getOnDemandStaticPaths(true);
 
 export const getStaticProps = withRegionStaticProps(async ({ params, locale }) => {
   const doi = params?.doi as string[];

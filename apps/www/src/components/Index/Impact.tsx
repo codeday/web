@@ -18,12 +18,6 @@ export const ImpactFragment = graphql(`
         media(type: IMAGE, topics: [DEMO]) {
           image(width: 320, height: 220, strategy: CROP)
         }
-        members {
-          account {
-            name
-            picture(transform: { width: 32, height: 32, fit: CROP })
-          }
-        }
       }
     }
     labs {
@@ -55,14 +49,11 @@ type RawContribution = ImpactData["labs"]["contributions"][number];
 
 function projectToItem(project: RawProject): ImpactItem | null {
   const photo = project.media?.[0]?.image;
-  const author = project.members?.map((member) => member.account).find((account) => account?.name);
-  if (!photo || !author) return null;
+  if (!photo) return null;
   return {
     id: `project-${project.id}`,
     photo,
     project: project.name,
-    student: author.name || undefined,
-    avatar: author.picture,
     href: `https://showcase.codeday.org/project/${project.id}`,
   };
 }

@@ -8,7 +8,7 @@ import React from "react";
 import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { withRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
 
 const HelpArticleQuery = graphql(`
   query HelpArticleQuery($article: String!, $locale: String!) {
@@ -44,20 +44,6 @@ const HelpArticleQuery = graphql(`
               id
             }
             title
-          }
-        }
-      }
-    }
-  }
-`);
-
-const HelpArticlePathsQuery = graphql(`
-  query HelpArticlePathsQuery {
-    cms {
-      faqs(limit: 1000) {
-        items {
-          sys {
-            id
           }
         }
       }
@@ -112,15 +98,7 @@ export default function Article({ faq }: ArticleProps) {
   );
 }
 
-export const getStaticPaths = withRegionStaticPaths(async () => {
-  const {
-    cms: { faqs },
-  } = await apiFetch(HelpArticlePathsQuery, {}, {});
-  return {
-    paths: faqs?.items?.map((faq: any) => ({ params: { article: faq.sys.id } })),
-    fallback: true,
-  };
-});
+export const getStaticPaths = getOnDemandStaticPaths(true);
 
 export const getStaticProps = withRegionStaticProps(async ({ params, locale }) => {
   const article = params?.article as string;

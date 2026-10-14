@@ -58,7 +58,6 @@ export const TwoRows: Story = {
           impact: fm(`Used by [N] million people`),
           project: fm(project),
           contribution: fm("[One line on what they changed]"),
-          student: fm("[Name]"),
         }))}
       />
       <Box

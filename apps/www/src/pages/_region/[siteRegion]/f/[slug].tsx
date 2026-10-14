@@ -10,19 +10,7 @@ import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 import Error404 from "@/pages/404";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { withRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
-
-const ListFormsQuery = graphql(`
-  query ListFormsQuery {
-    cms {
-      forms {
-        items {
-          slug
-        }
-      }
-    }
-  }
-`);
+import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
 
 export const FormFragment = graphql(`
   fragment FormComponent on Query {
@@ -129,19 +117,7 @@ export default function Home({ pageQuery }: HomeProps) {
   );
 }
 
-export const getStaticPaths = withRegionStaticPaths(async () => {
-  const listQuery = await apiFetch(ListFormsQuery, {}, {});
-
-  return {
-    paths:
-      listQuery?.cms?.forms?.items?.map((i: any) => ({
-        params: {
-          slug: i.slug,
-        },
-      })) || [],
-    fallback: true,
-  };
-});
+export const getStaticPaths = getOnDemandStaticPaths(true);
 
 export const getStaticProps = withRegionStaticProps(async ({ params, locale }) => {
   const slug = params?.slug as string;

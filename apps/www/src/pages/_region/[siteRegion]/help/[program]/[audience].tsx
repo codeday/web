@@ -9,7 +9,7 @@ import Page from "@/components/Page";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 import { cmsLocale } from "@/utils/cmsLocale";
-import { withRegionStaticPaths, withRegionStaticProps } from "@/utils/region";
+import { getOnDemandStaticPaths, withRegionStaticProps } from "@/utils/region";
 
 export const HelpProgramAudienceFragment = graphql(`
   fragment HelpProgramAudienceComponent on Query {
@@ -55,25 +55,6 @@ export const HelpProgramAudienceFragment = graphql(`
 const HelpProgramAudienceQuery = graphql(`
   query HelpProgramAudienceQuery($programWebname: String!, $audience: String!, $locale: String!) {
     ...HelpProgramAudienceComponent
-  }
-`);
-
-const HelpProgramAudiencePathsQuery = graphql(`
-  query HelpProgramAudiencePathsQuery {
-    cms {
-      programs(limit: 100) {
-        items {
-          webname
-          linkedFrom {
-            faqs {
-              items {
-                audience
-              }
-            }
-          }
-        }
-      }
-    }
   }
 `);
 
@@ -200,30 +181,7 @@ export default function Audience({ query, programWebname, audience }: AudiencePr
   );
 }
 
-export const getStaticPaths = withRegionStaticPaths(async () => {
-  const query = await apiFetch(HelpProgramAudiencePathsQuery, {}, {});
-
-  return {
-    paths: query.cms.programs?.items
-      ?.filter((program: any) => program?.linkedFrom?.faqs?.items?.length > 0)
-      .map((program: any) => {
-        const audiences =
-          program?.linkedFrom?.faqs?.items
-            ?.map((faq: any) => faq.audience)
-            .reduce((accum: string[], auds: string[]) => [...accum, ...auds], [])
-            .reduce(
-              (accum: string[], aud: string) => (accum.includes(aud) ? accum : [...accum, aud]),
-              [],
-            ) || [];
-
-        return audiences.map((aud: string) => ({
-          params: { program: program.webname, audience: aud.toLowerCase() },
-        }));
-      })
-      .reduce((accum: any[], elem: any[]) => [...accum, ...elem], []),
-    fallback: true,
-  };
-});
+export const getStaticPaths = getOnDemandStaticPaths(true);
 
 export const getStaticProps = withRegionStaticProps(async ({ params, locale }) => {
   const program = params?.program as string;
