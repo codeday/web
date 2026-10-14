@@ -13,7 +13,8 @@
     "./utils": "./src/utils.ts",
     "./_utils": "./src/_utils.tsx",
     "./Region": "./src/Region/index.ts",
-    "./Region/config": "./src/Region/config.ts"
+    "./Region/config": "./src/Region/config.ts",
+    "./isInternalPageHref": "./src/Atom/Link/isInternalPageHref.ts"
   },
   "scripts": {
     "build": "tsc --build",

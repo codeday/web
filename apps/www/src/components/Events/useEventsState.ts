@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { City, distanceTo, findNearestCity } from "@/components/Events/data";
+import { useReplaceQuery } from "@/utils/useRegionRouter";
 
 export interface GeoPoint {
   lat: number;
@@ -10,6 +11,7 @@ export interface GeoPoint {
 
 export function useEventsState(cities: City[], serverPoint: GeoPoint | null) {
   const router = useRouter();
+  const replaceQuery = useReplaceQuery();
   const [point, setPoint] = useState<GeoPoint | null>(serverPoint);
   const [query, setQuery] = useState("");
 
@@ -45,12 +47,9 @@ export function useEventsState(cities: City[], serverPoint: GeoPoint | null) {
       const nextQuery: Record<string, any> = { ...router.query };
       if (id) nextQuery.city = id;
       else delete nextQuery.city;
-      router.replace({ pathname: router.pathname, query: nextQuery }, undefined, {
-        shallow: true,
-        scroll: false,
-      });
+      void replaceQuery(nextQuery, { scroll: false });
     },
-    [router],
+    [router.query, replaceQuery],
   );
 
   const selectCity = useCallback(

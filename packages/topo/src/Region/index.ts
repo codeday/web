@@ -1,35 +1,39 @@
 export {
   DEFAULT_REGION,
-  REGION_HEADER,
+  REGIONS,
   TLD_REGION_MAP,
   getRegionFromHostname,
+  isRegion,
   type RegionMap,
 } from "./config";
 
-import type { GetServerSidePropsContext, GetStaticPropsContext } from "next";
 import { createContext, useContext } from "react";
 
-import { DEFAULT_REGION, REGION_HEADER, getRegionFromHostname, type RegionMap } from "./config";
+import { DEFAULT_REGION } from "./config";
 
-export const RegionContext = createContext<string>(DEFAULT_REGION);
+export interface RegionLocalization {
+  name?: string | null;
+  contactDefaultType?: string | null;
+  contactDefaultValue?: string | null;
+  legalEntity?: {
+    legalName?: string | null;
+    identifierName?: string | null;
+    identifier?: string | null;
+  } | null;
+}
+
+export interface RegionContextValue {
+  region: string;
+  localization?: RegionLocalization | null;
+}
+
+export const RegionContext = createContext<RegionContextValue>({ region: DEFAULT_REGION });
 export const RegionProvider = RegionContext.Provider;
 
 export function useRegion(): string {
-  return useContext(RegionContext);
+  return useContext(RegionContext).region;
 }
 
-export function getRegionFromContext(
-  ctx: GetServerSidePropsContext,
-  overrides?: RegionMap,
-  defaultRegion: string = DEFAULT_REGION,
-): string {
-  const req = ctx.req;
-
-  const headerRegion = req.headers[REGION_HEADER];
-  if (typeof headerRegion === "string" && headerRegion) {
-    return headerRegion;
-  }
-
-  const host = req.headers.host;
-  return getRegionFromHostname(host, overrides, defaultRegion);
+export function useRegionLocalization(): RegionLocalization | null | undefined {
+  return useContext(RegionContext).localization;
 }

@@ -43,7 +43,13 @@ const FUNDRAISE_UP_STYLE = `
   }
 `;
 
-export function FundraiseProvider({ children }: { children: ReactNode }) {
+export function FundraiseProvider({
+  enabled = true,
+  children,
+}: {
+  enabled?: boolean;
+  children: ReactNode;
+}) {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [isFundraiseLoaded, setIsFundraiseLoaded] = useState(false);
 
@@ -57,6 +63,14 @@ export function FundraiseProvider({ children }: { children: ReactNode }) {
       })();
     }
   }, [isScriptLoaded]);
+
+  if (!enabled) {
+    return (
+      <FundraiseContext.Provider value={{ isFundraiseLoaded: false }}>
+        {children}
+      </FundraiseContext.Provider>
+    );
+  }
 
   return (
     <FundraiseContext.Provider value={{ isFundraiseLoaded }}>

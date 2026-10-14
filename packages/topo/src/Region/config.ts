@@ -2,12 +2,10 @@ export type RegionMap = Record<string, string>;
 
 export const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION || "us";
 
-export const REGION_HEADER = "x-codeday-region";
-
 export const TLD_REGION_MAP: RegionMap = {
   org: "us",
   us: "us",
-  ca: "canada",
+  ca: "ca",
   "co.uk": "uk",
   in: "india",
   ee: "estonia",
@@ -19,6 +17,14 @@ export const TLD_REGION_MAP: RegionMap = {
   be: "estonia",
 };
 
+export const REGIONS: readonly string[] = [
+  ...new Set([DEFAULT_REGION, ...Object.values(TLD_REGION_MAP)]),
+];
+
+export function isRegion(region: unknown): region is string {
+  return typeof region === "string" && REGIONS.includes(region);
+}
+
 export function getRegionFromHostname(
   hostname: string | undefined | null,
   overrides?: RegionMap,
@@ -29,6 +35,9 @@ export function getRegionFromHostname(
   let domain = hostname.split(":")[0].toLowerCase();
   if (domain.startsWith("www.")) {
     domain = domain.slice(4);
+  }
+  if (domain.endsWith(".localhost")) {
+    domain = domain.slice(0, -".localhost".length);
   }
 
   if (overrides) {

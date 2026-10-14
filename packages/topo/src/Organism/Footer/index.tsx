@@ -17,7 +17,7 @@ import {
   type HeadingProps,
 } from "@codeday/topo/Atom";
 import { CONTENT_INSET, Content, GithubAuthors } from "@codeday/topo/Molecule";
-import { useRegion } from "@codeday/topo/Region";
+import { useRegion, useRegionLocalization } from "@codeday/topo/Region";
 import { useCmp } from "@codeday/topo/Theme";
 import { useApi } from "@codeday/topo/utils";
 import { fixLocaleCasing } from "@codeday/utils";
@@ -215,11 +215,12 @@ const Footer = ({
   const { ucUi, isCmpBlocked } = useCmp();
   const locale = getLocale();
   const region = useRegion();
+  const regionLocalization = useRegionLocalization();
   const { data: cmsData } = useApi({
     query,
     variables: { locale: fixLocaleCasing(locale), region },
   });
-  const localization = cmsData?.cms?.localizationConfigs?.items?.[0];
+  const localization = regionLocalization ?? cmsData?.cms?.localizationConfigs?.items?.[0];
   const { community, support } = groupSiteLinks(cmsData?.cms?.sites?.items, domainName);
 
   const repoUrl = `https://github.com/${owner || "codeday"}/${repository}`;

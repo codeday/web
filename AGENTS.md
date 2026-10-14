@@ -72,11 +72,14 @@ pnpm --filter @codeday/topo-gallery dev      # Storybook dev server on :3100
    - Every URL includes a locale prefix (`/en/about`). Next.js's Pages Router requires a `defaultLocale`, so this repo uses `"_default"` as a sentinel non-locale — bare paths resolve to `_default`, which `apps/www/src/proxy.ts` (this Next version's replacement for `middleware.ts`) detects and redirects to a real locale based on the `NEXT_LOCALE` cookie or `Accept-Language`.
    - Get locale: `getLocale()` (client, `@codeday/i18n/runtime`) or `getLocaleFromContext(ctx)` (server, `@codeday/i18n/next-pages`). For `m.*()` calls inside `getStaticProps`/`getServerSideProps`, wrap the function with `withLocaleStaticProps`/`withLocaleServerSideProps`.
    - Adding a language: add the locale code to `packages/i18n/project.inlang/settings.json`, add `packages/i18n/messages/{locale}.json`, then add the locale to each app's `next.config.ts` (`i18n.locales`) and `AVAILABLE_LOCALES` in its proxy/middleware.
-   - This is a separate mechanism from Contentful content localization: some `cms { ... }` fields (see "GraphQL data fetching" above) take their own `locale` argument resolved server-side by Contentful (e.g. `cms.localizationConfigs(where: { id: $region }, locale: $locale)` in `apps/www/src/pages/contact.tsx`, `cms.legal.terms(locale: "en-US")` in `apps/www/src/pages/legal/[policy].tsx`). When a page needs localized CMS content, thread the Paraglide locale through as a GraphQL variable rather than assuming `m.*()` covers it — most `cms` queries in this repo don't pass `locale` at all and just return the default (English) entry.
+   - This is a separate mechanism from Contentful content localization: some `cms { ... }` fields (see "GraphQL data fetching" above) take their own `locale` argument resolved server-side by Contentful (e.g. `cms.localizationConfigs(where: { id: $region }, locale: $locale)` in `apps/www/src/utils/region.ts`, `cms.legal.terms(locale: "en-US")` in `apps/www/src/pages/_region/[siteRegion]/legal/[policy].tsx`). When a page needs localized CMS content, thread the Paraglide locale through as a GraphQL variable rather than assuming `m.*()` covers it — most `cms` queries in this repo don't pass `locale` at all and just return the default (English) entry.
 
-2. **Region** (domain-specific data — phone numbers, emails, legal) — resolved from the **TLD of the visitor's hostname**, independent of locale (e.g. `codeday.fr` → region `eu`, UI can still be English). Provided by `@codeday/topo/Region`.
-   - `@codeday/topo/Region/config` is dependency-free (no React) so it can run in the Edge runtime (proxy/middleware); `@codeday/topo/Region` adds `RegionProvider`/`useRegion()`/`getRegionFromContext()` for React/server use.
-   - New TLD → add an entry to `TLD_REGION_MAP` in `packages/topo/src/Region/config.ts`; nothing else needs to change. Full-domain overrides can be passed at call sites via an `overrides` map (checked before TLD-map lookup).
+2. **Region** (domain-specific data and features — legal entity, phone numbers, emails, whether donations are offered) — resolved from the **TLD of the visitor's hostname**, independent of locale (e.g. `codeday.fr` → region `estonia`, UI can still be English). Region ids match the `id` of the Contentful `localizationConfigs` entry for that region.
+   - `@codeday/topo/Region/config` is dependency-free (no React) so it can run in the proxy; `@codeday/topo/Region` adds `RegionProvider`/`useRegion()`/`useRegionLocalization()` for React.
+   - **The region is part of the (hidden) path, so pages stay static.** On Vercel every domain shares one ISR cache per path, so host-dependent HTML can't live in a plain static page. Instead `apps/www/src/proxy.ts` rewrites `codeday.ca/en-us/donate` to `/en-us/_region/ca/donate` internally (the browser URL is unchanged), and every page lives under `apps/www/src/pages/_region/[siteRegion]/`. Only `_app`, `_document`, `404` and `api/` stay at the root.
+   - Every page under `_region/[siteRegion]` wraps its data function with `withRegionStaticProps`/`withRegionServerSideProps` from `apps/www/src/utils/region.ts`, which validates the region, fetches its `localizationConfigs` entry, and adds `region`/`regionLocalization` to the page props (`_app` passes them to `RegionProvider`, so the footer's legal entity is in the first HTML). Pages with no other dynamic params use `getStaticPaths = getRegionStaticPaths` (prebuilds the default region, renders other regions on demand); pages with their own `getStaticPaths` wrap it with `withRegionStaticPaths`. A page that should exist only in some regions passes `{ requires: "<feature>" }` (see `donate.tsx`), and the feature flags live in `REGION_FEATURES` in the same file.
+   - `router.pathname` includes the `/_region/[siteRegion]` prefix. Use `usePublicPathname()` to compare against public paths, and `useReplaceQuery()` (both in `apps/www/src/utils/useRegionRouter.ts`) for shallow query-string updates, so the hidden segment never leaks into the visible URL.
+   - New TLD → add an entry to `TLD_REGION_MAP` in `packages/topo/src/Region/config.ts`, using an existing `localizationConfigs` id as the value. Full-domain overrides can be passed at call sites via an `overrides` map (checked before TLD-map lookup). To try a region locally, browse to e.g. `codeday.ca.localhost:3000` (a trailing `.localhost` is ignored).
 
 ### Design system (`packages/topo`)
 
@@ -123,7 +126,7 @@ A component should either (a) be genuinely reusable — used in 2+ places, or bu
 
 ### `apps/www` page structure
 
-Pages router under `src/pages`. Notable dynamic routes:
+Pages router under `src/pages/_region/[siteRegion]` (see "Region" above for why). Notable dynamic routes, relative to that directory:
 
 - `e/[calendarId]/[eventId]` — event pages
 - `f/[slug]` — generic form pages (Cognito forms)
@@ -131,7 +134,7 @@ Pages router under `src/pages`. Notable dynamic routes:
 - `legal/[policy]`, `email/[slug]`, `m/[...slug]`, `doi/[...doi]` (and `doi/crossref/[...doi]`) — DOI resolution
 - `volunteer/[region]`, `volunteer/labs`, `volunteer/share`
 
-`src/proxy.ts` runs on every request except `/_next`, API routes, and files with an extension — it only handles locale-prefix redirection.
+`src/proxy.ts` runs on every request except `/_next`, API routes, `/.well-known/` and public files (see `isInternalPageHref` in `@codeday/topo/isInternalPageHref`). It redirects bare paths to a locale prefix, then rewrites the request into `_region/<region>/` from the hostname.
 
 **Ink illustrations** (dark ink on light paper, drawn with topo's `InkIllustration`) keep their source scans in `public/images/ink/`. `scripts/generate-ink-masks.mjs` runs before `dev` and `build` (or alone via `pnpm --filter @codeday/www ink-masks`) and turns each one into an alpha mask at `public/images/ink-masks/<name>.png`, detecting the paper's brightness per image. The masks are gitignored build output — never commit or hand-edit them. To add or update a drawing, drop it into `public/images/ink/` and pass `src="/images/ink-masks/<name>.png"`.
 
@@ -148,7 +151,7 @@ Icon source SVGs live in the `packages/topocons/svg` git submodule (`git@github.
 
 ## Testing
 
-- `apps/www`: `pnpm --filter @codeday/www test` runs Playwright (`apps/www/tests/*.spec.ts`) against a **production** build — the config does not start the server for you (a full CMS-backed SSG build takes minutes); build and start it yourself first (`pnpm --filter @codeday/www build && pnpm --filter @codeday/www start -- -p 4400`, matching `apps/www/playwright.config.ts`'s `baseURL`).
+- `apps/www`: `pnpm --filter @codeday/www test` runs Playwright (`apps/www/tests/*.spec.ts`) against a **production** build — the config does not start the server for you (a full CMS-backed SSG build takes minutes); build and start it yourself first (`pnpm --filter @codeday/www build && pnpm --filter @codeday/www start -p 4400`, matching `apps/www/playwright.config.ts`'s `baseURL`).
 - `apps/topo-gallery`: `pnpm --filter @codeday/topo-gallery test` builds the static Storybook (`storybook build -o dist`) and runs Playwright (`apps/topo-gallery/tests/*.spec.ts`) against it — this is the mechanism that catches visual/rendering regressions in `packages/topo` components.
 - **Don't assert on content in tests.** Copy (from `m.*()` or the CMS), CMS entries, counts of content items, logos, and the order of content sections all change without any code change, so a test that expects specific text or content breaks for no real regression. Test behaviour and structure instead — that a page or component loads, roles/landmarks/heading levels, links and their hrefs, layout (overflow, widths), accessibility attributes, interactions. Page-level Playwright specs in `apps/www` should stay at "the page and its nav bar load" plus behaviour checks, not per-section content checks.
 - **Don't leave test results behind.** `test-results/` and `playwright-report/` are gitignored at the repo root; never commit them, and delete them after a run once you've read any failure screenshots.

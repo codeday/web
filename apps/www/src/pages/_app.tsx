@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { Fragment, StrictMode, useEffect, useMemo } from "react";
 
 import { MarketingProvider, FundraiseProvider } from "@/providers";
+import { getRegionFeatures } from "@/utils/region";
 
 const DEBUG = debug(["www", "pages", "_app"]);
 
@@ -25,11 +26,12 @@ export default function App({ Component, pageProps }: AppProps) {
   ) as Locale;
   overwriteGetLocale(() => resolvedLocale);
 
-  const region = useMemo(
+  const clientRegion = useMemo(
     () =>
       getRegionFromHostname(typeof window !== "undefined" ? window.location.hostname : undefined),
     [],
   );
+  const region: string = pageProps.region ?? clientRegion;
 
   useEffect(() => {
     DEBUG("pageProps", pageProps);
@@ -37,10 +39,10 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <STRICT_MODE_OR_FRAGMENT>
-      <RegionProvider value={region}>
+      <RegionProvider value={{ region, localization: pageProps.regionLocalization }}>
         <ThemeProvider brandColor="hibiscus" useSystemColorMode cookies={pageProps.cookies}>
           <MarketingProvider>
-            <FundraiseProvider>
+            <FundraiseProvider enabled={getRegionFeatures(region).donate}>
               <PageLoadingBar />
               <Component {...pageProps} />
               <Toaster toaster={_toaster} />

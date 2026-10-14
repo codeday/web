@@ -9,14 +9,16 @@ import {
   Main,
   Footer,
 } from "@codeday/topo/Organism";
+import { useRegion } from "@codeday/topo/Region";
 import { DefaultSeo } from "next-seo";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import React, { ReactNode, useRef } from "react";
 
 import DisclaimerFooter from "@/components/Page/DisclaimerFooter";
 import { graphql } from "@/gql";
 import { FragmentType, useFragment } from "@/gql/fragment-masking";
+import { getRegionFeatures } from "@/utils/region";
+import { usePublicPathname } from "@/utils/useRegionRouter";
 
 export const PageFragment = graphql(`
   fragment PageComponent on Query {
@@ -104,14 +106,15 @@ export default function Page({
   const cms = useFragment(PageFragment, data)?.cms;
   const { mission } = cms || {};
   const donateAnchorRef = useRef<HTMLAnchorElement | null>(null);
-  const router = useRouter();
-  const isResearchActive = router.pathname === "/research";
-  const isMicroInternshipActive = router.pathname.startsWith("/micro-internship");
-  const isTalentActive = router.pathname === "/talent";
-  const isEventsActive = router.pathname === "/events";
-  const isContactActive = router.pathname === "/contact";
-  const isVolunteerActive = router.pathname.startsWith("/volunteer");
-  const isPressActive = router.pathname === "/press";
+  const pathname = usePublicPathname();
+  const { donate: showDonate } = getRegionFeatures(useRegion());
+  const isResearchActive = pathname === "/research";
+  const isMicroInternshipActive = pathname.startsWith("/micro-internship");
+  const isTalentActive = pathname === "/talent";
+  const isEventsActive = pathname === "/events";
+  const isContactActive = pathname === "/contact";
+  const isVolunteerActive = pathname.startsWith("/volunteer");
+  const isPressActive = pathname === "/press";
   const sponsorDisclaimers = (cms?.globalSponsors?.items || [])
     .flatMap((sponsor: any) => sponsor.legalDisclaimer.split(`\n`))
     .filter(Boolean);
@@ -217,27 +220,29 @@ export default function Page({
             <LanguageSwitcher />
             {/* Auto-sized to the button alone (see the constant's comment
               above) — no hardcoded dimensions, no measurement. */}
-            <Box position="relative" display="inline-block" flexShrink={0}>
-              <Button
-                variant="onColor"
-                color="colorPalette.true.800"
-                size="sm"
-                pointerEvents="none"
-                onClick={() => donateAnchorRef.current?.click()}
-              >
-                {m.www_navmenu_donate()}
-              </Button>
-              {/* Absolutely positioned — excluded from the outer box's
+            {showDonate && (
+              <Box position="relative" display="inline-block" flexShrink={0}>
+                <Button
+                  variant="onColor"
+                  color="colorPalette.true.800"
+                  size="sm"
+                  pointerEvents="none"
+                  onClick={() => donateAnchorRef.current?.click()}
+                >
+                  {m.www_navmenu_donate()}
+                </Button>
+                {/* Absolutely positioned — excluded from the outer box's
                 auto-sizing, and `inset="0"` fills exactly whatever size
                 that ends up being (the button's). The mount point inside
                 stays `position: static` (FundraiseUp forces that with
                 `!important`), which is fine: "static" just means static
                 relative to THIS box, and this box's own overflow clips its
                 excess exactly like before. */}
-              <Box position="absolute" inset="0" overflow="hidden">
-                <a ref={donateAnchorRef} {...({ href: `#${FUNDRAISE_UP_BUTTON_ID}` } as any)} />
+                <Box position="absolute" inset="0" overflow="hidden">
+                  <a ref={donateAnchorRef} {...({ href: `#${FUNDRAISE_UP_BUTTON_ID}` } as any)} />
+                </Box>
               </Box>
-            </Box>
+            )}
           </Header>
         </Box>
 

@@ -1,11 +1,10 @@
 import { locales, baseLocale as FALLBACK_LOCALE } from "@codeday/i18n/locales";
-import { getRegionFromHostname, REGION_HEADER } from "@codeday/topo/Region/config";
+import { isInternalPageHref } from "@codeday/topo/isInternalPageHref";
+import { getRegionFromHostname } from "@codeday/topo/Region/config";
 import { NextRequest, NextResponse } from "next/server";
 
 const AVAILABLE_LOCALES: readonly string[] = locales;
 const UNSPECIFIED = "_default";
-
-const PUBLIC_FILE = /\.(.*)$/;
 
 function getPreferredLocale(acceptLanguage: string | null): string {
   if (!acceptLanguage) return FALLBACK_LOCALE;
@@ -29,11 +28,7 @@ function getPreferredLocale(acceptLanguage: string | null): string {
 }
 
 export function proxy(request: NextRequest) {
-  if (
-    request.nextUrl.pathname.startsWith("/_next") ||
-    request.nextUrl.pathname.includes("/api/") ||
-    PUBLIC_FILE.test(request.nextUrl.pathname)
-  ) {
+  if (!isInternalPageHref(request.nextUrl.pathname)) {
     return;
   }
 
@@ -50,10 +45,7 @@ export function proxy(request: NextRequest) {
   }
 
   const region = getRegionFromHostname(request.headers.get("host"));
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set(REGION_HEADER, region);
-
-  return NextResponse.next({
-    request: { headers: requestHeaders },
-  });
+  const url = request.nextUrl.clone();
+  url.pathname = `/_region/${region}${url.pathname === "/" ? "" : url.pathname}`;
+  return NextResponse.rewrite(url);
 }

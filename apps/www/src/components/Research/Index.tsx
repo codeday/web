@@ -7,6 +7,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import FilterBar, { type TypeFilter } from "@/components/Research/FilterBar";
 import Row from "@/components/Research/Row";
 import type { Publication, PublicationType } from "@/lib/research/types";
+import { useReplaceQuery } from "@/utils/useRegionRouter";
 
 export interface ResearchIndexProps {
   publications: Publication[];
@@ -54,6 +55,7 @@ function YearGroup({
 
 export default function ResearchIndex({ publications }: ResearchIndexProps) {
   const router = useRouter();
+  const replaceQuery = useReplaceQuery();
   const [type, setType] = useState<TypeFilter>("all");
   const [topic, setTopic] = useState("");
   const [hydrated, setHydrated] = useState(false);
@@ -71,7 +73,7 @@ export default function ResearchIndex({ publications }: ResearchIndexProps) {
     const nextQuery: Record<string, string> = {};
     if (type !== "all") nextQuery.type = type;
     if (topic) nextQuery.topic = topic;
-    router.replace({ pathname: router.pathname, query: nextQuery }, undefined, { shallow: true });
+    void replaceQuery(nextQuery);
   }, [type, topic, hydrated]);
 
   const typeCounts = useMemo(() => {
