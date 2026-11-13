@@ -13,6 +13,7 @@ import ProjectCardsField, { HeroProject } from "@/components/Events/ProjectCards
 import Steps from "@/components/Events/Steps";
 import { useEventsState } from "@/components/Events/useEventsState";
 import Page from "@/components/Page";
+import StudentTestimonials from "@/components/StudentTestimonials";
 import { graphql } from "@/gql";
 import { useFragment } from "@/gql/fragment-masking";
 import { cmsLocale } from "@/utils/cmsLocale";
@@ -93,6 +94,15 @@ export const EventsPageFragment = graphql(`
           }
         }
       }
+      studentTestimonials: testimonials(
+        where: { type: "Student", featured: true, program: { webname: "codeday" } }
+        limit: 30
+        locale: $locale
+      ) {
+        items {
+          ...StudentTestimonialsComponent
+        }
+      }
     }
     geo {
       mine {
@@ -113,9 +123,10 @@ export const EventsPageQuery = graphql(`
 
 interface EventsPageProps {
   query: ResultOf<typeof EventsPageQuery>;
+  seed: number;
 }
 
-export default function EventsPage({ query }: EventsPageProps) {
+export default function EventsPage({ query, seed }: EventsPageProps) {
   const { showcase, cms, geo } = useFragment(EventsPageFragment, query);
 
   const cities = useMemo(() => buildCities(cms?.regions?.items || []), [cms]);
@@ -340,6 +351,32 @@ export default function EventsPage({ query }: EventsPageProps) {
             <Steps />
           </Box>
         </Box>
+
+        <Box
+          as="section"
+          id="students"
+          boxSizing="border-box"
+          paddingInline={SECTION_INSET}
+          paddingBlock={SECTION_BLOCK}
+          borderTop={`{borders.sm} ${HAIRLINE}`}
+        >
+          <Box
+            maxWidth="container.lg"
+            marginX="auto"
+            display="flex"
+            flexDirection="column"
+            gap={{ base: "6", xl: "9" }}
+          >
+            <Heading as="h2" {...SECTION_HEADING} maxWidth="3xl">
+              {m.www_events_testimonials_heading()}
+            </Heading>
+            <StudentTestimonials
+              testimonials={cms?.studentTestimonials?.items || []}
+              seed={seed}
+              ramp="blackberry"
+            />
+          </Box>
+        </Box>
       </Box>
     </Page>
   );
@@ -348,7 +385,7 @@ export default function EventsPage({ query }: EventsPageProps) {
 export const getStaticProps = withRegionStaticProps(async ({ locale }) => {
   const query = await apiFetch(EventsPageQuery, { locale: cmsLocale(locale) });
   return {
-    props: { query },
+    props: { query, seed: Math.random() },
     revalidate: 300,
   };
 });

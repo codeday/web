@@ -13,6 +13,7 @@ import HeroField from "@/components/MicroInternship/HeroField";
 import HowItWorks from "@/components/MicroInternship/HowItWorks";
 import PartnerPill from "@/components/MicroInternship/PartnerPill";
 import Page from "@/components/Page";
+import StudentTestimonials from "@/components/StudentTestimonials";
 import { graphql } from "@/gql";
 import { cmsLocale } from "@/utils/cmsLocale";
 import { withRegionStaticProps } from "@/utils/region";
@@ -23,6 +24,17 @@ const MicroInternshipQuery = graphql(`
     ...PageComponent
     ...IndexImpactComponent
     ...MicroInternshipEvidenceComponent
+    cms {
+      studentTestimonials: testimonials(
+        where: { type: "Student", featured: true, program: { webname: "labs" } }
+        limit: 30
+        locale: $locale
+      ) {
+        items {
+          ...StudentTestimonialsComponent
+        }
+      }
+    }
   }
 `);
 
@@ -217,6 +229,17 @@ export default function MicroInternship({ query, seed }: MicroInternshipProps) {
                 </Box>
               </PullQuote>
             </Box>
+          </Content>
+        </Section>
+
+        <Section ramp="blackberry" {...HAIRLINE}>
+          <Content maxW="container.lg" display="flex" flexDirection="column" gap="10">
+            <StatementBlock size="section" heading={m.www_microinternship_testimonials_heading()} />
+            <StudentTestimonials
+              testimonials={query.cms.studentTestimonials.items}
+              seed={seed}
+              ramp="blackberry"
+            />
           </Content>
         </Section>
 
