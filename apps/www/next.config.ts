@@ -118,6 +118,12 @@ const nextConfig: NextConfig = {
         destination: "/volunteer",
         permanent: false,
       },
+      {
+        // Matches /labs and any subpath (e.g. /labs/apply).
+        source: "/labs/:path*",
+        destination: "/micro-internship",
+        permanent: false,
+      },
     ];
 
     return [
